@@ -1,19 +1,67 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql'
+import { Field, Float, InputType, Int } from '@nestjs/graphql';
 
-@ObjectType()
-export class UserSession {
-  @Field(() => Int)
-  id: number
+import {
+  GraphQLBigInt,
+  GraphQLDateTime,
+  GraphQLJSONObject
+} from 'graphql-scalars';
 
-  @Field(() => Int)
-  userId: number
+@InputType()
+export class CreateUserSessionDto {
+  @Field(() => GraphQLDateTime, { nullable: true })
+  createdAt?: Date;
 
-  @Field(() => String)
-  sessionId?: string
+  @Field(() => Int, { nullable: false })
+  id: number;
 
-  @Field(() => Date)
-  createdAt?: Date
+  @Field(() => String, { nullable: true })
+  sessionId?: string;
 
-  @Field()
-  user?: string
+  @Field(() => Int, { nullable: false })
+  userId: number;
+}
+
+@InputType()
+export class DeleteUserSessionDto {
+  @Field(() => Int, { nullable: false })
+  id: number;
+}
+
+@InputType()
+export class FindManyUserSessionDto {
+  @Field(() => GraphQLDateTime, { nullable: true })
+  createdAt?: Date;
+
+  @Field(() => Int, { nullable: true })
+  id?: number;
+
+  @Field(() => String, { nullable: true })
+  sessionId?: string;
+
+  @Field(() => Int, { nullable: true })
+  userId?: number;
+}
+
+@InputType()
+export class FindUniqueUserSessionDto {
+  @Field(() => Int, { nullable: false })
+  id: number;
+}
+
+@InputType()
+export class UpdateDataUserSessionDto {
+  @Field(() => Int, { nullable: false })
+  userId: number;
+
+  @Field(() => String, { nullable: true })
+  sessionId?: string;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  createdAt?: Date;
+}
+
+@InputType()
+export class UpdateWhereUserSessionDto {
+  @Field(() => Int, { nullable: false })
+  id: number;
 }

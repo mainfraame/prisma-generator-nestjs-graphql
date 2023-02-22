@@ -1,22 +1,85 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql'
+import { Field, Float, InputType, Int } from '@nestjs/graphql';
 
-@ObjectType()
-export class UserPasswordReset {
-  @Field(() => Int)
-  id: number
+import {
+  GraphQLBigInt,
+  GraphQLDateTime,
+  GraphQLJSONObject
+} from 'graphql-scalars';
 
-  @Field(() => Int)
-  userId: number
+@InputType()
+export class CreateUserPasswordResetDto {
+  @Field(() => GraphQLDateTime, { nullable: true })
+  createdAt?: Date;
 
-  @Field(() => String)
-  token?: string
+  @Field(() => Int, { nullable: false })
+  id: number;
 
-  @Field(() => Date)
-  createdAt?: Date
+  @Field(() => Boolean, { nullable: true })
+  isUsed?: boolean;
 
-  @Field(() => Boolean)
-  isUsed?: Date
+  @Field(() => Boolean, { nullable: true })
+  isValid?: boolean;
 
-  @Field(() => Boolean)
-  isValid?: Date
+  @Field(() => String, { nullable: true })
+  token?: string;
+
+  @Field(() => Int, { nullable: false })
+  userId: number;
+}
+
+@InputType()
+export class DeleteUserPasswordResetDto {
+  @Field(() => Int, { nullable: false })
+  id: number;
+}
+
+@InputType()
+export class FindManyUserPasswordResetDto {
+  @Field(() => GraphQLDateTime, { nullable: true })
+  createdAt?: Date;
+
+  @Field(() => Int, { nullable: true })
+  id?: number;
+
+  @Field(() => Boolean, { nullable: true })
+  isUsed?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  isValid?: boolean;
+
+  @Field(() => String, { nullable: true })
+  token?: string;
+
+  @Field(() => Int, { nullable: true })
+  userId?: number;
+}
+
+@InputType()
+export class FindUniqueUserPasswordResetDto {
+  @Field(() => Int, { nullable: false })
+  id: number;
+}
+
+@InputType()
+export class UpdateDataUserPasswordResetDto {
+  @Field(() => Int, { nullable: false })
+  userId: number;
+
+  @Field(() => String, { nullable: true })
+  token?: string;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  createdAt?: Date;
+
+  @Field(() => Boolean, { nullable: true })
+  isUsed?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  isValid?: boolean;
+}
+
+@InputType()
+export class UpdateWhereUserPasswordResetDto {
+  @Field(() => Int, { nullable: false })
+  id: number;
 }

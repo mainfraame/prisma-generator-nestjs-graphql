@@ -1,11 +1,39 @@
-import fs from 'fs'
-import path from 'path'
-import { formatFile } from './formatFile'
+import { transform } from '@swc/core';
 
-export const writeFileSafely = async (writeLocation: string, content: any) => {
-  fs.mkdirSync(path.dirname(writeLocation), {
-    recursive: true,
-  })
+import fs from 'fs/promises';
+import { dirname } from 'path';
 
-  fs.writeFileSync(writeLocation, await formatFile(content))
-}
+import { formatFile } from './formatFile';
+
+export const writeFileSafely = async (path: string, content: any) => {
+  await fs.mkdir(dirname(path), {
+    recursive: true
+  });
+
+  await fs.writeFile(
+    path.includes('node_modules') ? path.replace(/\.ts$/, '.js') : path,
+    path.includes('node_modules')
+      ? (
+          await transform(await formatFile(content), {
+            jsc: {
+              target: 'es2020',
+              parser: {
+                syntax: 'typescript',
+                decorators: true
+              },
+              transform: {
+                legacyDecorator: true,
+                decoratorMetadata: true
+              },
+              keepClassNames: true
+            },
+            module: {
+              type: 'commonjs',
+              strict: true
+            },
+            sourceMaps: 'inline'
+          })
+        ).code
+      : await formatFile(content)
+  );
+};

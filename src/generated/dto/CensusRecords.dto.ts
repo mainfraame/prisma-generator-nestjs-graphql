@@ -1,151 +1,463 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql'
+import { Field, Float, InputType, Int } from '@nestjs/graphql';
 
-@ObjectType()
-export class CensusRecords {
-  @Field(() => Int)
-  censusRecordsId: number
+import {
+  GraphQLBigInt,
+  GraphQLDateTime,
+  GraphQLJSONObject
+} from 'graphql-scalars';
 
-  @Field(() => Int)
-  sponsorPlanId: number
+@InputType()
+export class CreateCensusRecordsDto {
+  @Field(() => Int, { nullable: true })
+  afterTaxContribution?: number;
 
-  @Field(() => String)
-  socialSecurityNumber: string
+  @Field(() => String, { nullable: true })
+  afterTaxContributionType?: string;
 
-  @Field(() => String)
-  lastName: string
+  @Field(() => Float, { nullable: true })
+  annualSalary?: number;
 
-  @Field(() => String)
-  firstName: string
+  @Field(() => Boolean, { nullable: false })
+  blockNonRoth: boolean;
 
-  @Field(() => String)
-  gender?: string
+  @Field(() => Boolean, { nullable: false })
+  blockRoth: boolean;
 
-  @Field(() => Date)
-  dateOfBirth?: Date
+  @Field(() => Int, { nullable: false })
+  censusRecordsId: number;
 
-  @Field(() => Date)
-  dateOfHire?: Date
+  @Field(() => String, { nullable: true })
+  city?: string;
 
-  @Field(() => Date)
-  dateOfRehire?: Date
+  @Field(() => String, { nullable: true })
+  compensationType?: string;
 
-  @Field(() => Date)
-  dateOfTermination?: Date
+  @Field(() => Int, { nullable: true })
+  contribution?: number;
 
-  @Field(() => String)
-  streetAddress1?: string
+  @Field(() => String, { nullable: true })
+  contributionType?: string;
 
-  @Field(() => String)
-  streetAddress2?: string
+  @Field(() => String, { nullable: true })
+  country?: string;
 
-  @Field(() => String)
-  city?: string
+  @Field(() => GraphQLDateTime, { nullable: false })
+  createdAt: Date;
 
-  @Field(() => String)
-  state?: string
+  @Field(() => Int, { nullable: true })
+  currentHours?: number;
 
-  @Field(() => String)
-  zip?: string
+  @Field(() => GraphQLDateTime, { nullable: true })
+  dateOfBirth?: Date;
 
-  @Field(() => String)
-  division?: string
+  @Field(() => String, { nullable: true })
+  dateOfBirthStrRec?: string;
 
-  @Field(() => Int)
-  currentHours?: number
+  @Field(() => GraphQLDateTime, { nullable: true })
+  dateOfHire?: Date;
 
-  @Field(() => String)
-  maritalStatus?: string
+  @Field(() => String, { nullable: true })
+  dateOfHireStrRec?: string;
 
-  @Field(() => String)
-  payRate?: string
+  @Field(() => GraphQLDateTime, { nullable: true })
+  dateOfRehire?: Date;
 
-  @Field(() => String)
-  email?: string
+  @Field(() => String, { nullable: true })
+  dateOfRehireStrRec?: string;
 
-  @Field(() => Date)
-  createdAt: Date
+  @Field(() => GraphQLDateTime, { nullable: true })
+  dateOfTermination?: Date;
 
-  @Field(() => String)
-  fullTime?: string
+  @Field(() => String, { nullable: true })
+  dateOfTerminationStrRec?: string;
 
-  @Field(() => String)
-  employmentType?: string
+  @Field(() => String, { nullable: true })
+  division?: string;
 
-  @Field(() => String)
-  grossCompensation?: string
+  @Field(() => String, { nullable: true })
+  ein?: string;
 
-  @Field(() => String)
-  compensationType?: string
+  @Field(() => String, { nullable: true })
+  email?: string;
 
-  @Field(() => Boolean)
-  isOriginalRecord: Date
+  @Field(() => String, { nullable: true })
+  employmentType?: string;
 
-  @Field(() => Int)
-  priorYearHours?: number
+  @Field(() => String, { nullable: true })
+  externalId?: string;
 
-  @Field(() => String)
-  dateOfTerminationStrRec?: string
+  @Field(() => String, { nullable: false })
+  firstName: string;
 
-  @Field(() => String)
-  dateOfHireStrRec?: string
+  @Field(() => String, { nullable: true })
+  fullTime?: string;
 
-  @Field(() => String)
-  dateOfRehireStrRec?: string
+  @Field(() => String, { nullable: true })
+  gender?: string;
 
-  @Field(() => String)
-  dateOfBirthStrRec?: string
+  @Field(() => String, { nullable: true })
+  grossCompensation?: string;
 
-  @Field(() => String)
-  personalEmail?: string
+  @Field(() => String, { nullable: true })
+  guid?: string;
 
-  @Field(() => String)
-  guid?: string
+  @Field(() => Boolean, { nullable: false })
+  isOriginalRecord: boolean;
 
-  @Field(() => String)
-  ein?: string
+  @Field(() => String, { nullable: false })
+  lastName: string;
 
-  @Field(() => Int)
-  yearsForVesting?: number
+  @Field(() => String, { nullable: true })
+  maritalStatus?: string;
 
-  @Field(() => String)
-  middleName?: string
+  @Field(() => String, { nullable: true })
+  middleName?: string;
 
-  @Field(() => Int)
-  contribution?: number
+  @Field(() => String, { nullable: true })
+  payRate?: string;
 
-  @Field(() => String)
-  contributionType?: string
+  @Field(() => String, { nullable: true })
+  personalEmail?: string;
 
-  @Field(() => Int)
-  rothContribution?: number
+  @Field(() => Int, { nullable: true })
+  priorYearHours?: number;
 
-  @Field(() => String)
-  rothContributionType?: string
+  @Field(() => Int, { nullable: true })
+  rothContribution?: number;
 
-  @Field(() => Int)
-  afterTaxContribution?: number
+  @Field(() => String, { nullable: true })
+  rothContributionType?: string;
 
-  @Field(() => String)
-  afterTaxContributionType?: string
+  @Field(() => String, { nullable: false })
+  socialSecurityNumber: string;
 
-  @Field(() => Boolean)
-  blockRoth: Date
+  @Field(() => Int, { nullable: false })
+  sponsorPlanId: number;
 
-  @Field(() => Boolean)
-  blockNonRoth: Date
+  @Field(() => String, { nullable: true })
+  state?: string;
 
-  @Field(() => String)
-  country?: string
+  @Field(() => String, { nullable: true })
+  streetAddress1?: string;
 
-  @Field(() => String)
-  ucid?: string
+  @Field(() => String, { nullable: true })
+  streetAddress2?: string;
 
-  @Field(() => String)
-  externalId?: string
+  @Field(() => String, { nullable: true })
+  ucid?: string;
 
-  @Field()
-  annualSalary?: string
+  @Field(() => Int, { nullable: true })
+  yearsForVesting?: number;
 
-  @Field()
-  sponsorPlan: string
+  @Field(() => String, { nullable: true })
+  zip?: string;
+}
+
+@InputType()
+export class DeleteCensusRecordsDto {
+  @Field(() => Int, { nullable: false })
+  censusRecordsId: number;
+}
+
+@InputType()
+export class FindManyCensusRecordsDto {
+  @Field(() => Int, { nullable: true })
+  afterTaxContribution?: number;
+
+  @Field(() => String, { nullable: true })
+  afterTaxContributionType?: string;
+
+  @Field(() => Float, { nullable: true })
+  annualSalary?: number;
+
+  @Field(() => Boolean, { nullable: true })
+  blockNonRoth?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  blockRoth?: boolean;
+
+  @Field(() => Int, { nullable: true })
+  censusRecordsId?: number;
+
+  @Field(() => String, { nullable: true })
+  city?: string;
+
+  @Field(() => String, { nullable: true })
+  compensationType?: string;
+
+  @Field(() => Int, { nullable: true })
+  contribution?: number;
+
+  @Field(() => String, { nullable: true })
+  contributionType?: string;
+
+  @Field(() => String, { nullable: true })
+  country?: string;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  createdAt?: Date;
+
+  @Field(() => Int, { nullable: true })
+  currentHours?: number;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  dateOfBirth?: Date;
+
+  @Field(() => String, { nullable: true })
+  dateOfBirthStrRec?: string;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  dateOfHire?: Date;
+
+  @Field(() => String, { nullable: true })
+  dateOfHireStrRec?: string;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  dateOfRehire?: Date;
+
+  @Field(() => String, { nullable: true })
+  dateOfRehireStrRec?: string;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  dateOfTermination?: Date;
+
+  @Field(() => String, { nullable: true })
+  dateOfTerminationStrRec?: string;
+
+  @Field(() => String, { nullable: true })
+  division?: string;
+
+  @Field(() => String, { nullable: true })
+  ein?: string;
+
+  @Field(() => String, { nullable: true })
+  email?: string;
+
+  @Field(() => String, { nullable: true })
+  employmentType?: string;
+
+  @Field(() => String, { nullable: true })
+  externalId?: string;
+
+  @Field(() => String, { nullable: true })
+  firstName?: string;
+
+  @Field(() => String, { nullable: true })
+  fullTime?: string;
+
+  @Field(() => String, { nullable: true })
+  gender?: string;
+
+  @Field(() => String, { nullable: true })
+  grossCompensation?: string;
+
+  @Field(() => String, { nullable: true })
+  guid?: string;
+
+  @Field(() => Boolean, { nullable: true })
+  isOriginalRecord?: boolean;
+
+  @Field(() => String, { nullable: true })
+  lastName?: string;
+
+  @Field(() => String, { nullable: true })
+  maritalStatus?: string;
+
+  @Field(() => String, { nullable: true })
+  middleName?: string;
+
+  @Field(() => String, { nullable: true })
+  payRate?: string;
+
+  @Field(() => String, { nullable: true })
+  personalEmail?: string;
+
+  @Field(() => Int, { nullable: true })
+  priorYearHours?: number;
+
+  @Field(() => Int, { nullable: true })
+  rothContribution?: number;
+
+  @Field(() => String, { nullable: true })
+  rothContributionType?: string;
+
+  @Field(() => String, { nullable: true })
+  socialSecurityNumber?: string;
+
+  @Field(() => Int, { nullable: true })
+  sponsorPlanId?: number;
+
+  @Field(() => String, { nullable: true })
+  state?: string;
+
+  @Field(() => String, { nullable: true })
+  streetAddress1?: string;
+
+  @Field(() => String, { nullable: true })
+  streetAddress2?: string;
+
+  @Field(() => String, { nullable: true })
+  ucid?: string;
+
+  @Field(() => Int, { nullable: true })
+  yearsForVesting?: number;
+
+  @Field(() => String, { nullable: true })
+  zip?: string;
+}
+
+@InputType()
+export class FindUniqueCensusRecordsDto {
+  @Field(() => Int, { nullable: false })
+  censusRecordsId: number;
+}
+
+@InputType()
+export class UpdateDataCensusRecordsDto {
+  @Field(() => Int, { nullable: false })
+  sponsorPlanId: number;
+
+  @Field(() => String, { nullable: false })
+  socialSecurityNumber: string;
+
+  @Field(() => String, { nullable: false })
+  lastName: string;
+
+  @Field(() => String, { nullable: false })
+  firstName: string;
+
+  @Field(() => String, { nullable: true })
+  gender?: string;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  dateOfBirth?: Date;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  dateOfHire?: Date;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  dateOfRehire?: Date;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  dateOfTermination?: Date;
+
+  @Field(() => String, { nullable: true })
+  streetAddress1?: string;
+
+  @Field(() => String, { nullable: true })
+  streetAddress2?: string;
+
+  @Field(() => String, { nullable: true })
+  city?: string;
+
+  @Field(() => String, { nullable: true })
+  state?: string;
+
+  @Field(() => String, { nullable: true })
+  zip?: string;
+
+  @Field(() => String, { nullable: true })
+  division?: string;
+
+  @Field(() => Int, { nullable: true })
+  currentHours?: number;
+
+  @Field(() => String, { nullable: true })
+  maritalStatus?: string;
+
+  @Field(() => String, { nullable: true })
+  payRate?: string;
+
+  @Field(() => String, { nullable: true })
+  email?: string;
+
+  @Field(() => GraphQLDateTime, { nullable: false })
+  createdAt: Date;
+
+  @Field(() => String, { nullable: true })
+  fullTime?: string;
+
+  @Field(() => String, { nullable: true })
+  employmentType?: string;
+
+  @Field(() => String, { nullable: true })
+  grossCompensation?: string;
+
+  @Field(() => String, { nullable: true })
+  compensationType?: string;
+
+  @Field(() => Boolean, { nullable: false })
+  isOriginalRecord: boolean;
+
+  @Field(() => Int, { nullable: true })
+  priorYearHours?: number;
+
+  @Field(() => String, { nullable: true })
+  dateOfTerminationStrRec?: string;
+
+  @Field(() => String, { nullable: true })
+  dateOfHireStrRec?: string;
+
+  @Field(() => String, { nullable: true })
+  dateOfRehireStrRec?: string;
+
+  @Field(() => String, { nullable: true })
+  dateOfBirthStrRec?: string;
+
+  @Field(() => String, { nullable: true })
+  personalEmail?: string;
+
+  @Field(() => String, { nullable: true })
+  guid?: string;
+
+  @Field(() => String, { nullable: true })
+  ein?: string;
+
+  @Field(() => Int, { nullable: true })
+  yearsForVesting?: number;
+
+  @Field(() => String, { nullable: true })
+  middleName?: string;
+
+  @Field(() => Int, { nullable: true })
+  contribution?: number;
+
+  @Field(() => String, { nullable: true })
+  contributionType?: string;
+
+  @Field(() => Int, { nullable: true })
+  rothContribution?: number;
+
+  @Field(() => String, { nullable: true })
+  rothContributionType?: string;
+
+  @Field(() => Int, { nullable: true })
+  afterTaxContribution?: number;
+
+  @Field(() => String, { nullable: true })
+  afterTaxContributionType?: string;
+
+  @Field(() => Boolean, { nullable: false })
+  blockRoth: boolean;
+
+  @Field(() => Boolean, { nullable: false })
+  blockNonRoth: boolean;
+
+  @Field(() => String, { nullable: true })
+  country?: string;
+
+  @Field(() => String, { nullable: true })
+  ucid?: string;
+
+  @Field(() => String, { nullable: true })
+  externalId?: string;
+
+  @Field(() => Float, { nullable: true })
+  annualSalary?: number;
+}
+
+@InputType()
+export class UpdateWhereCensusRecordsDto {
+  @Field(() => Int, { nullable: false })
+  censusRecordsId: number;
 }

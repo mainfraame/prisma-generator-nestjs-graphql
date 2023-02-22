@@ -1,19 +1,49 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql'
+import { Field, Float, InputType, Int } from '@nestjs/graphql';
 
-@ObjectType()
-export class SharedEntityType {
-  @Field(() => Int)
-  sharedEntityTypeId: number
+import {
+  GraphQLBigInt,
+  GraphQLDateTime,
+  GraphQLJSONObject
+} from 'graphql-scalars';
 
-  @Field(() => String)
-  name: string
+@InputType()
+export class CreateSharedEntityTypeDto {
+  @Field(() => String, { nullable: false })
+  name: string;
 
-  @Field()
-  address: string
+  @Field(() => Int, { nullable: false })
+  sharedEntityTypeId: number;
+}
 
-  @Field()
-  partnerSystemMapping: string
+@InputType()
+export class DeleteSharedEntityTypeDto {
+  @Field(() => Int, { nullable: false })
+  sharedEntityTypeId: number;
+}
 
-  @Field()
-  statefulSchemaTracking: string
+@InputType()
+export class FindManySharedEntityTypeDto {
+  @Field(() => String, { nullable: true })
+  name?: string;
+
+  @Field(() => Int, { nullable: true })
+  sharedEntityTypeId?: number;
+}
+
+@InputType()
+export class FindUniqueSharedEntityTypeDto {
+  @Field(() => Int, { nullable: false })
+  sharedEntityTypeId: number;
+}
+
+@InputType()
+export class UpdateDataSharedEntityTypeDto {
+  @Field(() => String, { nullable: false })
+  name: string;
+}
+
+@InputType()
+export class UpdateWhereSharedEntityTypeDto {
+  @Field(() => Int, { nullable: false })
+  sharedEntityTypeId: number;
 }

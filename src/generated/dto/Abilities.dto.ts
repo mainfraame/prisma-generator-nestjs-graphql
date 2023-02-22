@@ -1,16 +1,58 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql'
+import { Field, Float, InputType, Int } from '@nestjs/graphql';
 
-@ObjectType()
-export class Abilities {
-  @Field(() => Int)
-  id: number
+import {
+  GraphQLBigInt,
+  GraphQLDateTime,
+  GraphQLJSONObject
+} from 'graphql-scalars';
 
-  @Field(() => String)
-  name: string
+@InputType()
+export class CreateAbilitiesDto {
+  @Field(() => GraphQLJSONObject, { nullable: true })
+  config?: Record<string, unknown>;
 
-  @Field()
-  config?: Record<string, unknown>
+  @Field(() => Int, { nullable: false })
+  id: number;
 
-  @Field()
-  accessRoleAbilities: string
+  @Field(() => String, { nullable: false })
+  name: string;
+}
+
+@InputType()
+export class DeleteAbilitiesDto {
+  @Field(() => Int, { nullable: false })
+  id: number;
+}
+
+@InputType()
+export class FindManyAbilitiesDto {
+  @Field(() => GraphQLJSONObject, { nullable: true })
+  config?: Record<string, unknown>;
+
+  @Field(() => Int, { nullable: true })
+  id?: number;
+
+  @Field(() => String, { nullable: true })
+  name?: string;
+}
+
+@InputType()
+export class FindUniqueAbilitiesDto {
+  @Field(() => Int, { nullable: false })
+  id: number;
+}
+
+@InputType()
+export class UpdateDataAbilitiesDto {
+  @Field(() => String, { nullable: false })
+  name: string;
+
+  @Field(() => GraphQLJSONObject, { nullable: true })
+  config?: Record<string, unknown>;
+}
+
+@InputType()
+export class UpdateWhereAbilitiesDto {
+  @Field(() => Int, { nullable: false })
+  id: number;
 }

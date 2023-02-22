@@ -1,64 +1,121 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql'
+import { Field, Float, InputType, Int } from '@nestjs/graphql';
 
-@ObjectType()
-export class User {
-  @Field(() => Int)
-  userId: number
+import {
+  GraphQLBigInt,
+  GraphQLDateTime,
+  GraphQLJSONObject
+} from 'graphql-scalars';
 
-  @Field(() => String)
-  email?: string
+@InputType()
+export class CreateUserDto {
+  @Field(() => GraphQLDateTime, { nullable: false })
+  createdAt: Date;
 
-  @Field(() => String)
-  password?: string
+  @Field(() => String, { nullable: true })
+  email?: string;
 
-  @Field(() => Date)
-  createdAt: Date
+  @Field(() => Int, { nullable: true })
+  invalidPasswordCount?: number;
 
-  @Field(() => Date)
-  updatedAt: Date
+  @Field(() => Boolean, { nullable: true })
+  isLocked?: boolean;
 
-  @Field(() => Boolean)
-  pendingPasswordReset?: Date
+  @Field(() => Boolean, { nullable: true })
+  isMfaEnabled?: boolean;
 
-  @Field(() => Int)
-  invalidPasswordCount?: number
+  @Field(() => String, { nullable: true })
+  mfaSecret?: string;
 
-  @Field(() => Boolean)
-  isLocked?: Date
+  @Field(() => String, { nullable: true })
+  password?: string;
 
-  @Field(() => Boolean)
-  isMfaEnabled?: Date
+  @Field(() => Boolean, { nullable: true })
+  pendingPasswordReset?: boolean;
 
-  @Field(() => String)
-  mfaSecret?: string
+  @Field(() => GraphQLDateTime, { nullable: false })
+  updatedAt: Date;
 
-  @Field()
-  partnerSystemMapping: string
+  @Field(() => Int, { nullable: false })
+  userId: number;
+}
 
-  @Field()
-  authToken: string
+@InputType()
+export class DeleteUserDto {
+  @Field(() => Int, { nullable: false })
+  userId: number;
+}
 
-  @Field()
-  statefulSchemaTracking: string
+@InputType()
+export class FindManyUserDto {
+  @Field(() => GraphQLDateTime, { nullable: true })
+  createdAt?: Date;
 
-  @Field()
-  userInvite: string
+  @Field(() => String, { nullable: true })
+  email?: string;
 
-  @Field()
-  userMfaAttempt: string
+  @Field(() => Int, { nullable: true })
+  invalidPasswordCount?: number;
 
-  @Field()
-  userRolesAdvisor: string
+  @Field(() => Boolean, { nullable: true })
+  isLocked?: boolean;
 
-  @Field()
-  userRolesEntity: string
+  @Field(() => Boolean, { nullable: true })
+  isMfaEnabled?: boolean;
 
-  @Field()
-  userRolesParticipant: string
+  @Field(() => String, { nullable: true })
+  mfaSecret?: string;
 
-  @Field()
-  userRolesSponsor: string
+  @Field(() => String, { nullable: true })
+  password?: string;
 
-  @Field()
-  userSession?: string
+  @Field(() => Boolean, { nullable: true })
+  pendingPasswordReset?: boolean;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  updatedAt?: Date;
+
+  @Field(() => Int, { nullable: true })
+  userId?: number;
+}
+
+@InputType()
+export class FindUniqueUserDto {
+  @Field(() => Int, { nullable: false })
+  userId: number;
+}
+
+@InputType()
+export class UpdateDataUserDto {
+  @Field(() => String, { nullable: true })
+  email?: string;
+
+  @Field(() => String, { nullable: true })
+  password?: string;
+
+  @Field(() => GraphQLDateTime, { nullable: false })
+  createdAt: Date;
+
+  @Field(() => GraphQLDateTime, { nullable: false })
+  updatedAt: Date;
+
+  @Field(() => Boolean, { nullable: true })
+  pendingPasswordReset?: boolean;
+
+  @Field(() => Int, { nullable: true })
+  invalidPasswordCount?: number;
+
+  @Field(() => Boolean, { nullable: true })
+  isLocked?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  isMfaEnabled?: boolean;
+
+  @Field(() => String, { nullable: true })
+  mfaSecret?: string;
+}
+
+@InputType()
+export class UpdateWhereUserDto {
+  @Field(() => Int, { nullable: false })
+  userId: number;
 }

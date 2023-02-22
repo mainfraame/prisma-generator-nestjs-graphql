@@ -1,22 +1,70 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql'
+import { Field, Float, InputType, Int } from '@nestjs/graphql';
 
-@ObjectType()
-export class AdvisorSponsorPlan {
-  @Field(() => Int)
-  advisorId: number
+import {
+  GraphQLBigInt,
+  GraphQLDateTime,
+  GraphQLJSONObject
+} from 'graphql-scalars';
 
-  @Field(() => Int)
-  sponsorPlanId: number
+@InputType()
+export class CreateAdvisorSponsorPlanDto {
+  @Field(() => Int, { nullable: false })
+  advisorId: number;
 
-  @Field(() => Int)
-  programId?: number
+  @Field(() => Int, { nullable: true })
+  programId?: number;
 
-  @Field()
-  advisor: string
+  @Field(() => Int, { nullable: false })
+  sponsorPlanId: number;
+}
 
-  @Field()
-  program?: string
+@InputType()
+export class DeleteAdvisorSponsorPlanDto {
+  @Field(() => Int, { nullable: false })
+  advisorId: number;
 
-  @Field()
-  sponsorPlan: string
+  @Field(() => Int, { nullable: false })
+  sponsorPlanId: number;
+}
+
+@InputType()
+export class FindManyAdvisorSponsorPlanDto {
+  @Field(() => Int, { nullable: true })
+  advisorId?: number;
+
+  @Field(() => Int, { nullable: true })
+  programId?: number;
+
+  @Field(() => Int, { nullable: true })
+  sponsorPlanId?: number;
+}
+
+@InputType()
+export class FindUniqueAdvisorSponsorPlanDto {
+  @Field(() => Int, { nullable: false })
+  advisorId: number;
+
+  @Field(() => Int, { nullable: false })
+  sponsorPlanId: number;
+}
+
+@InputType()
+export class UpdateDataAdvisorSponsorPlanDto {
+  @Field(() => Int, { nullable: false })
+  advisorId: number;
+
+  @Field(() => Int, { nullable: false })
+  sponsorPlanId: number;
+
+  @Field(() => Int, { nullable: true })
+  programId?: number;
+}
+
+@InputType()
+export class UpdateWhereAdvisorSponsorPlanDto {
+  @Field(() => Int, { nullable: false })
+  advisorId: number;
+
+  @Field(() => Int, { nullable: false })
+  sponsorPlanId: number;
 }

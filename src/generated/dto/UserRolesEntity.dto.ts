@@ -1,28 +1,85 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql'
+import { Field, Float, InputType, Int } from '@nestjs/graphql';
 
-@ObjectType()
-export class UserRolesEntity {
-  @Field(() => Int)
-  id: number
+import {
+  GraphQLBigInt,
+  GraphQLDateTime,
+  GraphQLJSONObject
+} from 'graphql-scalars';
 
-  @Field(() => Int)
-  userId: number
+@InputType()
+export class CreateUserRolesEntityDto {
+  @Field(() => Int, { nullable: false })
+  accessRoleId: number;
 
-  @Field(() => Int)
-  accessRoleId: number
+  @Field(() => GraphQLDateTime, { nullable: true })
+  createdAt?: Date;
 
-  @Field(() => String)
-  entityType: string
+  @Field(() => Int, { nullable: false })
+  entityId: number;
 
-  @Field(() => Int)
-  entityId: number
+  @Field(() => String, { nullable: false })
+  entityType: string;
 
-  @Field(() => Date)
-  createdAt?: Date
+  @Field(() => Int, { nullable: false })
+  id: number;
 
-  @Field()
-  accessRole: string
+  @Field(() => Int, { nullable: false })
+  userId: number;
+}
 
-  @Field()
-  user: string
+@InputType()
+export class DeleteUserRolesEntityDto {
+  @Field(() => Int, { nullable: false })
+  id: number;
+}
+
+@InputType()
+export class FindManyUserRolesEntityDto {
+  @Field(() => Int, { nullable: true })
+  accessRoleId?: number;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  createdAt?: Date;
+
+  @Field(() => Int, { nullable: true })
+  entityId?: number;
+
+  @Field(() => String, { nullable: true })
+  entityType?: string;
+
+  @Field(() => Int, { nullable: true })
+  id?: number;
+
+  @Field(() => Int, { nullable: true })
+  userId?: number;
+}
+
+@InputType()
+export class FindUniqueUserRolesEntityDto {
+  @Field(() => Int, { nullable: false })
+  id: number;
+}
+
+@InputType()
+export class UpdateDataUserRolesEntityDto {
+  @Field(() => Int, { nullable: false })
+  userId: number;
+
+  @Field(() => Int, { nullable: false })
+  accessRoleId: number;
+
+  @Field(() => String, { nullable: false })
+  entityType: string;
+
+  @Field(() => Int, { nullable: false })
+  entityId: number;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  createdAt?: Date;
+}
+
+@InputType()
+export class UpdateWhereUserRolesEntityDto {
+  @Field(() => Int, { nullable: false })
+  id: number;
 }

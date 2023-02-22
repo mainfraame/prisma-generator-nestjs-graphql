@@ -1,289 +1,841 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql'
+import { Field, Float, InputType, Int } from '@nestjs/graphql';
 
-@ObjectType()
-export class SponsorPlan {
-  @Field(() => Int)
-  sponsorPlanId: number
+import {
+  GraphQLBigInt,
+  GraphQLDateTime,
+  GraphQLJSONObject
+} from 'graphql-scalars';
 
-  @Field(() => Int)
-  sponsorId?: number
+@InputType()
+export class CreateSponsorPlanDto {
+  @Field(() => String, { nullable: true })
+  adminStatus?: string;
 
-  @Field(() => Boolean)
-  isSafeHarbor?: Date
+  @Field(() => String, { nullable: true })
+  adoptionAgreementProvider?: string;
 
-  @Field(() => String)
-  safeHarborStrategy?: string
+  @Field(() => Int, { nullable: true })
+  ageRequirement?: number;
 
-  @Field(() => String)
-  contributionFormula?: string
+  @Field(() => Boolean, { nullable: true })
+  allowAfterTaxContribution?: boolean;
 
-  @Field(() => Boolean)
-  isProfitSharing?: Date
+  @Field(() => Boolean, { nullable: true })
+  allowEligibilityOverride?: boolean;
 
-  @Field(() => String)
-  profitSharingStrategy?: string
+  @Field(() => String, { nullable: true })
+  allowLoans?: string;
 
-  @Field(() => String)
-  customClassification1?: string
+  @Field(() => Boolean, { nullable: true })
+  allowPretaxContribution?: boolean;
 
-  @Field(() => String)
-  customClassification2?: string
+  @Field(() => Boolean, { nullable: true })
+  allowQnecQmac?: boolean;
 
-  @Field(() => String)
-  customClassification3?: string
+  @Field(() => String, { nullable: true })
+  allowRollover?: string;
 
-  @Field(() => String)
-  customClassification4?: string
+  @Field(() => Boolean, { nullable: false })
+  allowRothIraContribution: boolean;
 
-  @Field(() => Boolean)
-  customClassificationSeparate?: Date
+  @Field(() => Boolean, { nullable: true })
+  allowSafeHarborMatch?: boolean;
 
-  @Field(() => Boolean)
-  rollOver?: Date
+  @Field(() => Boolean, { nullable: true })
+  allowSafeHarborNonElective?: boolean;
 
-  @Field(() => String)
-  allowLoans?: string
+  @Field(() => Int, { nullable: true })
+  assetsAtPriorProvider?: number;
 
-  @Field(() => Boolean)
-  isActive?: Date
+  @Field(() => Boolean, { nullable: true })
+  autoEnroll?: boolean;
 
-  @Field(() => Date)
-  effectivePlanDate?: Date
+  @Field(() => Int, { nullable: true })
+  autoEnrollAmount?: number;
 
-  @Field(() => Date)
-  originalEffectivePlanDate?: Date
+  @Field(() => GraphQLDateTime, { nullable: true })
+  autoEnrollEffectiveDate?: Date;
 
-  @Field(() => Date)
-  eligibilityOverrideStartDate?: Date
+  @Field(() => Boolean, { nullable: true })
+  autoEscalate?: boolean;
 
-  @Field(() => Date)
-  createdAt: Date
+  @Field(() => Int, { nullable: true })
+  autoEscalateAmount?: number;
 
-  @Field(() => Date)
-  updatedAt: Date
+  @Field(() => Int, { nullable: true })
+  autoEscalateCeiling?: number;
 
-  @Field(() => Boolean)
-  isEmployerMatching?: Date
+  @Field(() => GraphQLDateTime, { nullable: true })
+  blackoutEndDate?: Date;
 
-  @Field(() => String)
-  planNumber?: string
+  @Field(() => GraphQLDateTime, { nullable: true })
+  blackoutStartDate?: Date;
 
-  @Field(() => Date)
-  safeHarborEffectiveDate?: Date
+  @Field(() => String, { nullable: true })
+  contributionFormula?: string;
 
-  @Field(() => String)
-  eligibilityType?: string
+  @Field(() => String, { nullable: true })
+  contributionType?: string;
 
-  @Field(() => Date)
-  planParticipantEntryDate?: Date
+  @Field(() => GraphQLDateTime, { nullable: false })
+  createdAt: Date;
 
-  @Field(() => Date)
-  nonSafeHarborEffectiveDate?: Date
+  @Field(() => Int, { nullable: true })
+  csmId?: number;
 
-  @Field(() => Date)
-  salaryRothDeferralEffectiveDate?: Date
+  @Field(() => String, { nullable: true })
+  custodianAccountNumber?: string;
 
-  @Field(() => Boolean)
-  isNonSafeHarborEmployerContr?: Date
+  @Field(() => String, { nullable: true })
+  customClassification1?: string;
 
-  @Field(() => Boolean)
-  isSalaryRothDeferral?: Date
+  @Field(() => String, { nullable: true })
+  customClassification2?: string;
 
-  @Field(() => Date)
-  profitSharingStartDate?: Date
+  @Field(() => String, { nullable: true })
+  customClassification3?: string;
 
-  @Field(() => Boolean)
-  allowEligibilityOverride?: Date
+  @Field(() => String, { nullable: true })
+  customClassification4?: string;
 
-  @Field(() => String)
-  nonSafeHarborContributionType?: string
+  @Field(() => Boolean, { nullable: true })
+  customClassificationSeparate?: boolean;
 
-  @Field(() => String)
-  contributionType?: string
+  @Field(() => Boolean, { nullable: true })
+  deferInDollars?: boolean;
 
-  @Field(() => String)
-  participantEntryMethod?: string
+  @Field(() => Float, { nullable: true })
+  earlyRetirementAge?: number;
 
-  @Field(() => Int)
-  profitSharingEligibilityHours?: number
+  @Field(() => GraphQLDateTime, { nullable: true })
+  effectivePlanDate?: Date;
 
-  @Field(() => String)
-  profitSharingEligibilityType?: string
+  @Field(() => GraphQLDateTime, { nullable: true })
+  eligibilityOverrideStartDate?: Date;
 
-  @Field(() => Boolean)
-  isConversion?: Date
+  @Field(() => String, { nullable: true })
+  eligibilityType?: string;
 
-  @Field(() => Boolean)
-  isEmployerContribution?: Date
+  @Field(() => GraphQLDateTime, { nullable: true })
+  endDate?: Date;
 
-  @Field(() => String)
-  planName?: string
+  @Field(() => Boolean, { nullable: false })
+  excludeLeasedEmployees: boolean;
 
-  @Field(() => Boolean)
-  autoEnroll?: Date
+  @Field(() => String, { nullable: true })
+  externalHardDollarBillingAccountNumber?: string;
 
-  @Field(() => Int)
-  autoEnrollAmount?: number
+  @Field(() => String, { nullable: true })
+  externalSponsorPlanId?: string;
 
-  @Field(() => String)
-  planType?: string
+  @Field(() => Int, { nullable: true })
+  feesContainerId?: number;
 
-  @Field(() => Date)
-  startDate?: Date
+  @Field(() => Boolean, { nullable: true })
+  hasPriorLoans?: boolean;
 
-  @Field(() => Date)
-  endDate?: Date
+  @Field(() => String, { nullable: true })
+  hourType?: string;
 
-  @Field(() => String)
-  externalSponsorPlanId?: string
+  @Field(() => Int, { nullable: true })
+  hoursRequirement?: number;
 
-  @Field(() => String)
-  investmentStructure?: string
+  @Field(() => String, { nullable: true })
+  investmentStructure?: string;
 
-  @Field(() => String)
-  priorProvider?: string
+  @Field(() => Boolean, { nullable: true })
+  isActive?: boolean;
 
-  @Field(() => String)
-  priorTpa?: string
+  @Field(() => Boolean, { nullable: true })
+  isConversion?: boolean;
 
-  @Field(() => Int)
-  assetsAtPriorProvider?: number
+  @Field(() => Boolean, { nullable: true })
+  isEarlyRetirementAllowed?: boolean;
 
-  @Field(() => Date)
-  specialParticipationDate?: Date
+  @Field(() => Boolean, { nullable: true })
+  isEmployerContribution?: boolean;
 
-  @Field(() => String)
-  hourType?: string
+  @Field(() => Boolean, { nullable: true })
+  isEmployerMatching?: boolean;
 
-  @Field(() => Int)
-  ageRequirement?: number
+  @Field(() => Boolean, { nullable: true })
+  isHardshipDistributionAllowed?: boolean;
 
-  @Field(() => String)
-  serviceRequirement?: string
+  @Field(() => Boolean, { nullable: true })
+  isHardshipProofRequired?: boolean;
 
-  @Field(() => Int)
-  hoursRequirement?: number
+  @Field(() => Boolean, { nullable: true })
+  isNonSafeHarborEmployerContr?: boolean;
 
-  @Field(() => Int)
-  feesContainerId?: number
+  @Field(() => Boolean, { nullable: true })
+  isProfitSharing?: boolean;
 
-  @Field(() => String)
-  planYear?: string
+  @Field(() => Boolean, { nullable: true })
+  isSafeHarbor?: boolean;
 
-  @Field(() => String)
-  adminStatus?: string
+  @Field(() => Boolean, { nullable: true })
+  isSalaryRothDeferral?: boolean;
 
-  @Field(() => Date)
-  terminationDate?: Date
+  @Field(() => GraphQLDateTime, { nullable: true })
+  liquidationDate?: Date;
 
-  @Field(() => String)
-  notes?: string
+  @Field(() => String, { nullable: true })
+  matchFrequency?: string;
 
-  @Field(() => Int)
-  autoEscalateAmount?: number
+  @Field(() => String, { nullable: true })
+  nonSafeHarborContributionType?: string;
 
-  @Field(() => Boolean)
-  excludeLeasedEmployees: Date
+  @Field(() => GraphQLDateTime, { nullable: true })
+  nonSafeHarborEffectiveDate?: Date;
 
-  @Field(() => Date)
-  blackoutStartDate?: Date
+  @Field(() => String, { nullable: true })
+  notes?: string;
 
-  @Field(() => Date)
-  blackoutEndDate?: Date
+  @Field(() => GraphQLDateTime, { nullable: true })
+  originalEffectivePlanDate?: Date;
 
-  @Field(() => String)
-  custodianAccountNumber?: string
+  @Field(() => String, { nullable: true })
+  participantEntryMethod?: string;
 
-  @Field(() => String)
-  adoptionAgreementProvider?: string
+  @Field(() => GraphQLDateTime, { nullable: true })
+  pendingAmendmentEffectiveDate?: Date;
 
-  @Field(() => Boolean)
-  deferInDollars?: Date
+  @Field(() => String, { nullable: true })
+  pendingAmendmentNotes?: string;
 
-  @Field(() => Boolean)
-  autoEscalate?: Date
+  @Field(() => String, { nullable: true })
+  planName?: string;
 
-  @Field(() => Int)
-  autoEscalateCeiling?: number
+  @Field(() => String, { nullable: true })
+  planNumber?: string;
 
-  @Field(() => Date)
-  autoEnrollEffectiveDate?: Date
+  @Field(() => GraphQLDateTime, { nullable: true })
+  planParticipantEntryDate?: Date;
 
-  @Field(() => Int)
-  recordkeeperId?: number
+  @Field(() => String, { nullable: true })
+  planType?: string;
 
-  @Field(() => Boolean)
-  allowPretaxContribution?: Date
+  @Field(() => String, { nullable: true })
+  planYear?: string;
 
-  @Field(() => Boolean)
-  allowAfterTaxContribution?: Date
+  @Field(() => String, { nullable: true })
+  priorProvider?: string;
 
-  @Field(() => Boolean)
-  allowSafeHarborMatch?: Date
+  @Field(() => String, { nullable: true })
+  priorTpa?: string;
 
-  @Field(() => Boolean)
-  allowSafeHarborNonElective?: Date
+  @Field(() => Int, { nullable: true })
+  profitSharingEligibilityHours?: number;
 
-  @Field(() => Boolean)
-  allowQnecQmac?: Date
+  @Field(() => String, { nullable: true })
+  profitSharingEligibilityType?: string;
 
-  @Field(() => Date)
-  liquidationDate?: Date
+  @Field(() => GraphQLDateTime, { nullable: true })
+  profitSharingStartDate?: Date;
 
-  @Field(() => Boolean)
-  isHardshipDistributionAllowed?: Date
+  @Field(() => String, { nullable: true })
+  profitSharingStrategy?: string;
 
-  @Field(() => Boolean)
-  isEarlyRetirementAllowed?: Date
+  @Field(() => Int, { nullable: true })
+  recordkeeperId?: number;
 
-  @Field()
-  earlyRetirementAge?: string
+  @Field(() => Int, { nullable: true })
+  relationshipManagerId?: number;
 
-  @Field(() => Boolean)
-  isHardshipProofRequired?: Date
+  @Field(() => Boolean, { nullable: true })
+  rollOver?: boolean;
 
-  @Field(() => Boolean)
-  hasPriorLoans?: Date
+  @Field(() => GraphQLDateTime, { nullable: true })
+  safeHarborEffectiveDate?: Date;
 
-  @Field(() => String)
-  matchFrequency?: string
+  @Field(() => String, { nullable: true })
+  safeHarborStrategy?: string;
 
-  @Field(() => Date)
-  pendingAmendmentEffectiveDate?: Date
+  @Field(() => GraphQLDateTime, { nullable: true })
+  salaryRothDeferralEffectiveDate?: Date;
 
-  @Field(() => String)
-  pendingAmendmentNotes?: string
+  @Field(() => String, { nullable: true })
+  serviceLevel?: string;
 
-  @Field(() => Int)
-  csmId?: number
+  @Field(() => String, { nullable: true })
+  serviceRequirement?: string;
 
-  @Field(() => String)
-  externalHardDollarBillingAccountNumber?: string
+  @Field(() => GraphQLDateTime, { nullable: true })
+  specialParticipationDate?: Date;
 
-  @Field(() => String)
-  serviceLevel?: string
+  @Field(() => Int, { nullable: true })
+  sponsorId?: number;
 
-  @Field(() => String)
-  allowRollover?: string
+  @Field(() => Int, { nullable: false })
+  sponsorPlanId: number;
 
-  @Field(() => Int)
-  relationshipManagerId?: number
+  @Field(() => GraphQLDateTime, { nullable: true })
+  startDate?: Date;
 
-  @Field(() => Boolean)
-  allowRothIraContribution: Date
+  @Field(() => GraphQLDateTime, { nullable: true })
+  terminationDate?: Date;
 
-  @Field()
-  recordkeeper?: string
+  @Field(() => GraphQLDateTime, { nullable: false })
+  updatedAt: Date;
+}
 
-  @Field()
-  sponsor?: string
+@InputType()
+export class DeleteSponsorPlanDto {
+  @Field(() => Int, { nullable: false })
+  sponsorPlanId: number;
+}
 
-  @Field()
-  advisorsponsorPlan: string
+@InputType()
+export class FindManySponsorPlanDto {
+  @Field(() => String, { nullable: true })
+  adminStatus?: string;
 
-  @Field()
-  psa: string
+  @Field(() => String, { nullable: true })
+  adoptionAgreementProvider?: string;
 
-  @Field()
-  CensusRecords: string
+  @Field(() => Int, { nullable: true })
+  ageRequirement?: number;
+
+  @Field(() => Boolean, { nullable: true })
+  allowAfterTaxContribution?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  allowEligibilityOverride?: boolean;
+
+  @Field(() => String, { nullable: true })
+  allowLoans?: string;
+
+  @Field(() => Boolean, { nullable: true })
+  allowPretaxContribution?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  allowQnecQmac?: boolean;
+
+  @Field(() => String, { nullable: true })
+  allowRollover?: string;
+
+  @Field(() => Boolean, { nullable: true })
+  allowRothIraContribution?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  allowSafeHarborMatch?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  allowSafeHarborNonElective?: boolean;
+
+  @Field(() => Int, { nullable: true })
+  assetsAtPriorProvider?: number;
+
+  @Field(() => Boolean, { nullable: true })
+  autoEnroll?: boolean;
+
+  @Field(() => Int, { nullable: true })
+  autoEnrollAmount?: number;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  autoEnrollEffectiveDate?: Date;
+
+  @Field(() => Boolean, { nullable: true })
+  autoEscalate?: boolean;
+
+  @Field(() => Int, { nullable: true })
+  autoEscalateAmount?: number;
+
+  @Field(() => Int, { nullable: true })
+  autoEscalateCeiling?: number;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  blackoutEndDate?: Date;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  blackoutStartDate?: Date;
+
+  @Field(() => String, { nullable: true })
+  contributionFormula?: string;
+
+  @Field(() => String, { nullable: true })
+  contributionType?: string;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  createdAt?: Date;
+
+  @Field(() => Int, { nullable: true })
+  csmId?: number;
+
+  @Field(() => String, { nullable: true })
+  custodianAccountNumber?: string;
+
+  @Field(() => String, { nullable: true })
+  customClassification1?: string;
+
+  @Field(() => String, { nullable: true })
+  customClassification2?: string;
+
+  @Field(() => String, { nullable: true })
+  customClassification3?: string;
+
+  @Field(() => String, { nullable: true })
+  customClassification4?: string;
+
+  @Field(() => Boolean, { nullable: true })
+  customClassificationSeparate?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  deferInDollars?: boolean;
+
+  @Field(() => Float, { nullable: true })
+  earlyRetirementAge?: number;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  effectivePlanDate?: Date;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  eligibilityOverrideStartDate?: Date;
+
+  @Field(() => String, { nullable: true })
+  eligibilityType?: string;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  endDate?: Date;
+
+  @Field(() => Boolean, { nullable: true })
+  excludeLeasedEmployees?: boolean;
+
+  @Field(() => String, { nullable: true })
+  externalHardDollarBillingAccountNumber?: string;
+
+  @Field(() => String, { nullable: true })
+  externalSponsorPlanId?: string;
+
+  @Field(() => Int, { nullable: true })
+  feesContainerId?: number;
+
+  @Field(() => Boolean, { nullable: true })
+  hasPriorLoans?: boolean;
+
+  @Field(() => String, { nullable: true })
+  hourType?: string;
+
+  @Field(() => Int, { nullable: true })
+  hoursRequirement?: number;
+
+  @Field(() => String, { nullable: true })
+  investmentStructure?: string;
+
+  @Field(() => Boolean, { nullable: true })
+  isActive?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  isConversion?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  isEarlyRetirementAllowed?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  isEmployerContribution?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  isEmployerMatching?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  isHardshipDistributionAllowed?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  isHardshipProofRequired?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  isNonSafeHarborEmployerContr?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  isProfitSharing?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  isSafeHarbor?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  isSalaryRothDeferral?: boolean;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  liquidationDate?: Date;
+
+  @Field(() => String, { nullable: true })
+  matchFrequency?: string;
+
+  @Field(() => String, { nullable: true })
+  nonSafeHarborContributionType?: string;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  nonSafeHarborEffectiveDate?: Date;
+
+  @Field(() => String, { nullable: true })
+  notes?: string;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  originalEffectivePlanDate?: Date;
+
+  @Field(() => String, { nullable: true })
+  participantEntryMethod?: string;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  pendingAmendmentEffectiveDate?: Date;
+
+  @Field(() => String, { nullable: true })
+  pendingAmendmentNotes?: string;
+
+  @Field(() => String, { nullable: true })
+  planName?: string;
+
+  @Field(() => String, { nullable: true })
+  planNumber?: string;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  planParticipantEntryDate?: Date;
+
+  @Field(() => String, { nullable: true })
+  planType?: string;
+
+  @Field(() => String, { nullable: true })
+  planYear?: string;
+
+  @Field(() => String, { nullable: true })
+  priorProvider?: string;
+
+  @Field(() => String, { nullable: true })
+  priorTpa?: string;
+
+  @Field(() => Int, { nullable: true })
+  profitSharingEligibilityHours?: number;
+
+  @Field(() => String, { nullable: true })
+  profitSharingEligibilityType?: string;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  profitSharingStartDate?: Date;
+
+  @Field(() => String, { nullable: true })
+  profitSharingStrategy?: string;
+
+  @Field(() => Int, { nullable: true })
+  recordkeeperId?: number;
+
+  @Field(() => Int, { nullable: true })
+  relationshipManagerId?: number;
+
+  @Field(() => Boolean, { nullable: true })
+  rollOver?: boolean;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  safeHarborEffectiveDate?: Date;
+
+  @Field(() => String, { nullable: true })
+  safeHarborStrategy?: string;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  salaryRothDeferralEffectiveDate?: Date;
+
+  @Field(() => String, { nullable: true })
+  serviceLevel?: string;
+
+  @Field(() => String, { nullable: true })
+  serviceRequirement?: string;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  specialParticipationDate?: Date;
+
+  @Field(() => Int, { nullable: true })
+  sponsorId?: number;
+
+  @Field(() => Int, { nullable: true })
+  sponsorPlanId?: number;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  startDate?: Date;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  terminationDate?: Date;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  updatedAt?: Date;
+}
+
+@InputType()
+export class FindUniqueSponsorPlanDto {
+  @Field(() => Int, { nullable: false })
+  sponsorPlanId: number;
+}
+
+@InputType()
+export class UpdateDataSponsorPlanDto {
+  @Field(() => Int, { nullable: true })
+  sponsorId?: number;
+
+  @Field(() => Boolean, { nullable: true })
+  isSafeHarbor?: boolean;
+
+  @Field(() => String, { nullable: true })
+  safeHarborStrategy?: string;
+
+  @Field(() => String, { nullable: true })
+  contributionFormula?: string;
+
+  @Field(() => Boolean, { nullable: true })
+  isProfitSharing?: boolean;
+
+  @Field(() => String, { nullable: true })
+  profitSharingStrategy?: string;
+
+  @Field(() => String, { nullable: true })
+  customClassification1?: string;
+
+  @Field(() => String, { nullable: true })
+  customClassification2?: string;
+
+  @Field(() => String, { nullable: true })
+  customClassification3?: string;
+
+  @Field(() => String, { nullable: true })
+  customClassification4?: string;
+
+  @Field(() => Boolean, { nullable: true })
+  customClassificationSeparate?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  rollOver?: boolean;
+
+  @Field(() => String, { nullable: true })
+  allowLoans?: string;
+
+  @Field(() => Boolean, { nullable: true })
+  isActive?: boolean;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  effectivePlanDate?: Date;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  originalEffectivePlanDate?: Date;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  eligibilityOverrideStartDate?: Date;
+
+  @Field(() => GraphQLDateTime, { nullable: false })
+  createdAt: Date;
+
+  @Field(() => GraphQLDateTime, { nullable: false })
+  updatedAt: Date;
+
+  @Field(() => Boolean, { nullable: true })
+  isEmployerMatching?: boolean;
+
+  @Field(() => String, { nullable: true })
+  planNumber?: string;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  safeHarborEffectiveDate?: Date;
+
+  @Field(() => String, { nullable: true })
+  eligibilityType?: string;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  planParticipantEntryDate?: Date;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  nonSafeHarborEffectiveDate?: Date;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  salaryRothDeferralEffectiveDate?: Date;
+
+  @Field(() => Boolean, { nullable: true })
+  isNonSafeHarborEmployerContr?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  isSalaryRothDeferral?: boolean;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  profitSharingStartDate?: Date;
+
+  @Field(() => Boolean, { nullable: true })
+  allowEligibilityOverride?: boolean;
+
+  @Field(() => String, { nullable: true })
+  nonSafeHarborContributionType?: string;
+
+  @Field(() => String, { nullable: true })
+  contributionType?: string;
+
+  @Field(() => String, { nullable: true })
+  participantEntryMethod?: string;
+
+  @Field(() => Int, { nullable: true })
+  profitSharingEligibilityHours?: number;
+
+  @Field(() => String, { nullable: true })
+  profitSharingEligibilityType?: string;
+
+  @Field(() => Boolean, { nullable: true })
+  isConversion?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  isEmployerContribution?: boolean;
+
+  @Field(() => String, { nullable: true })
+  planName?: string;
+
+  @Field(() => Boolean, { nullable: true })
+  autoEnroll?: boolean;
+
+  @Field(() => Int, { nullable: true })
+  autoEnrollAmount?: number;
+
+  @Field(() => String, { nullable: true })
+  planType?: string;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  startDate?: Date;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  endDate?: Date;
+
+  @Field(() => String, { nullable: true })
+  externalSponsorPlanId?: string;
+
+  @Field(() => String, { nullable: true })
+  investmentStructure?: string;
+
+  @Field(() => String, { nullable: true })
+  priorProvider?: string;
+
+  @Field(() => String, { nullable: true })
+  priorTpa?: string;
+
+  @Field(() => Int, { nullable: true })
+  assetsAtPriorProvider?: number;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  specialParticipationDate?: Date;
+
+  @Field(() => String, { nullable: true })
+  hourType?: string;
+
+  @Field(() => Int, { nullable: true })
+  ageRequirement?: number;
+
+  @Field(() => String, { nullable: true })
+  serviceRequirement?: string;
+
+  @Field(() => Int, { nullable: true })
+  hoursRequirement?: number;
+
+  @Field(() => Int, { nullable: true })
+  feesContainerId?: number;
+
+  @Field(() => String, { nullable: true })
+  planYear?: string;
+
+  @Field(() => String, { nullable: true })
+  adminStatus?: string;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  terminationDate?: Date;
+
+  @Field(() => String, { nullable: true })
+  notes?: string;
+
+  @Field(() => Int, { nullable: true })
+  autoEscalateAmount?: number;
+
+  @Field(() => Boolean, { nullable: false })
+  excludeLeasedEmployees: boolean;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  blackoutStartDate?: Date;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  blackoutEndDate?: Date;
+
+  @Field(() => String, { nullable: true })
+  custodianAccountNumber?: string;
+
+  @Field(() => String, { nullable: true })
+  adoptionAgreementProvider?: string;
+
+  @Field(() => Boolean, { nullable: true })
+  deferInDollars?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  autoEscalate?: boolean;
+
+  @Field(() => Int, { nullable: true })
+  autoEscalateCeiling?: number;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  autoEnrollEffectiveDate?: Date;
+
+  @Field(() => Int, { nullable: true })
+  recordkeeperId?: number;
+
+  @Field(() => Boolean, { nullable: true })
+  allowPretaxContribution?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  allowAfterTaxContribution?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  allowSafeHarborMatch?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  allowSafeHarborNonElective?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  allowQnecQmac?: boolean;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  liquidationDate?: Date;
+
+  @Field(() => Boolean, { nullable: true })
+  isHardshipDistributionAllowed?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  isEarlyRetirementAllowed?: boolean;
+
+  @Field(() => Float, { nullable: true })
+  earlyRetirementAge?: number;
+
+  @Field(() => Boolean, { nullable: true })
+  isHardshipProofRequired?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  hasPriorLoans?: boolean;
+
+  @Field(() => String, { nullable: true })
+  matchFrequency?: string;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  pendingAmendmentEffectiveDate?: Date;
+
+  @Field(() => String, { nullable: true })
+  pendingAmendmentNotes?: string;
+
+  @Field(() => Int, { nullable: true })
+  csmId?: number;
+
+  @Field(() => String, { nullable: true })
+  externalHardDollarBillingAccountNumber?: string;
+
+  @Field(() => String, { nullable: true })
+  serviceLevel?: string;
+
+  @Field(() => String, { nullable: true })
+  allowRollover?: string;
+
+  @Field(() => Int, { nullable: true })
+  relationshipManagerId?: number;
+
+  @Field(() => Boolean, { nullable: false })
+  allowRothIraContribution: boolean;
+}
+
+@InputType()
+export class UpdateWhereSponsorPlanDto {
+  @Field(() => Int, { nullable: false })
+  sponsorPlanId: number;
 }

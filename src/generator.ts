@@ -1,163 +1,105 @@
-import { generatorHandler, GeneratorOptions } from '@prisma/generator-helper'
-import { logger } from '@prisma/sdk'
-import path from 'path'
-import { camelCase, uniq } from 'lodash'
-import { GENERATOR_NAME } from './constants'
-import { writeFileSafely } from './utils/writeFileSafely'
+import {
+  GeneratorConfig,
+  generatorHandler,
+  GeneratorOptions
+} from '@prisma/generator-helper';
+import { logger } from '@prisma/sdk';
 
-const { version } = require('../package.json')
+import fs from 'fs/promises';
+import path from 'path';
 
-const PrismaTypes = {
-  BigInt: {
-    graphql: 'Int',
-    ts: 'number',
-  },
-  Int: {
-    graphql: 'Int',
-    ts: 'number',
-  },
-  Json: {
-    graphql: '',
-    ts: 'Record<string, unknown>',
-  },
-  DateTime: {
-    graphql: 'Date',
-    ts: 'Date',
-  },
-  Boolean: {
-    graphql: 'Boolean',
-    ts: 'Date',
-  },
-  String: {
-    graphql: 'String',
-    ts: 'string',
-  },
-  default: (model) => ({
-    graphql: model,
-    ts: model,
-  }),
-}
+import { GENERATOR_NAME } from './constants';
+import { generateDtos } from './helpers/generateDtos';
+import { generateEntities } from './helpers/generateEntities';
+import { generateResolvers } from './helpers/generateResolvers';
+import { writeFileSafely } from './utils/writeFileSafely';
 
-const ModelImports = []
+const { version } = require('../package.json');
 
-const getGqlType = (scalar) => {
-  // if (!PrismaTypes[scalar]) {
-  //   // console.log(scalar)
-  // }
-  return (PrismaTypes[scalar] ?? PrismaTypes.String).graphql
-}
+type Settings = Partial<
+  GeneratorConfig & {
+    prettyName?: string;
+    defaultOutput?: string;
+    version?: string;
+  }
+>;
 
-const getTsType = (scalar) => {
-  // if (!PrismaTypes[scalar]) {
-  // console.log(scalar)
-  // ModelImports.push(scalar)
-  // }
-  return (PrismaTypes[scalar] ?? PrismaTypes.String).ts
-}
+let settings: Settings = {
+  defaultOutput: ''
+};
 
 generatorHandler({
-  onManifest() {
-    logger.info(`${GENERATOR_NAME}:Registered`)
-    return {
-      version,
-      defaultOutput: '../src/generated',
-      prettyName: GENERATOR_NAME,
-    }
-  },
   onGenerate: async (options: GeneratorOptions) => {
-    console.log(options.dmmf.mappings.modelOperations)
+    await fs.mkdir(settings.defaultOutput, { recursive: true });
 
-    for (const model of options.dmmf.datamodel.models) {
-      const graphqlTypes = uniq(
-        model.fields.map((field) => getGqlType(field.type)),
+    await generateEntities(options.dmmf, settings.defaultOutput);
+    logger.info(`${GENERATOR_NAME}::entities:created`);
+    await generateDtos(options.dmmf, settings.defaultOutput);
+    logger.info(`${GENERATOR_NAME}::dtos:created`);
+    await generateResolvers(options.dmmf, settings);
+    const imports = options.dmmf.datamodel.models
+      .map(
+        (model) =>
+          `import { ${model.name}Resolver } from './resolvers/${model.name}.resolver';`
       )
-        .filter((type) => !['Boolean', 'Date', 'Json', 'String'].includes(type))
-        .filter(Boolean)
+      .join('\n');
 
-      await writeFileSafely(
-        path.join(__dirname, `../src/generated/dto/${model.name}.dto.ts`),
-        `
-        import { Field${graphqlTypes.length ? ',' : ''} ${graphqlTypes.join(
-          ', ',
-        )}, ObjectType } from '@nestjs/graphql';
-        
-        @ObjectType()
-        export class ${model.name} {
-          ${model.fields
-            .reduce((acc, field) => {
-              return [
-                ...acc,
-                `\n@Field(${
-                  PrismaTypes[field.type]?.graphql
-                    ? `() => ${getGqlType(field.type)}`
-                    : ''
-                })\n${field.name}${field.isRequired ? '' : '?'}: ${getTsType(
-                  field.type,
-                )};`,
-              ]
-            }, [])
-            .join('\n')}
-        }
-      `,
-      )
+    const exports = options.dmmf.datamodel.models
+      .map((model) => `${model.name}Resolver`)
+      .join(',\n');
 
-      const primaryKey = model.fields.find((field) => field.isId)
-      // const unique = model.fields.filter((field) => field.isUnique)
+    await writeFileSafely(
+      `${settings.defaultOutput}/index.ts`,
+      `
+          ${imports}
+          
+          export const resolvers = [
+            ${exports}
+          ];
+       `
+    );
 
-      if (!primaryKey) {
-        console.error(primaryKey)
-      }
-      await writeFileSafely(
-        path.join(__dirname, `../src/generated/resolver/${model.name}.resolver.ts`),
-        `
-        import { Args, Resolver, Int, Query } from '@nestjs/graphql';
-        import { PrismaClient } from '@prisma/client';
-        
-        import { ${model.name} } from '../dto/${model.name}.dto';
-        
-        @Resolver(() => ${model.name})
-        export class ${model.name}Resolver {
-          private prisma = new PrismaClient({})
-
-          ${getQuery(model, primaryKey)}
-        };
-      `,
-      )
+    if (settings.defaultOutput.includes('node_modules')) {
+      await fs.writeFile(
+        `${settings.defaultOutput}/package.json`,
+        JSON.stringify(
+          {
+            name: '@generated/graphql',
+            description: 'auto generated nestjs graphql classes',
+            version: '1.0.0',
+            main: 'index.js',
+            license: 'MIT',
+            engines: {
+              node: '>=16.0'
+            },
+            dependencies: {
+              '@nestjs/graphql': '*',
+              '@prisma/client': '*',
+              graphql: '*',
+              'graphql-scalars': '*'
+            }
+          },
+          null,
+          2
+        )
+      );
     }
+
+    logger.info(`${GENERATOR_NAME}::resolvers:created`);
   },
-})
+  onManifest(config: Settings) {
+    logger.info(`${GENERATOR_NAME}::registered`);
 
-const getQueryArgs = (primaryKey) => {
-  return `
-  @Args('${primaryKey.fields.join(
-    ',',
-  )}', { type: () => String }) ${primaryKey.fields.join(',')}: string
-  `
-}
-const getQuery = (model, primaryKey) => {
-  if (primaryKey?.name) {
-    return `
-    @Query(() => ${model.name})
-          async ${camelCase(model.name)}(@Args('${
-      primaryKey.name
-    }', { type: () => ${getGqlType(primaryKey.type)} }) ${
-      primaryKey.name
-    }: ${getTsType(primaryKey.type)}) {
-            return this.prisma.${camelCase(model.name)}.findUnique({ where: {${
-      primaryKey.name
-    }}});
-          }
-  `
-  }
+    settings = {
+      ...config,
+      defaultOutput: path.join(
+        process.cwd(),
+        config.defaultOutput ?? 'node_modules/@generated/graphql'
+      ),
+      prettyName: GENERATOR_NAME,
+      version
+    };
 
-  if (primaryKey?.fields?.length && primaryKey?.name === null) {
-    return `
-    @Query(() => ${model.name})
-          async ${camelCase(model.name)}(${getQueryArgs(primaryKey)}) {
-            return this.prisma.${camelCase(model.name)}.findUnique({ where: {${
-      primaryKey.name
-    }}});
-          }
-  `
+    return settings;
   }
-}
+});

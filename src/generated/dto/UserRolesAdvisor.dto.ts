@@ -1,34 +1,94 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql'
+import { Field, Float, InputType, Int } from '@nestjs/graphql';
 
-@ObjectType()
-export class UserRolesAdvisor {
-  @Field(() => Int)
-  id: number
+import {
+  GraphQLBigInt,
+  GraphQLDateTime,
+  GraphQLJSONObject
+} from 'graphql-scalars';
 
-  @Field(() => Int)
-  userId: number
+@InputType()
+export class CreateUserRolesAdvisorDto {
+  @Field(() => Int, { nullable: false })
+  accessRoleId: number;
 
-  @Field(() => Int)
-  advisorId: number
+  @Field(() => Int, { nullable: false })
+  advisorId: number;
 
-  @Field(() => Int)
-  accessRoleId: number
+  @Field(() => GraphQLDateTime, { nullable: true })
+  createdAt?: Date;
 
-  @Field(() => Boolean)
-  isTemp: Date
+  @Field(() => Int, { nullable: false })
+  id: number;
 
-  @Field(() => Date)
-  createdAt?: Date
+  @Field(() => Boolean, { nullable: false })
+  isTemp: boolean;
 
-  @Field(() => String)
-  sessionId: string
+  @Field(() => String, { nullable: false })
+  sessionId: string;
 
-  @Field()
-  accessRole: string
+  @Field(() => Int, { nullable: false })
+  userId: number;
+}
 
-  @Field()
-  advisor: string
+@InputType()
+export class DeleteUserRolesAdvisorDto {
+  @Field(() => Int, { nullable: false })
+  id: number;
+}
 
-  @Field()
-  user: string
+@InputType()
+export class FindManyUserRolesAdvisorDto {
+  @Field(() => Int, { nullable: true })
+  accessRoleId?: number;
+
+  @Field(() => Int, { nullable: true })
+  advisorId?: number;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  createdAt?: Date;
+
+  @Field(() => Int, { nullable: true })
+  id?: number;
+
+  @Field(() => Boolean, { nullable: true })
+  isTemp?: boolean;
+
+  @Field(() => String, { nullable: true })
+  sessionId?: string;
+
+  @Field(() => Int, { nullable: true })
+  userId?: number;
+}
+
+@InputType()
+export class FindUniqueUserRolesAdvisorDto {
+  @Field(() => Int, { nullable: false })
+  id: number;
+}
+
+@InputType()
+export class UpdateDataUserRolesAdvisorDto {
+  @Field(() => Int, { nullable: false })
+  userId: number;
+
+  @Field(() => Int, { nullable: false })
+  advisorId: number;
+
+  @Field(() => Int, { nullable: false })
+  accessRoleId: number;
+
+  @Field(() => Boolean, { nullable: false })
+  isTemp: boolean;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  createdAt?: Date;
+
+  @Field(() => String, { nullable: false })
+  sessionId: string;
+}
+
+@InputType()
+export class UpdateWhereUserRolesAdvisorDto {
+  @Field(() => Int, { nullable: false })
+  id: number;
 }

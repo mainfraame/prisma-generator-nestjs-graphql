@@ -1,37 +1,112 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql'
+import { Field, Float, InputType, Int } from '@nestjs/graphql';
 
-@ObjectType()
-export class Program {
-  @Field(() => Int)
-  programId: number
+import {
+  GraphQLBigInt,
+  GraphQLDateTime,
+  GraphQLJSONObject
+} from 'graphql-scalars';
 
-  @Field(() => String)
-  type: string
+@InputType()
+export class CreateProgramDto {
+  @Field(() => GraphQLDateTime, { nullable: false })
+  createdAt: Date;
 
-  @Field(() => String)
-  name?: string
+  @Field(() => String, { nullable: true })
+  name?: string;
 
-  @Field(() => Date)
-  createdAt: Date
+  @Field(() => Int, { nullable: false })
+  programId: number;
 
-  @Field(() => Int)
-  programStatusId: number
+  @Field(() => GraphQLJSONObject, { nullable: true })
+  programSpecificData?: Record<string, unknown>;
 
-  @Field(() => Int)
-  programStrategyStatusId: number
+  @Field(() => Int, { nullable: false })
+  programStatusId: number;
 
-  @Field()
-  programSpecificData?: Record<string, unknown>
+  @Field(() => Int, { nullable: false })
+  programStrategyStatusId: number;
 
-  @Field()
-  updatedBy?: Record<string, unknown>
+  @Field(() => String, { nullable: false })
+  type: string;
 
-  @Field(() => Date)
-  updatedAt?: Date
+  @Field(() => GraphQLDateTime, { nullable: true })
+  updatedAt?: Date;
 
-  @Field()
-  advisorsponsorPlan: string
+  @Field(() => GraphQLJSONObject, { nullable: true })
+  updatedBy?: Record<string, unknown>;
+}
 
-  @Field()
-  model: string
+@InputType()
+export class DeleteProgramDto {
+  @Field(() => Int, { nullable: false })
+  programId: number;
+}
+
+@InputType()
+export class FindManyProgramDto {
+  @Field(() => GraphQLDateTime, { nullable: true })
+  createdAt?: Date;
+
+  @Field(() => String, { nullable: true })
+  name?: string;
+
+  @Field(() => Int, { nullable: true })
+  programId?: number;
+
+  @Field(() => GraphQLJSONObject, { nullable: true })
+  programSpecificData?: Record<string, unknown>;
+
+  @Field(() => Int, { nullable: true })
+  programStatusId?: number;
+
+  @Field(() => Int, { nullable: true })
+  programStrategyStatusId?: number;
+
+  @Field(() => String, { nullable: true })
+  type?: string;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  updatedAt?: Date;
+
+  @Field(() => GraphQLJSONObject, { nullable: true })
+  updatedBy?: Record<string, unknown>;
+}
+
+@InputType()
+export class FindUniqueProgramDto {
+  @Field(() => Int, { nullable: false })
+  programId: number;
+}
+
+@InputType()
+export class UpdateDataProgramDto {
+  @Field(() => String, { nullable: false })
+  type: string;
+
+  @Field(() => String, { nullable: true })
+  name?: string;
+
+  @Field(() => GraphQLDateTime, { nullable: false })
+  createdAt: Date;
+
+  @Field(() => Int, { nullable: false })
+  programStatusId: number;
+
+  @Field(() => Int, { nullable: false })
+  programStrategyStatusId: number;
+
+  @Field(() => GraphQLJSONObject, { nullable: true })
+  programSpecificData?: Record<string, unknown>;
+
+  @Field(() => GraphQLJSONObject, { nullable: true })
+  updatedBy?: Record<string, unknown>;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  updatedAt?: Date;
+}
+
+@InputType()
+export class UpdateWhereProgramDto {
+  @Field(() => Int, { nullable: false })
+  programId: number;
 }

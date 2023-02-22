@@ -1,22 +1,49 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql'
+import { Field, Float, InputType, Int } from '@nestjs/graphql';
 
-@ObjectType()
-export class PartnerSystem {
-  @Field(() => Int)
-  partnerSystemId: number
+import {
+  GraphQLBigInt,
+  GraphQLDateTime,
+  GraphQLJSONObject
+} from 'graphql-scalars';
 
-  @Field(() => String)
-  name: string
+@InputType()
+export class CreatePartnerSystemDto {
+  @Field(() => String, { nullable: false })
+  name: string;
 
-  @Field()
-  authToken: string
+  @Field(() => Int, { nullable: false })
+  partnerSystemId: number;
+}
 
-  @Field()
-  partnerSystemMapping: string
+@InputType()
+export class DeletePartnerSystemDto {
+  @Field(() => Int, { nullable: false })
+  partnerSystemId: number;
+}
 
-  @Field()
-  recordkeeper: string
+@InputType()
+export class FindManyPartnerSystemDto {
+  @Field(() => String, { nullable: true })
+  name?: string;
 
-  @Field()
-  stateProgram: string
+  @Field(() => Int, { nullable: true })
+  partnerSystemId?: number;
+}
+
+@InputType()
+export class FindUniquePartnerSystemDto {
+  @Field(() => Int, { nullable: false })
+  partnerSystemId: number;
+}
+
+@InputType()
+export class UpdateDataPartnerSystemDto {
+  @Field(() => String, { nullable: false })
+  name: string;
+}
+
+@InputType()
+export class UpdateWherePartnerSystemDto {
+  @Field(() => Int, { nullable: false })
+  partnerSystemId: number;
 }

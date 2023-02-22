@@ -1,34 +1,76 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql'
+import { Field, Float, InputType, Int } from '@nestjs/graphql';
 
-@ObjectType()
-export class AccessRole {
-  @Field(() => Int)
-  accessRoleId: number
+import {
+  GraphQLBigInt,
+  GraphQLDateTime,
+  GraphQLJSONObject
+} from 'graphql-scalars';
 
-  @Field(() => String)
-  accessRoleType: string
+@InputType()
+export class CreateAccessRoleDto {
+  @Field(() => Int, { nullable: false })
+  accessRoleId: number;
 
-  @Field(() => String)
-  name: string
+  @Field(() => String, { nullable: false })
+  accessRoleType: string;
 
-  @Field(() => Boolean)
-  isDeprecated: Date
+  @Field(() => Boolean, { nullable: false })
+  isDeprecated: boolean;
 
-  @Field(() => Boolean)
-  isRetired: Date
+  @Field(() => Boolean, { nullable: false })
+  isRetired: boolean;
 
-  @Field()
-  accessRoleAbilities: string
+  @Field(() => String, { nullable: false })
+  name: string;
+}
 
-  @Field()
-  userRolesAdvisor: string
+@InputType()
+export class DeleteAccessRoleDto {
+  @Field(() => Int, { nullable: false })
+  accessRoleId: number;
+}
 
-  @Field()
-  userRolesEntity: string
+@InputType()
+export class FindManyAccessRoleDto {
+  @Field(() => Int, { nullable: true })
+  accessRoleId?: number;
 
-  @Field()
-  userRolesParticipant: string
+  @Field(() => String, { nullable: true })
+  accessRoleType?: string;
 
-  @Field()
-  userRolesSponsor: string
+  @Field(() => Boolean, { nullable: true })
+  isDeprecated?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  isRetired?: boolean;
+
+  @Field(() => String, { nullable: true })
+  name?: string;
+}
+
+@InputType()
+export class FindUniqueAccessRoleDto {
+  @Field(() => Int, { nullable: false })
+  accessRoleId: number;
+}
+
+@InputType()
+export class UpdateDataAccessRoleDto {
+  @Field(() => String, { nullable: false })
+  accessRoleType: string;
+
+  @Field(() => String, { nullable: false })
+  name: string;
+
+  @Field(() => Boolean, { nullable: false })
+  isDeprecated: boolean;
+
+  @Field(() => Boolean, { nullable: false })
+  isRetired: boolean;
+}
+
+@InputType()
+export class UpdateWhereAccessRoleDto {
+  @Field(() => Int, { nullable: false })
+  accessRoleId: number;
 }

@@ -1,37 +1,112 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql'
+import { Field, Float, InputType, Int } from '@nestjs/graphql';
 
-@ObjectType()
-export class StatefulSchemaTracking {
-  @Field(() => Int)
-  statefulSchemaTrackingId: number
+import {
+  GraphQLBigInt,
+  GraphQLDateTime,
+  GraphQLJSONObject
+} from 'graphql-scalars';
 
-  @Field(() => Int)
-  statefulSchemaId: number
+@InputType()
+export class CreateStatefulSchemaTrackingDto {
+  @Field(() => GraphQLDateTime, { nullable: false })
+  createdAt: Date;
 
-  @Field(() => Int)
-  sharedEntityTypeId: number
+  @Field(() => Int, { nullable: false })
+  entityId: number;
 
-  @Field(() => Int)
-  entityId: number
+  @Field(() => Int, { nullable: false })
+  sharedEntityTypeId: number;
 
-  @Field()
-  state: Record<string, unknown>
+  @Field(() => GraphQLJSONObject, { nullable: false })
+  state: Record<string, unknown>;
 
-  @Field()
-  status: string
+  @Field(() => Int, { nullable: false })
+  statefulSchemaId: number;
 
-  @Field(() => Date)
-  createdAt: Date
+  @Field(() => Int, { nullable: false })
+  statefulSchemaTrackingId: number;
 
-  @Field(() => Date)
-  updatedAt: Date
+  @Field(() => String, { nullable: false })
+  status: undefined;
 
-  @Field(() => Int)
-  updatedBy: number
+  @Field(() => GraphQLDateTime, { nullable: false })
+  updatedAt: Date;
 
-  @Field()
-  sharedEntityType: string
+  @Field(() => Int, { nullable: false })
+  updatedBy: number;
+}
 
-  @Field()
-  user: string
+@InputType()
+export class DeleteStatefulSchemaTrackingDto {
+  @Field(() => Int, { nullable: false })
+  statefulSchemaTrackingId: number;
+}
+
+@InputType()
+export class FindManyStatefulSchemaTrackingDto {
+  @Field(() => GraphQLDateTime, { nullable: true })
+  createdAt?: Date;
+
+  @Field(() => Int, { nullable: true })
+  entityId?: number;
+
+  @Field(() => Int, { nullable: true })
+  sharedEntityTypeId?: number;
+
+  @Field(() => GraphQLJSONObject, { nullable: true })
+  state?: Record<string, unknown>;
+
+  @Field(() => Int, { nullable: true })
+  statefulSchemaId?: number;
+
+  @Field(() => Int, { nullable: true })
+  statefulSchemaTrackingId?: number;
+
+  @Field(() => String, { nullable: true })
+  status?: undefined;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  updatedAt?: Date;
+
+  @Field(() => Int, { nullable: true })
+  updatedBy?: number;
+}
+
+@InputType()
+export class FindUniqueStatefulSchemaTrackingDto {
+  @Field(() => Int, { nullable: false })
+  statefulSchemaTrackingId: number;
+}
+
+@InputType()
+export class UpdateDataStatefulSchemaTrackingDto {
+  @Field(() => Int, { nullable: false })
+  statefulSchemaId: number;
+
+  @Field(() => Int, { nullable: false })
+  sharedEntityTypeId: number;
+
+  @Field(() => Int, { nullable: false })
+  entityId: number;
+
+  @Field(() => GraphQLJSONObject, { nullable: false })
+  state: Record<string, unknown>;
+
+  @Field(() => String, { nullable: false })
+  status: undefined;
+
+  @Field(() => GraphQLDateTime, { nullable: false })
+  createdAt: Date;
+
+  @Field(() => GraphQLDateTime, { nullable: false })
+  updatedAt: Date;
+
+  @Field(() => Int, { nullable: false })
+  updatedBy: number;
+}
+
+@InputType()
+export class UpdateWhereStatefulSchemaTrackingDto {
+  @Field(() => Int, { nullable: false })
+  statefulSchemaTrackingId: number;
 }

@@ -7,11 +7,12 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("VW_POSTGRES_URL")
-  schemas  = ["auth", "email", "public", "registration_agreement", "masquerading"]
+  schemas  = ["auth", "email", "public", "registration_agreement"]
 }
 
 generator myGenerator {
   provider = "node ./dist/generator.js"
+
 }
 
 model Abilities {
@@ -53,7 +54,6 @@ model AccessRoleAbilities {
   @@schema("public")
 }
 
-
 model Address {
   addressId        Int              @id @default(autoincrement()) @map("address_id")
   addressType      AddressType?     @map("address_type")
@@ -76,67 +76,55 @@ model Address {
 }
 
 model Advisor {
-  advisorId                 Int                         @id @default(autoincrement()) @map("advisor_id")
-  phone                     String?                     @db.VarChar(32)
-  email                     String?                     @db.VarChar(512)
-  companyName               String?                     @map("company_name") @db.VarChar(512)
-  address1                  String?                     @map("address_1") @db.VarChar(255)
-  address2                  String?                     @map("address_2") @db.VarChar(255)
-  city                      String?                     @db.VarChar(255)
-  state                     String?                     @db.VarChar(5)
-  zip                       String?                     @db.VarChar(255)
-  password                  String?                     @db.VarChar(512)
-  applicationDate           DateTime?                   @map("application_date") @db.Timestamptz(6)
-  activationDate            DateTime?                   @map("activation_date") @db.Timestamptz(6)
-  createdAt                 DateTime                    @map("created_at") @db.Timestamptz(6)
-  updatedAt                 DateTime                    @map("updated_at") @db.Timestamptz(6)
-  advisorType               String?                     @map("advisor_type") @db.VarChar(16)
-  firmId                    Int?                        @map("firm_id")
-  homeOfficeName            String?                     @map("home_office_name") @db.VarChar(64)
-  firstName                 String?                     @map("first_name") @db.VarChar(64)
-  lastName                  String?                     @map("last_name") @db.VarChar(64)
-  subDomain                 String?                     @map("sub_domain") @db.VarChar(64)
-  logo                      String?                     @db.VarChar(64)
-  clientSupportStrategy     String?                     @map("client_support_strategy") @db.VarChar(32)
-  fee                       Decimal?                    @db.Decimal
-  businessDescription       String?                     @map("business_description") @db.VarChar(9999)
-  disclaimers               String?                     @db.VarChar(9999)
-  companyEntityType         String?                     @map("company_entity_type") @db.VarChar(12)
-  primaryContactPhone       String?                     @map("primary_contact_phone") @db.VarChar(32)
-  primaryContactEmail       String?                     @map("primary_contact_email") @db.VarChar(512)
-  secondaryContactName      String?                     @map("secondary_contact_name") @db.VarChar(512)
-  secondaryContactPhone     String?                     @map("secondary_contact_phone") @db.VarChar(32)
-  secondaryContactEmail     String?                     @map("secondary_contact_email") @db.VarChar(512)
-  virtualAdvisor            Boolean?                    @map("virtual_advisor")
-  companySize               String?                     @map("company_size") @db.VarChar(10)
-  primaryContactName        String?                     @map("primary_contact_name") @db.VarChar(512)
-  repNumber                 String?                     @map("rep_number") @db.VarChar(32)
-  crdNumber                 String?                     @map("crd_number") @db.VarChar(32)
-  status                    String?                     @db.VarChar(32)
-  doingBusinessAs           String?                     @map("doing_business_as") @db.VarChar
-  advisorActivation         AdvisorActivation[]
+  advisorId             Int       @id @default(autoincrement()) @map("advisor_id")
+  phone                 String?   @db.VarChar(32)
+  email                 String?   @db.VarChar(512)
+  companyName           String?   @map("company_name") @db.VarChar(512)
+  address1              String?   @map("address_1") @db.VarChar(255)
+  address2              String?   @map("address_2") @db.VarChar(255)
+  city                  String?   @db.VarChar(255)
+  state                 String?   @db.VarChar(5)
+  zip                   String?   @db.VarChar(255)
+  password              String?   @db.VarChar(512)
+  applicationDate       DateTime? @map("application_date") @db.Timestamptz(6)
+  activationDate        DateTime? @map("activation_date") @db.Timestamptz(6)
+  createdAt             DateTime  @map("created_at") @db.Timestamptz(6)
+  updatedAt             DateTime  @map("updated_at") @db.Timestamptz(6)
+  advisorType           String?   @map("advisor_type") @db.VarChar(16)
+  firmId                Int?      @map("firm_id")
+  homeOfficeName        String?   @map("home_office_name") @db.VarChar(64)
+  firstName             String?   @map("first_name") @db.VarChar(64)
+  lastName              String?   @map("last_name") @db.VarChar(64)
+  subDomain             String?   @map("sub_domain") @db.VarChar(64)
+  logo                  String?   @db.VarChar(64)
+  clientSupportStrategy String?   @map("client_support_strategy") @db.VarChar(32)
+  fee                   Decimal?  @db.Decimal
+  businessDescription   String?   @map("business_description") @db.VarChar(9999)
+  disclaimers           String?   @db.VarChar(9999)
+  companyEntityType     String?   @map("company_entity_type") @db.VarChar(12)
+  primaryContactPhone   String?   @map("primary_contact_phone") @db.VarChar(32)
+  primaryContactEmail   String?   @map("primary_contact_email") @db.VarChar(512)
+  secondaryContactName  String?   @map("secondary_contact_name") @db.VarChar(512)
+  secondaryContactPhone String?   @map("secondary_contact_phone") @db.VarChar(32)
+  secondaryContactEmail String?   @map("secondary_contact_email") @db.VarChar(512)
+  virtualAdvisor        Boolean?  @map("virtual_advisor")
+  companySize           String?   @map("company_size") @db.VarChar(10)
+  primaryContactName    String?   @map("primary_contact_name") @db.VarChar(512)
+  repNumber             String?   @map("rep_number") @db.VarChar(32)
+  crdNumber             String?   @map("crd_number") @db.VarChar(32)
+  status                String?   @db.VarChar(32)
+  doingBusinessAs       String?   @map("doing_business_as") @db.VarChar
+
   advisorRegistrationStatus AdvisorRegistrationStatus[]
-  advisorsponsorPlan        AdvisorSponsorPlan[]
-  model                     Model[]
-  userRolesAdvisor          UserRolesAdvisor[]
+  advisorSponsorPlan        AdvisorSponsorPlan[]
+
+  userRolesAdvisor UserRolesAdvisor[]
 
   @@map("advisor")
   @@schema("public")
 }
-model AdvisorActivation {
-  advisorActivationId          Int      @id @default(autoincrement()) @map("advisor_activation_id")
-  advisorId                    Int?     @map("advisor_id")
-  completedPracticeInformation Boolean? @map("completed_practice_information")
-  completedChooseFeatures      Boolean? @map("completed_choose_features")
-  completedLearnVestwell       Boolean? @map("completed_learn_vestwell")
-  createdAt                    DateTime @map("created_at") @db.Timestamptz(6)
-  updatedAt                    DateTime @map("updated_at") @db.Timestamptz(6)
-  advisor                      Advisor? @relation(fields: [advisorId], references: [advisorId], map: "advisor_activation_sponsor_id_fkey")
 
-  @@index([advisorId])
-  @@map("advisor_activation")
-  @@schema("public")
-}model AdvisorRegistrationStatus {
+model AdvisorRegistrationStatus {
   advisorRegistrationStatusId Int       @id @default(autoincrement()) @map("advisor_registration_status_id")
   advisorId                   Int       @map("advisor_id")
   advisorUuid                 String    @map("advisor_uuid") @db.VarChar
@@ -165,9 +153,6 @@ model AdvisorSponsorPlan {
   @@schema("public")
 }
 
-
-
-
 model AuthToken {
   authTokenId     Int           @id @default(autoincrement()) @map("auth_token_id")
   accessToken     String        @map("access_token") @db.VarChar(256)
@@ -185,8 +170,6 @@ model AuthToken {
   @@map("auth_token")
   @@schema("public")
 }
-
-
 
 model CensusRecords {
   censusRecordsId          Int         @id @default(autoincrement()) @map("census_records_id")
@@ -246,7 +229,9 @@ model CensusRecords {
   @@index([firstName, lastName, sponsorPlanId], map: "censusrecords_firstname_lastname_sponsorplanid_index")
   @@map("census_records")
   @@schema("public")
-}model EmailDefinition {
+}
+
+model EmailDefinition {
   definitionId Int               @id @default(autoincrement()) @map("id")
   name         String            @unique @db.VarChar(250)
   templateName String            @unique @map("template_name") @db.VarChar(250)
@@ -294,88 +279,81 @@ model FeatureToggleLocal {
 
   @@map("feature_toggle_local")
   @@schema("public")
-}model Firm {
-  firmId                Int            @id @default(autoincrement()) @map("firm_id")
-  allowOverride         Boolean?       @map("allow_override")
-  companyName           String?        @map("company_name") @db.VarChar(512)
-  homeOfficeName        String?        @map("home_office_name") @db.VarChar(64)
-  subDomain             String?        @map("sub_domain") @db.VarChar(64)
-  loginSubDomain        String?        @map("login_sub_domain") @db.VarChar(64)
-  cssFileName           String?        @map("css_file_name") @db.VarChar(64)
-  address1              String?        @map("address_1") @db.VarChar(255)
-  address2              String?        @map("address_2") @db.VarChar(255)
-  city                  String?        @db.VarChar(255)
-  state                 String?        @db.VarChar(5)
-  zip                   String?        @db.VarChar(255)
-  logo                  String?        @db.VarChar(64)
-  clientSupportStrategy String?        @map("client_support_strategy") @db.VarChar(32)
-  fee                   Decimal?       @db.Decimal
-  businessDescription   String?        @map("business_description") @db.VarChar(9999)
-  disclaimers           String?        @db.VarChar(9999)
-  applicationDate       DateTime?      @map("application_date") @db.Timestamptz(6)
-  activationDate        DateTime?      @map("activation_date") @db.Timestamptz(6)
-  createdAt             DateTime       @map("created_at") @db.Timestamptz(6)
-  updatedAt             DateTime       @map("updated_at") @db.Timestamptz(6)
-  cssFolder             String?        @map("css_folder") @db.VarChar(32)
-  email                 String?        @db.VarChar(256)
-  isActive              Boolean?       @map("is_active")
-  firmType              String?        @map("firm_type") @db.VarChar(32)
-  website               String?        @db.VarChar(128)
-  mainPhoneNumber       String?        @map("main_phone_number") @db.VarChar(16)
-  retirementPlanAssets  Float?         @map("retirement_plan_assets")
-  advisorCount          Int?           @map("advisor_count")
-  contactName           String?        @map("contact_name") @db.VarChar(50)
-  migratedFromFirm1     Boolean?       @default(false) @map("migrated_from_firm_1")
-  externalFirmId        String?        @map("external_firm_id") @db.VarChar(250)
+}
 
+model Firm {
+  firmId                Int       @id @default(autoincrement()) @map("firm_id")
+  allowOverride         Boolean?  @map("allow_override")
+  companyName           String?   @map("company_name") @db.VarChar(512)
+  homeOfficeName        String?   @map("home_office_name") @db.VarChar(64)
+  subDomain             String?   @map("sub_domain") @db.VarChar(64)
+  loginSubDomain        String?   @map("login_sub_domain") @db.VarChar(64)
+  cssFileName           String?   @map("css_file_name") @db.VarChar(64)
+  address1              String?   @map("address_1") @db.VarChar(255)
+  address2              String?   @map("address_2") @db.VarChar(255)
+  city                  String?   @db.VarChar(255)
+  state                 String?   @db.VarChar(5)
+  zip                   String?   @db.VarChar(255)
+  logo                  String?   @db.VarChar(64)
+  clientSupportStrategy String?   @map("client_support_strategy") @db.VarChar(32)
+  fee                   Decimal?  @db.Decimal
+  businessDescription   String?   @map("business_description") @db.VarChar(9999)
+  disclaimers           String?   @db.VarChar(9999)
+  applicationDate       DateTime? @map("application_date") @db.Timestamptz(6)
+  activationDate        DateTime? @map("activation_date") @db.Timestamptz(6)
+  createdAt             DateTime  @map("created_at") @db.Timestamptz(6)
+  updatedAt             DateTime  @map("updated_at") @db.Timestamptz(6)
+  cssFolder             String?   @map("css_folder") @db.VarChar(32)
+  email                 String?   @db.VarChar(256)
+  isActive              Boolean?  @map("is_active")
+  firmType              String?   @map("firm_type") @db.VarChar(32)
+  website               String?   @db.VarChar(128)
+  mainPhoneNumber       String?   @map("main_phone_number") @db.VarChar(16)
+  retirementPlanAssets  Float?    @map("retirement_plan_assets")
+  advisorCount          Int?      @map("advisor_count")
+  contactName           String?   @map("contact_name") @db.VarChar(50)
+  migratedFromFirm1     Boolean?  @default(false) @map("migrated_from_firm_1")
+  externalFirmId        String?   @map("external_firm_id") @db.VarChar(250)
 
-
-  stateProgram          StateProgram[]
-
+  stateProgram StateProgram[]
 
   @@map("firm")
   @@schema("public")
 }
 
 model Model {
-  modelId              Int                @id @default(autoincrement()) @map("model_id")
-  modelName            String             @map("model_name") @db.VarChar
-  riskLevel            Int                @map("risk_level")
-  autoRebalance        Boolean            @map("auto_rebalance")
-  rebalanceFreq        Int                @map("rebalance_freq")
-  fees                 Decimal            @db.Decimal
+  modelId              Int       @id @default(autoincrement()) @map("model_id")
+  modelName            String    @map("model_name") @db.VarChar
+  riskLevel            Int       @map("risk_level")
+  autoRebalance        Boolean   @map("auto_rebalance")
+  rebalanceFreq        Int       @map("rebalance_freq")
+  fees                 Decimal   @db.Decimal
   drift                Int
-  createdAt            DateTime?          @map("created_at") @db.Timestamptz(6)
-  createdById          Int                @map("created_by_id")
-  status               String             @db.VarChar
-  updatedBy            String?            @map("updated_by") @db.VarChar
-  benchmarkId          Int                @map("benchmark_id")
-  viewName             String             @map("view_name") @db.VarChar
-  programId            Int                @map("program_id")
-  programType          String?            @map("program_type") @db.VarChar
-  defaultInvest        Boolean?           @map("default_invest")
-  yearsToRetireLow     Int?               @map("years_to_retire_low")
-  yearsToRetireHigh    Int?               @map("years_to_retire_high")
-  riskValue1Low        Int?               @map("risk_value_1_low")
-  riskValue1High       Int?               @map("risk_value_1_high")
-  programName          String?            @map("program_name") @db.VarChar
-  factsheet            String?            @db.VarChar
-  modelType            String             @map("model_type") @db.VarChar
-  description          String?            @db.VarChar
-  securityProviderId   Int                @default(1) @map("security_provider_id")
-  benchmarkName        String?            @map("benchmark_name") @db.VarChar(255)
-  benchmarkDescription String?            @map("benchmark_description") @db.VarChar
-  inceptionDate        DateTime?          @map("inception_date") @db.Date
+  createdAt            DateTime? @map("created_at") @db.Timestamptz(6)
+  createdById          Int       @map("created_by_id")
+  status               String    @db.VarChar
+  updatedBy            String?   @map("updated_by") @db.VarChar
+  benchmarkId          Int       @map("benchmark_id")
+  viewName             String    @map("view_name") @db.VarChar
+  programId            Int       @map("program_id")
+  programType          String?   @map("program_type") @db.VarChar
+  defaultInvest        Boolean?  @map("default_invest")
+  yearsToRetireLow     Int?      @map("years_to_retire_low")
+  yearsToRetireHigh    Int?      @map("years_to_retire_high")
+  riskValue1Low        Int?      @map("risk_value_1_low")
+  riskValue1High       Int?      @map("risk_value_1_high")
+  programName          String?   @map("program_name") @db.VarChar
+  factsheet            String?   @db.VarChar
+  modelType            String    @map("model_type") @db.VarChar
+  description          String?   @db.VarChar
+  securityProviderId   Int       @default(1) @map("security_provider_id")
+  benchmarkName        String?   @map("benchmark_name") @db.VarChar(255)
+  benchmarkDescription String?   @map("benchmark_description") @db.VarChar
+  inceptionDate        DateTime? @map("inception_date") @db.Date
 
-  advisor              Advisor            @relation(fields: [createdById], references: [advisorId], onDelete: NoAction, onUpdate: NoAction)
-  program              Program            @relation(fields: [programId], references: [programId], onDelete: NoAction, onUpdate: NoAction, map: "progfk")
+  program Program @relation(fields: [programId], references: [programId], onDelete: NoAction, onUpdate: NoAction, map: "progfk")
 
-
-
-
-
-  sponsorPlanmodel     SponsorPlanModel[] @ignore
-
+  sponsorPlanmodel SponsorPlanModel[] @ignore
 
   @@index([benchmarkId])
   @@index([createdById])
@@ -387,76 +365,71 @@ model Model {
   @@map("model")
   @@schema("public")
 }
+
 model Participant {
-  participantId                   Int                             @id @default(autoincrement()) @map("participant_id")
-  firstName                       String?                         @map("first_name") @db.VarChar(64)
-  middleName                      String?                         @map("middle_name") @db.VarChar(64)
-  lastName                        String?                         @map("last_name") @db.VarChar(64)
-  socialSecurityNumber            String?                         @map("social_security_number") @db.VarChar(11)
-  birthDate                       DateTime?                       @map("birth_date") @db.Date
-  address1                        String?                         @map("address_1") @db.VarChar(255)
-  address2                        String?                         @map("address_2") @db.VarChar(255)
-  city                            String?                         @db.VarChar(255)
-  state                           String?                         @db.VarChar(5)
-  zip                             String?                         @db.VarChar(255)
-  gender                          String?                         @db.VarChar(10)
-  phone                           String?                         @db.VarChar(128)
-  workEmail                       String?                         @map("work_email") @db.VarChar(128)
-  savesForRetirement              String?                         @map("saves_for_retirement") @db.VarChar(32)
+  participantId                   Int       @id @default(autoincrement()) @map("participant_id")
+  firstName                       String?   @map("first_name") @db.VarChar(64)
+  middleName                      String?   @map("middle_name") @db.VarChar(64)
+  lastName                        String?   @map("last_name") @db.VarChar(64)
+  socialSecurityNumber            String?   @map("social_security_number") @db.VarChar(11)
+  birthDate                       DateTime? @map("birth_date") @db.Date
+  address1                        String?   @map("address_1") @db.VarChar(255)
+  address2                        String?   @map("address_2") @db.VarChar(255)
+  city                            String?   @db.VarChar(255)
+  state                           String?   @db.VarChar(5)
+  zip                             String?   @db.VarChar(255)
+  gender                          String?   @db.VarChar(10)
+  phone                           String?   @db.VarChar(128)
+  workEmail                       String?   @map("work_email") @db.VarChar(128)
+  savesForRetirement              String?   @map("saves_for_retirement") @db.VarChar(32)
   contribution                    Int?
-  riskValue                       Int?                            @map("risk_value")
-  maritalStatus                   String?                         @map("marital_status") @db.VarChar(20)
-  beneficiaryFirstName            String?                         @map("beneficiary_first_name") @db.VarChar(64)
-  beneficiaryLastName             String?                         @map("beneficiary_last_name") @db.VarChar(64)
-  beneficiarySocialSecurityNumber String?                         @map("beneficiary_social_security_number") @db.VarChar(11)
-  beneficiaryRelationship         String?                         @map("beneficiary_relationship") @db.VarChar(10)
-  beneficiaryPhone                String?                         @map("beneficiary_phone") @db.VarChar(15)
-  beneficiaryEmail                String?                         @map("beneficiary_email") @db.VarChar(128)
-  sendEmailUpdate                 Boolean?                        @map("send_email_update")
-  password                        String?                         @db.VarChar(512)
-  contributionType                String?                         @map("contribution_type") @db.VarChar(1)
-  rothContribution                Int?                            @map("roth_contribution")
-  rothContributionType            String?                         @map("roth_contribution_type") @db.VarChar(1)
-  contributesToRoth               Boolean?                        @map("contributes_to_roth")
-  activationDate                  DateTime?                       @map("activation_date") @db.Timestamptz(6)
-  createdAt                       DateTime                        @map("created_at") @db.Timestamptz(6)
-  updatedAt                       DateTime                        @map("updated_at") @db.Timestamptz(6)
-  beneficiaryAddress1             String?                         @map("beneficiary_address_1") @db.VarChar(64)
-  beneficiaryAddress2             String?                         @map("beneficiary_address_2") @db.VarChar(64)
-  beneficiaryCity                 String?                         @map("beneficiary_city") @db.VarChar(255)
-  beneficiaryState                String?                         @map("beneficiary_state") @db.VarChar(5)
-  beneficiaryZip                  String?                         @map("beneficiary_zip") @db.VarChar(255)
-  personalEmail                   String?                         @map("personal_email") @db.VarChar(128)
-  yearsToRetire                   Int?                            @map("years_to_retire")
-  deferralChanged                 Boolean?                        @default(false) @map("deferral_changed")
-  autorebalance                   Boolean?                        @default(true)
-  afterTaxContribution            Int?                            @map("after_tax_contribution")
-  afterTaxContributionType        String?                         @map("after_tax_contribution_type") @db.VarChar(1)
-  country                         String?                         @db.VarChar(255)
+  riskValue                       Int?      @map("risk_value")
+  maritalStatus                   String?   @map("marital_status") @db.VarChar(20)
+  beneficiaryFirstName            String?   @map("beneficiary_first_name") @db.VarChar(64)
+  beneficiaryLastName             String?   @map("beneficiary_last_name") @db.VarChar(64)
+  beneficiarySocialSecurityNumber String?   @map("beneficiary_social_security_number") @db.VarChar(11)
+  beneficiaryRelationship         String?   @map("beneficiary_relationship") @db.VarChar(10)
+  beneficiaryPhone                String?   @map("beneficiary_phone") @db.VarChar(15)
+  beneficiaryEmail                String?   @map("beneficiary_email") @db.VarChar(128)
+  sendEmailUpdate                 Boolean?  @map("send_email_update")
+  password                        String?   @db.VarChar(512)
+  contributionType                String?   @map("contribution_type") @db.VarChar(1)
+  rothContribution                Int?      @map("roth_contribution")
+  rothContributionType            String?   @map("roth_contribution_type") @db.VarChar(1)
+  contributesToRoth               Boolean?  @map("contributes_to_roth")
+  activationDate                  DateTime? @map("activation_date") @db.Timestamptz(6)
+  createdAt                       DateTime  @map("created_at") @db.Timestamptz(6)
+  updatedAt                       DateTime  @map("updated_at") @db.Timestamptz(6)
+  beneficiaryAddress1             String?   @map("beneficiary_address_1") @db.VarChar(64)
+  beneficiaryAddress2             String?   @map("beneficiary_address_2") @db.VarChar(64)
+  beneficiaryCity                 String?   @map("beneficiary_city") @db.VarChar(255)
+  beneficiaryState                String?   @map("beneficiary_state") @db.VarChar(5)
+  beneficiaryZip                  String?   @map("beneficiary_zip") @db.VarChar(255)
+  personalEmail                   String?   @map("personal_email") @db.VarChar(128)
+  yearsToRetire                   Int?      @map("years_to_retire")
+  deferralChanged                 Boolean?  @default(false) @map("deferral_changed")
+  autorebalance                   Boolean?  @default(true)
+  afterTaxContribution            Int?      @map("after_tax_contribution")
+  afterTaxContributionType        String?   @map("after_tax_contribution_type") @db.VarChar(1)
+  country                         String?   @db.VarChar(255)
 
-  beneficiaryBirthDate            DateTime?                       @map("beneficiary_birth_date") @db.Date
-  isDeceased                      Boolean                         @default(false) @map("is_deceased")
-  isDisabled                      Boolean                         @default(false) @map("is_disabled")
-  nameUpdatedAt                   DateTime?                       @map("name_updated_at") @db.Timestamptz(6)
-  addressUpdatedAt                DateTime?                       @map("address_updated_at") @db.Timestamptz(6)
-  isVerified                      Boolean?                        @map("is_verified")
-  updatedBy                       Json?                           @map("updated_by")
-  externalId                      String?                         @map("external_id") @db.VarChar(64)
-  stateIraAccountStatus           String?                         @map("state_ira_account_status") @db.VarChar(64)
-  stateIraPerEmployerStatus       String?                         @map("state_ira_per_employer_status") @db.VarChar(64)
-  stateIraCipStatus               String?                         @map("state_ira_cip_status") @db.VarChar(64)
-  emailUpdatedAt                  DateTime?                       @map("email_updated_at") @db.Timestamptz(6)
+  beneficiaryBirthDate      DateTime? @map("beneficiary_birth_date") @db.Date
+  isDeceased                Boolean   @default(false) @map("is_deceased")
+  isDisabled                Boolean   @default(false) @map("is_disabled")
+  nameUpdatedAt             DateTime? @map("name_updated_at") @db.Timestamptz(6)
+  addressUpdatedAt          DateTime? @map("address_updated_at") @db.Timestamptz(6)
+  isVerified                Boolean?  @map("is_verified")
+  updatedBy                 Json?     @map("updated_by")
+  externalId                String?   @map("external_id") @db.VarChar(64)
+  stateIraAccountStatus     String?   @map("state_ira_account_status") @db.VarChar(64)
+  stateIraPerEmployerStatus String?   @map("state_ira_per_employer_status") @db.VarChar(64)
+  stateIraCipStatus         String?   @map("state_ira_cip_status") @db.VarChar(64)
+  emailUpdatedAt            DateTime? @map("email_updated_at") @db.Timestamptz(6)
 
+  participantRegistrationStatus ParticipantRegistrationStatus[]
+  psa                           Psa[]
 
-
-
-
-
-
-  participantRegistrationStatus   ParticipantRegistrationStatus[]
-  psa                             Psa[]
-
-  userRolesParticipant            UserRolesParticipant[]
+  userRolesParticipant UserRolesParticipant[]
 
   @@index([firstName, lastName], map: "participant_firstname_lastname_index")
   @@index([socialSecurityNumber], map: "participant_ssn_index")
@@ -481,18 +454,13 @@ model ParticipantRegistrationStatus {
 }
 
 model PartnerSystem {
-  partnerSystemId      Int                    @id @default(autoincrement()) @map("partner_system_id")
-  name                 String                 @unique @db.VarChar(255)
-  authToken            AuthToken[]
-
-
-
-
+  partnerSystemId Int         @id @default(autoincrement()) @map("partner_system_id")
+  name            String      @unique @db.VarChar(255)
+  authToken       AuthToken[]
 
   partnerSystemMapping PartnerSystemMapping[]
   recordkeeper         Recordkeeper[]
   stateProgram         StateProgram[]
-
 
   @@map("partner_system")
   @@schema("public")
@@ -519,36 +487,28 @@ model PartnerSystemMapping {
   @@schema("public")
 }
 
-
-model Payrollprovider {
+model PayrollProvider {
   payrollProviderId   Int    @id @default(autoincrement()) @map("payroll_provider_id")
   payrollProviderName String @map("payroll_provider_name") @db.VarChar
 
   @@map("payrollprovider")
   @@schema("public")
 }
+
 model Program {
-  programId               Int                  @id @default(autoincrement()) @map("program_id")
-  type                    String               @db.VarChar
-  name                    String?              @db.VarChar
-  createdAt               DateTime             @map("created_at") @db.Timestamptz(6)
-  programStatusId         Int                  @map("program_status_id")
-  programStrategyStatusId Int                  @map("program_strategy_status_id")
-  programSpecificData     Json?                @map("program_specific_data")
-  updatedBy               Json?                @map("updated_by")
-  updatedAt               DateTime?            @map("updated_at") @db.Timestamptz(6)
+  programId               Int       @id @default(autoincrement()) @map("program_id")
+  type                    String    @db.VarChar
+  name                    String?   @db.VarChar
+  createdAt               DateTime  @map("created_at") @db.Timestamptz(6)
+  programStatusId         Int       @map("program_status_id")
+  programStrategyStatusId Int       @map("program_strategy_status_id")
+  programSpecificData     Json?     @map("program_specific_data")
+  updatedBy               Json?     @map("updated_by")
+  updatedAt               DateTime? @map("updated_at") @db.Timestamptz(6)
 
+  advisorSponsorPlan AdvisorSponsorPlan[]
 
-
-
-  advisorsponsorPlan      AdvisorSponsorPlan[]
-
-  model                   Model[]
-
-
-
-
-
+  model Model[]
 
   @@index([programStatusId])
   @@index([programStrategyStatusId])
@@ -556,33 +516,27 @@ model Program {
   @@schema("public")
 }
 
-
-
 model Psa {
-  psaId                    Int         @id @default(autoincrement()) @map("psa_id")
-  participantId            Int         @map("participant_id")
-  sponsorPlanId            Int         @map("sponsor_plan_id")
-  accountId                Int         @map("account_id")
-  status                   String      @db.VarChar
-  activatedAt              DateTime?   @map("activated_at") @db.Timestamptz(6)
-  createdAt                DateTime    @map("created_at") @db.Timestamptz(6)
-  isEligible               Boolean     @default(false) @map("is_eligible")
-  eligibilityDate          DateTime?   @map("eligibility_date") @db.Timestamptz(6)
-  optOut                   Boolean     @default(false) @map("opt_out")
-  entryDate                DateTime?   @map("entry_date") @db.Timestamptz(6)
-  paperlessNotices         Boolean?    @map("paperless_notices")
-  blockRoth                Boolean     @default(false) @map("block_roth")
-  blockNonRoth             Boolean     @default(false) @map("block_non_roth")
-  yearsOfVesting           Int?        @map("years_of_vesting")
-  partialPlanTermination   Boolean     @default(false) @map("partial_plan_termination")
-  historicalYearsOfService Int         @default(0) @map("historical_years_of_service")
+  psaId                    Int       @id @default(autoincrement()) @map("psa_id")
+  participantId            Int       @map("participant_id")
+  sponsorPlanId            Int       @map("sponsor_plan_id")
+  accountId                Int       @map("account_id")
+  status                   String    @db.VarChar
+  activatedAt              DateTime? @map("activated_at") @db.Timestamptz(6)
+  createdAt                DateTime  @map("created_at") @db.Timestamptz(6)
+  isEligible               Boolean   @default(false) @map("is_eligible")
+  eligibilityDate          DateTime? @map("eligibility_date") @db.Timestamptz(6)
+  optOut                   Boolean   @default(false) @map("opt_out")
+  entryDate                DateTime? @map("entry_date") @db.Timestamptz(6)
+  paperlessNotices         Boolean?  @map("paperless_notices")
+  blockRoth                Boolean   @default(false) @map("block_roth")
+  blockNonRoth             Boolean   @default(false) @map("block_non_roth")
+  yearsOfVesting           Int?      @map("years_of_vesting")
+  partialPlanTermination   Boolean   @default(false) @map("partial_plan_termination")
+  historicalYearsOfService Int       @default(0) @map("historical_years_of_service")
 
-  participant              Participant @relation(fields: [participantId], references: [participantId], onDelete: Cascade, onUpdate: NoAction)
-  sponsorPlan              SponsorPlan @relation(fields: [sponsorPlanId], references: [sponsorPlanId], onDelete: NoAction, onUpdate: NoAction)
-
-
-
-
+  participant Participant @relation(fields: [participantId], references: [participantId], onDelete: Cascade, onUpdate: NoAction)
+  sponsorPlan SponsorPlan @relation(fields: [sponsorPlanId], references: [sponsorPlanId], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([participantId, sponsorPlanId, accountId], map: "psa_uq")
   @@index([accountId], map: "psa_accountid_index")
@@ -593,6 +547,7 @@ model Psa {
   @@map("psa")
   @@schema("public")
 }
+
 model Recordkeeper {
   recordkeeperId              Int                   @id @default(autoincrement()) @map("recordkeeper_id")
   partnerSystemId             Int                   @map("partner_system_id")
@@ -602,14 +557,14 @@ model Recordkeeper {
   loanPaymentAllocationConfig String                @default("multi_bucket") @map("loan_payment_allocation_config") @db.VarChar(64)
   partnerSystem               PartnerSystem         @relation(fields: [partnerSystemId], references: [partnerSystemId], onDelete: NoAction, onUpdate: NoAction)
 
-  sponsorPlan                 SponsorPlan[]
+  sponsorPlan SponsorPlan[]
 
   @@index([partnerSystemId], map: "recordkeeper_partner_system")
   @@map("recordkeeper")
   @@schema("public")
 }
 
-model RegistrationAgreementEvents {
+model RegistrationAgreementEvent {
   eventId        Int       @id @default(autoincrement()) @map("event_id")
   userId         Int       @map("user_id")
   personaId      Int       @map("persona_id")
@@ -635,81 +590,76 @@ model SharedEntityType {
 }
 
 model Sponsor {
-  sponsorId                        Int                 @id @default(autoincrement()) @map("sponsor_id")
-  primaryContactRole               String?             @map("primary_contact_role") @db.VarChar(32)
-  primaryContactPhone              String?             @map("primary_contact_phone") @db.VarChar(32)
-  primaryContactEmail              String?             @map("primary_contact_email") @db.VarChar(512)
-  companyName                      String?             @map("company_name") @db.VarChar(512)
-  companySize                      String?             @map("company_size") @db.VarChar(10)
-  companyPhoneNumber               String?             @map("company_phone_number") @db.VarChar(32)
-  companyInceptionDate             DateTime?           @map("company_inception_date") @db.Date
-  address1                         String?             @map("address_1") @db.VarChar(255)
-  address2                         String?             @map("address_2") @db.VarChar(255)
-  city                             String?             @db.VarChar(255)
-  state                            String?             @db.VarChar(5)
-  zip                              String?             @db.VarChar(255)
-  isConvert                        String?             @map("is_convert") @db.VarChar(10)
-  isPayrollConnected               Boolean?            @map("is_payroll_connected")
-  password                         String?             @db.VarChar(512)
-  activationDate                   DateTime?           @map("activation_date") @db.Timestamptz(6)
-  doingBusinessAs                  String?             @map("doing_business_as") @db.VarChar(512)
-  employerIdentificationNumber     String?             @map("employer_identification_number") @db.VarChar(12)
-  companyEntityType                String?             @map("company_entity_type") @db.VarChar(12)
-  standardIndustrialClassification String?             @map("standard_industrial_classification") @db.VarChar(10)
-  companyBillingEmail              String?             @map("company_billing_email") @db.VarChar(512)
-  fiscalYearEnd                    String?             @map("fiscal_year_end") @db.VarChar(24)
-  secondaryContactName             String?             @map("secondary_contact_name") @db.VarChar(512)
-  secondaryContactRole             String?             @map("secondary_contact_role") @db.VarChar(32)
-  secondaryContactPhone            String?             @map("secondary_contact_phone") @db.VarChar(32)
-  secondaryContactEmail            String?             @map("secondary_contact_email") @db.VarChar(512)
-  createdAt                        DateTime            @map("created_at") @db.Timestamptz(6)
-  updatedAt                        DateTime            @map("updated_at") @db.Timestamptz(6)
-  stateOfIncorporation             String?             @map("state_of_incorporation") @db.VarChar(5)
-  identificationType               String?             @map("identification_type") @db.VarChar(128)
-  identificationIssueState         String?             @map("identification_issue_state")
-  identificationIssueCountry       String?             @map("identification_issue_country") @db.VarChar(64)
-  identificationIssueDate          DateTime?           @map("identification_issue_date") @db.Date
-  identificationExpirationDate     DateTime?           @map("identification_expiration_date") @db.Date
-  citizenshipType                  String?             @map("citizenship_type") @db.VarChar(128)
-  countryIfAlien                   String?             @map("country_if_alien") @db.VarChar(64)
-  countryOfTaxResidence            String?             @map("country_of_tax_residence") @db.VarChar(64)
-  foreignDignitaryCountry          String?             @map("foreign_dignitary_country") @db.VarChar(64)
-  isForeignDignitary               Boolean?            @map("is_foreign_dignitary")
-  identificationNumber             String?             @map("identification_number") @db.VarChar(128)
-  hasFamilyMemberEmployees         Boolean?            @map("has_family_member_employees")
-  otherBusinessesOwned             String?             @map("other_businesses_owned")
-  hasOtherBusinesses               Boolean?            @map("has_other_businesses")
-  controlGroupBusinesses           String?             @map("control_group_businesses")
-  isPartOfControlGroup             Boolean?            @map("is_part_of_control_group")
-  hasLeasedEmployees               Boolean?            @map("has_leased_employees")
-  primaryContactTitle              String?             @map("primary_contact_title") @db.VarChar(128)
-  hasHiddenPlanAgreements          Boolean?            @default(true) @map("has_hidden_plan_agreements")
-  payrollProviderId                Int?                @map("payroll_provider_id")
-  vestwellSalesContact             String?             @map("vestwell_sales_contact") @db.VarChar
-  anticipatedAdvisor               String?             @map("anticipated_advisor") @db.VarChar
-  anticipatedHomeOfficeAffiliation String?             @map("anticipated_home_office_affiliation") @db.VarChar
-  anticipatedAdvisorGroup          String?             @map("anticipated_advisor_group") @db.VarChar
-  dayToDayContactName              String?             @map("day_to_day_contact_name") @db.VarChar
-  dayToDayContactNumber            String?             @map("day_to_day_contact_number") @db.VarChar
-  dayToDayContactEmail             String?             @map("day_to_day_contact_email") @db.VarChar
-  wiredAtWork                      Boolean?            @map("wired_at_work")
-  estimatedAnnualContribution      Int?                @map("estimated_annual_contribution")
-  newOnboarding                    Boolean?            @default(false) @map("new_onboarding")
-  hqCountry                        String?             @map("hq_country") @db.VarChar(100)
-  primaryContactFirstName          String?             @map("primary_contact_first_name") @db.VarChar(512)
-  primaryContactLastName           String?             @map("primary_contact_last_name") @db.VarChar(512)
+  sponsorId                        Int       @id @default(autoincrement()) @map("sponsor_id")
+  primaryContactRole               String?   @map("primary_contact_role") @db.VarChar(32)
+  primaryContactPhone              String?   @map("primary_contact_phone") @db.VarChar(32)
+  primaryContactEmail              String?   @map("primary_contact_email") @db.VarChar(512)
+  companyName                      String?   @map("company_name") @db.VarChar(512)
+  companySize                      String?   @map("company_size") @db.VarChar(10)
+  companyPhoneNumber               String?   @map("company_phone_number") @db.VarChar(32)
+  companyInceptionDate             DateTime? @map("company_inception_date") @db.Date
+  address1                         String?   @map("address_1") @db.VarChar(255)
+  address2                         String?   @map("address_2") @db.VarChar(255)
+  city                             String?   @db.VarChar(255)
+  state                            String?   @db.VarChar(5)
+  zip                              String?   @db.VarChar(255)
+  isConvert                        String?   @map("is_convert") @db.VarChar(10)
+  isPayrollConnected               Boolean?  @map("is_payroll_connected")
+  password                         String?   @db.VarChar(512)
+  activationDate                   DateTime? @map("activation_date") @db.Timestamptz(6)
+  doingBusinessAs                  String?   @map("doing_business_as") @db.VarChar(512)
+  employerIdentificationNumber     String?   @map("employer_identification_number") @db.VarChar(12)
+  companyEntityType                String?   @map("company_entity_type") @db.VarChar(12)
+  standardIndustrialClassification String?   @map("standard_industrial_classification") @db.VarChar(10)
+  companyBillingEmail              String?   @map("company_billing_email") @db.VarChar(512)
+  fiscalYearEnd                    String?   @map("fiscal_year_end") @db.VarChar(24)
+  secondaryContactName             String?   @map("secondary_contact_name") @db.VarChar(512)
+  secondaryContactRole             String?   @map("secondary_contact_role") @db.VarChar(32)
+  secondaryContactPhone            String?   @map("secondary_contact_phone") @db.VarChar(32)
+  secondaryContactEmail            String?   @map("secondary_contact_email") @db.VarChar(512)
+  createdAt                        DateTime  @map("created_at") @db.Timestamptz(6)
+  updatedAt                        DateTime  @map("updated_at") @db.Timestamptz(6)
+  stateOfIncorporation             String?   @map("state_of_incorporation") @db.VarChar(5)
+  identificationType               String?   @map("identification_type") @db.VarChar(128)
+  identificationIssueState         String?   @map("identification_issue_state")
+  identificationIssueCountry       String?   @map("identification_issue_country") @db.VarChar(64)
+  identificationIssueDate          DateTime? @map("identification_issue_date") @db.Date
+  identificationExpirationDate     DateTime? @map("identification_expiration_date") @db.Date
+  citizenshipType                  String?   @map("citizenship_type") @db.VarChar(128)
+  countryIfAlien                   String?   @map("country_if_alien") @db.VarChar(64)
+  countryOfTaxResidence            String?   @map("country_of_tax_residence") @db.VarChar(64)
+  foreignDignitaryCountry          String?   @map("foreign_dignitary_country") @db.VarChar(64)
+  isForeignDignitary               Boolean?  @map("is_foreign_dignitary")
+  identificationNumber             String?   @map("identification_number") @db.VarChar(128)
+  hasFamilyMemberEmployees         Boolean?  @map("has_family_member_employees")
+  otherBusinessesOwned             String?   @map("other_businesses_owned")
+  hasOtherBusinesses               Boolean?  @map("has_other_businesses")
+  controlGroupBusinesses           String?   @map("control_group_businesses")
+  isPartOfControlGroup             Boolean?  @map("is_part_of_control_group")
+  hasLeasedEmployees               Boolean?  @map("has_leased_employees")
+  primaryContactTitle              String?   @map("primary_contact_title") @db.VarChar(128)
+  hasHiddenPlanAgreements          Boolean?  @default(true) @map("has_hidden_plan_agreements")
+  payrollProviderId                Int?      @map("payroll_provider_id")
+  vestwellSalesContact             String?   @map("vestwell_sales_contact") @db.VarChar
+  anticipatedAdvisor               String?   @map("anticipated_advisor") @db.VarChar
+  anticipatedHomeOfficeAffiliation String?   @map("anticipated_home_office_affiliation") @db.VarChar
+  anticipatedAdvisorGroup          String?   @map("anticipated_advisor_group") @db.VarChar
+  dayToDayContactName              String?   @map("day_to_day_contact_name") @db.VarChar
+  dayToDayContactNumber            String?   @map("day_to_day_contact_number") @db.VarChar
+  dayToDayContactEmail             String?   @map("day_to_day_contact_email") @db.VarChar
+  wiredAtWork                      Boolean?  @map("wired_at_work")
+  estimatedAnnualContribution      Int?      @map("estimated_annual_contribution")
+  newOnboarding                    Boolean?  @default(false) @map("new_onboarding")
+  hqCountry                        String?   @map("hq_country") @db.VarChar(100)
+  primaryContactFirstName          String?   @map("primary_contact_first_name") @db.VarChar(512)
+  primaryContactLastName           String?   @map("primary_contact_last_name") @db.VarChar(512)
 
+  sponsorActivation SponsorActivation[]
 
+  sponsorExemption SponsorExemption[]
 
-  sponsorActivation                SponsorActivation[]
-
-  sponsorExemption                 SponsorExemption[]
-
-  sponsorPlan                      SponsorPlan[]
-
-
-
-  userRolesSponsor                 UserRolesSponsor[]
+  sponsorPlan      SponsorPlan[]
+  userRolesSponsor UserRolesSponsor[]
 
   @@index([companyName], map: "sponsor_companyname_index")
   @@index([payrollProviderId])
@@ -733,8 +683,6 @@ model SponsorActivation {
   @@map("sponsor_activation")
   @@schema("public")
 }
-
-
 
 model SponsorExemption {
   sponsorExemptionId        Int       @id @default(autoincrement()) @map("sponsor_exemption_id")
@@ -841,52 +789,12 @@ model SponsorPlan {
   allowRollover                          String?              @map("allow_rollover") @db.VarChar
   relationshipManagerId                  Int?                 @map("relationship_manager_id")
   allowRothIraContribution               Boolean              @default(false) @map("allow_roth_ira_contribution")
-
-
   recordkeeper                           Recordkeeper?        @relation(fields: [recordkeeperId], references: [recordkeeperId], onDelete: NoAction, onUpdate: NoAction)
-
   sponsor                                Sponsor?             @relation(fields: [sponsorId], references: [sponsorId])
-
-  advisorsponsorPlan                     AdvisorSponsorPlan[]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  advisorSponsorPlan                     AdvisorSponsorPlan[]
   psa                                    Psa[]
-
-
-
   sponsorPlanmodel                       SponsorPlanModel[]   @ignore
-
-
-
-
-
-
-
-
-
-
-  CensusRecords CensusRecords[]
+  censusRecords                          CensusRecords[]
 
   @@index([csmId])
   @@index([feesContainerId])
@@ -897,9 +805,6 @@ model SponsorPlan {
   @@schema("public")
 }
 
-
-
-
 model SponsorPlanModel {
   sponsorPlanModelId Int         @id @default(autoincrement()) @map("sponsor_plan_model_id")
   modelId            Int         @map("model_id")
@@ -907,12 +812,13 @@ model SponsorPlanModel {
   model              Model       @relation(fields: [modelId], references: [modelId], onDelete: NoAction, onUpdate: NoAction)
   sponsorPlan        SponsorPlan @relation(fields: [sponsorPlanId], references: [sponsorPlanId], onDelete: NoAction, onUpdate: NoAction)
 
-
   @@index([modelId])
   @@index([sponsorPlanId])
   @@map("sponsor_planmodel")
   @@schema("public")
-}model StatefulSchemaTracking {
+}
+
+model StatefulSchemaTracking {
   statefulSchemaTrackingId Int                  @id @default(autoincrement()) @map("stateful_schema_tracking_id")
   statefulSchemaId         Int                  @map("stateful_schema_id")
   sharedEntityTypeId       Int                  @map("shared_entity_type_id")
@@ -924,8 +830,7 @@ model SponsorPlanModel {
   updatedBy                Int                  @map("updated_by")
   sharedEntityType         SharedEntityType     @relation(fields: [sharedEntityTypeId], references: [sharedEntityTypeId], onDelete: NoAction, onUpdate: NoAction)
 
-  user                     User                 @relation(fields: [updatedBy], references: [userId], onDelete: NoAction, onUpdate: NoAction)
-
+  user User @relation(fields: [updatedBy], references: [userId], onDelete: NoAction, onUpdate: NoAction)
 
   @@map("stateful_schema_tracking")
   @@schema("public")
@@ -948,21 +853,19 @@ model StateProgram {
   @@schema("public")
 }
 
-
-
 model User {
-  userId                 Int                      @id @default(autoincrement()) @map("user_id")
-  email                  String?                  @db.VarChar(512)
-  password               String?                  @db.VarChar(512)
-  createdAt              DateTime                 @map("created_at") @db.Timestamptz(6)
-  updatedAt              DateTime                 @map("updated_at") @db.Timestamptz(6)
-  pendingPasswordReset   Boolean?                 @default(false) @map("pending_password_reset")
-  invalidPasswordCount   Int?                     @default(0) @map("invalid_password_count")
-  isLocked               Boolean?                 @map("is_locked")
-  isMfaEnabled           Boolean?                 @map("is_mfa_enabled")
-  mfaSecret              String?                  @map("mfa_secret")
-  partnerSystemMapping   PartnerSystemMapping[]
-  authToken              AuthToken[]
+  userId               Int                    @id @default(autoincrement()) @map("user_id")
+  email                String?                @db.VarChar(512)
+  password             String?                @db.VarChar(512)
+  createdAt            DateTime               @map("created_at") @db.Timestamptz(6)
+  updatedAt            DateTime               @map("updated_at") @db.Timestamptz(6)
+  pendingPasswordReset Boolean?               @default(false) @map("pending_password_reset")
+  invalidPasswordCount Int?                   @default(0) @map("invalid_password_count")
+  isLocked             Boolean?               @map("is_locked")
+  isMfaEnabled         Boolean?               @map("is_mfa_enabled")
+  mfaSecret            String?                @map("mfa_secret")
+  partnerSystemMapping PartnerSystemMapping[]
+  authToken            AuthToken[]
 
   statefulSchemaTracking StatefulSchemaTracking[]
   userInvite             UserInvite[]
@@ -970,9 +873,9 @@ model User {
   userRolesAdvisor       UserRolesAdvisor[]
   userRolesEntity        UserRolesEntity[]
 
-  userRolesParticipant   UserRolesParticipant[]
-  userRolesSponsor       UserRolesSponsor[]
-  userSession            UserSession?
+  userRolesParticipant UserRolesParticipant[]
+  userRolesSponsor     UserRolesSponsor[]
+  userSession          UserSession?
 
   @@map("user")
   @@schema("public")
@@ -999,7 +902,7 @@ model MfaSetup {
   entryType String    @map("entry_type") @db.VarChar(10)
   value     String?   @db.VarChar(256)
   secret    String    @db.VarChar(256)
-  createdAt DateTime? @map("created_at") @db.Timestamptz(6) @default(now())
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
 
   @@map("mfa_setup")
   @@schema("auth")
@@ -1090,7 +993,9 @@ model UserRolesEntity {
   @@unique([accessRoleId, entityType, entityId])
   @@map("user_roles_entity")
   @@schema("public")
-}model UserRolesParticipant {
+}
+
+model UserRolesParticipant {
   id            Int         @id @default(autoincrement())
   participantId Int         @map("participant_id")
   accessRoleId  Int         @map("access_role_id")
@@ -1145,9 +1050,6 @@ enum AddressType {
   @@schema("public")
 }
 
-
-
-
 enum RecordkeeperPlatform {
   DST
   Omni
@@ -1169,7 +1071,6 @@ enum StatefulSchemaStatus {
 
   @@schema("public")
 }
-
 
 enum WhitelabelEntities {
   advisor

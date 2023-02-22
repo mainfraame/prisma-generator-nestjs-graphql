@@ -1,22 +1,76 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql'
+import { Field, Float, InputType, Int } from '@nestjs/graphql';
 
-@ObjectType()
-export class AdvisorRegistrationStatus {
-  @Field(() => Int)
-  advisorRegistrationStatusId: number
+import {
+  GraphQLBigInt,
+  GraphQLDateTime,
+  GraphQLJSONObject
+} from 'graphql-scalars';
 
-  @Field(() => Int)
-  advisorId: number
+@InputType()
+export class CreateAdvisorRegistrationStatusDto {
+  @Field(() => Int, { nullable: false })
+  advisorId: number;
 
-  @Field(() => String)
-  advisorUuid: string
+  @Field(() => Int, { nullable: false })
+  advisorRegistrationStatusId: number;
 
-  @Field(() => Date)
-  completedAt?: Date
+  @Field(() => String, { nullable: false })
+  advisorUuid: string;
 
-  @Field(() => Date)
-  createdAt: Date
+  @Field(() => GraphQLDateTime, { nullable: true })
+  completedAt?: Date;
 
-  @Field()
-  advisor: string
+  @Field(() => GraphQLDateTime, { nullable: false })
+  createdAt: Date;
+}
+
+@InputType()
+export class DeleteAdvisorRegistrationStatusDto {
+  @Field(() => Int, { nullable: false })
+  advisorRegistrationStatusId: number;
+}
+
+@InputType()
+export class FindManyAdvisorRegistrationStatusDto {
+  @Field(() => Int, { nullable: true })
+  advisorId?: number;
+
+  @Field(() => Int, { nullable: true })
+  advisorRegistrationStatusId?: number;
+
+  @Field(() => String, { nullable: true })
+  advisorUuid?: string;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  completedAt?: Date;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  createdAt?: Date;
+}
+
+@InputType()
+export class FindUniqueAdvisorRegistrationStatusDto {
+  @Field(() => Int, { nullable: false })
+  advisorRegistrationStatusId: number;
+}
+
+@InputType()
+export class UpdateDataAdvisorRegistrationStatusDto {
+  @Field(() => Int, { nullable: false })
+  advisorId: number;
+
+  @Field(() => String, { nullable: false })
+  advisorUuid: string;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  completedAt?: Date;
+
+  @Field(() => GraphQLDateTime, { nullable: false })
+  createdAt: Date;
+}
+
+@InputType()
+export class UpdateWhereAdvisorRegistrationStatusDto {
+  @Field(() => Int, { nullable: false })
+  advisorRegistrationStatusId: number;
 }

@@ -1,22 +1,76 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql'
+import { Field, Float, InputType, Int } from '@nestjs/graphql';
 
-@ObjectType()
-export class EmailWhiteLabel {
-  @Field(() => Int)
-  whitelabelContentId: number
+import {
+  GraphQLBigInt,
+  GraphQLDateTime,
+  GraphQLJSONObject
+} from 'graphql-scalars';
 
-  @Field(() => Int)
-  definitionId: number
+@InputType()
+export class CreateEmailWhiteLabelDto {
+  @Field(() => Int, { nullable: false })
+  definitionId: number;
 
-  @Field()
-  emailContent: Record<string, unknown>
+  @Field(() => GraphQLJSONObject, { nullable: false })
+  emailContent: Record<string, unknown>;
 
-  @Field()
-  entity?: string
+  @Field(() => String, { nullable: true })
+  entity?: undefined;
 
-  @Field(() => Int)
-  entityId?: number
+  @Field(() => Int, { nullable: true })
+  entityId?: number;
 
-  @Field()
-  definition: string
+  @Field(() => Int, { nullable: false })
+  whitelabelContentId: number;
+}
+
+@InputType()
+export class DeleteEmailWhiteLabelDto {
+  @Field(() => Int, { nullable: false })
+  whitelabelContentId: number;
+}
+
+@InputType()
+export class FindManyEmailWhiteLabelDto {
+  @Field(() => Int, { nullable: true })
+  definitionId?: number;
+
+  @Field(() => GraphQLJSONObject, { nullable: true })
+  emailContent?: Record<string, unknown>;
+
+  @Field(() => String, { nullable: true })
+  entity?: undefined;
+
+  @Field(() => Int, { nullable: true })
+  entityId?: number;
+
+  @Field(() => Int, { nullable: true })
+  whitelabelContentId?: number;
+}
+
+@InputType()
+export class FindUniqueEmailWhiteLabelDto {
+  @Field(() => Int, { nullable: false })
+  whitelabelContentId: number;
+}
+
+@InputType()
+export class UpdateDataEmailWhiteLabelDto {
+  @Field(() => Int, { nullable: false })
+  definitionId: number;
+
+  @Field(() => GraphQLJSONObject, { nullable: false })
+  emailContent: Record<string, unknown>;
+
+  @Field(() => String, { nullable: true })
+  entity?: undefined;
+
+  @Field(() => Int, { nullable: true })
+  entityId?: number;
+}
+
+@InputType()
+export class UpdateWhereEmailWhiteLabelDto {
+  @Field(() => Int, { nullable: false })
+  whitelabelContentId: number;
 }

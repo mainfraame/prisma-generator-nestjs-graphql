@@ -1,19 +1,58 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql'
+import { Field, Float, InputType, Int } from '@nestjs/graphql';
 
-@ObjectType()
-export class AccessRoleAbilities {
-  @Field(() => Int)
-  id: number
+import {
+  GraphQLBigInt,
+  GraphQLDateTime,
+  GraphQLJSONObject
+} from 'graphql-scalars';
 
-  @Field(() => Int)
-  accessRoleId: number
+@InputType()
+export class CreateAccessRoleAbilitiesDto {
+  @Field(() => Int, { nullable: false })
+  abilityId: number;
 
-  @Field(() => Int)
-  abilityId: number
+  @Field(() => Int, { nullable: false })
+  accessRoleId: number;
 
-  @Field()
-  abilities: string
+  @Field(() => Int, { nullable: false })
+  id: number;
+}
 
-  @Field()
-  accessRole: string
+@InputType()
+export class DeleteAccessRoleAbilitiesDto {
+  @Field(() => Int, { nullable: false })
+  id: number;
+}
+
+@InputType()
+export class FindManyAccessRoleAbilitiesDto {
+  @Field(() => Int, { nullable: true })
+  abilityId?: number;
+
+  @Field(() => Int, { nullable: true })
+  accessRoleId?: number;
+
+  @Field(() => Int, { nullable: true })
+  id?: number;
+}
+
+@InputType()
+export class FindUniqueAccessRoleAbilitiesDto {
+  @Field(() => Int, { nullable: false })
+  id: number;
+}
+
+@InputType()
+export class UpdateDataAccessRoleAbilitiesDto {
+  @Field(() => Int, { nullable: false })
+  accessRoleId: number;
+
+  @Field(() => Int, { nullable: false })
+  abilityId: number;
+}
+
+@InputType()
+export class UpdateWhereAccessRoleAbilitiesDto {
+  @Field(() => Int, { nullable: false })
+  id: number;
 }
