@@ -1,7 +1,7 @@
 {
   "name": "prisma-generator-nestjs-graphql-crud",
   "description": "generates basic graphql crud classes for @nestjs/graphql",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "bin": "./dist/bin.js",
   "license": "MIT",
   "engines": {
@@ -12,10 +12,11 @@
     "src"
   ],
   "scripts": {
-    "gen": "prisma generate --schema=./public.prisma",
-    "format": "prisma format --schema=./public.prisma",
-    "dev": "npx tsc -w",
     "build": "npx tsc && chmod +x ./dist/bin.js",
+    "dev": "npx tsc -w",
+    "format": "prisma format --schema=./public.prisma",
+    "gen": "prisma generate --schema=./public.prisma",
+    "prepack": "yarn build",
     "test": "jest"
   },
   "dependencies": {
