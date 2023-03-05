@@ -10,8 +10,8 @@ datasource db {
   schemas  = ["public"]
 }
 
-generator nestJsGraphql {
-  provider = "./dist/bin.js"
+generator nestJsGraphqlCrud {
+  provider = "./dist/prisma-generator-nestjs-graphql-crud.js"
 }
 
 model User {

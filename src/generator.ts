@@ -18,10 +18,10 @@ const { version } = require('../package.json');
 
 type Settings = Partial<
   GeneratorConfig & {
-    prettyName?: string;
-    defaultOutput?: string;
-    version?: string;
-  }
+  prettyName?: string;
+  defaultOutput?: string;
+  version?: string;
+}
 >;
 
 let settings: Settings = {
@@ -47,6 +47,16 @@ generatorHandler({
       )
       .join('\n');
 
+    const allExports = options.dmmf.datamodel.models
+      .map(
+        (model) =>
+          `
+          export * from './dto/${model.name}.dto';
+          export * from './entities/${model.name}.entity';
+          `
+      )
+      .join('\n');
+
     const exports = options.dmmf.datamodel.models
       .map((model) => `${model.name}Resolver`)
       .join(',\n');
@@ -55,6 +65,8 @@ generatorHandler({
       `${settings.defaultOutput}/index.ts`,
       `
           ${imports}
+          
+          ${allExports}
           
           export const resolvers = [
             ${exports}
@@ -70,7 +82,9 @@ generatorHandler({
             name: '@generated/graphql',
             description: 'auto generated nestjs graphql classes',
             version: '1.0.0',
-            main: 'index.js',
+            main: 'index.cjs',
+            module: 'index.js',
+            types: 'index.ts',
             license: 'MIT',
             engines: {
               node: '>=16.0'
