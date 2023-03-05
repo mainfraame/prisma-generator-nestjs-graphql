@@ -3,7 +3,7 @@ import {
   generatorHandler,
   GeneratorOptions
 } from '@prisma/generator-helper';
-import { logger } from '@prisma/sdk';
+import { logger } from '@prisma/internals';
 
 import fs from 'fs/promises';
 import path from 'path';
@@ -34,9 +34,12 @@ generatorHandler({
 
     await generateEntities(options.dmmf, settings.defaultOutput);
     logger.info(`${GENERATOR_NAME}::entities:created`);
+
     await generateDtos(options.dmmf, settings.defaultOutput);
     logger.info(`${GENERATOR_NAME}::dtos:created`);
+
     await generateResolvers(options.dmmf, settings);
+
     const imports = options.dmmf.datamodel.models
       .map(
         (model) =>

@@ -1,22 +1,21 @@
 {
-  "name": "prisma-generator-ql",
+  "name": "prisma-generator-nestjs-graphql",
   "description": "Provide a description about your generator",
-  "version": "1.0.0",
-  "main": "dist/generator.js",
+  "version": "1.0.3",
+  "main": "./dist/generator.js",
   "license": "MIT",
-  "bin": {
-    "prisma-generator-ql": "dist/bin.js"
-  },
   "engines": {
     "node": ">=14.0"
   },
+  "files": [
+    "dist",
+    "src"
+  ],
   "scripts": {
-    "start": "node dist/bin.js",
     "gen": "prisma generate --schema=./public.prisma",
     "format": "prisma format --schema=./public.prisma",
-    "dev": "npx tsc -w",
-    "build": "npx tsc --watch",
-    "prepack": "yarn build",
+    "dev": "npx tsc",
+    "build": "npx tsc",
     "test": "jest"
   },
   "dependencies": {
@@ -25,7 +24,7 @@
     "@nestjs/graphql": "^10.2.0",
     "@prisma/client": "^4.10.1",
     "@prisma/generator-helper": "^4.10.1",
-    "@prisma/sdk": "^4.0.0",
+    "@prisma/internals": "^4.10.1",
     "graphql": "^16.6.0",
     "graphql-scalars": "^1.20.1",
     "lodash": "^4.17.21",
