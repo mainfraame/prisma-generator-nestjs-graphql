@@ -1,8 +1,37 @@
 # Example
 
-Below is the example output from [public.prisma](../public.prisma):
-
 _*_ ESM & CJS files are also generated.
+
+Below is the output generated from the project's [public.prisma](../public.prisma):
+
+```
+generator client {
+  provider        = "prisma-client-js"
+  binaryTargets   = ["native"]
+  previewFeatures = ["multiSchema"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_URL")
+  schemas  = ["public"]
+}
+
+generator nestJsGraphqlCrud {
+  provider = "prisma-generator-nestjs-graphql-crud"
+}
+
+model User {
+  userId               Int                    @id @default(autoincrement()) @map("user_id")
+  email                String?                @db.VarChar(512)
+  password             String?                @db.VarChar(512)
+  createdAt            DateTime?              @map("created_at") @db.Timestamptz(6)
+  updatedAt            DateTime?              @map("updated_at") @db.Timestamptz(6)
+
+  @@map("user")
+  @@schema("public")
+}
+```
 
 `@generated/graphql/src/dto/User.dto.ts`
 ```typescript
