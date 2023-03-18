@@ -5,6 +5,7 @@ import { generateFindManyFields } from './generateFindManyFields';
 import { generateFindUniqueFields } from './generateFindUniqueFields';
 import { generateUpdateDataFields } from './generateUpdateDataFields';
 import { generateUpdateWhereFields } from './generateUpdateWhereFields';
+import { startCase } from 'lodash';
 
 export async function generateDtos(dmmf, outputPath) {
   // Generate DTO files for each model
@@ -21,32 +22,32 @@ export async function generateDtos(dmmf, outputPath) {
       import { GraphQLBigInt, GraphQLDateTime, GraphQLJSONObject } from 'graphql-scalars';
       
       @InputType()
-      export class Create${model.name}Dto {
+      export class Create${startCase(model.name)}Dto {
         ${createFields}
       }
 
       @InputType()
-      export class Delete${model.name}Dto {
+      export class Delete${startCase(model.name)}Dto {
         ${deleteWhereFields}
       }
       
       @InputType()
-      export class FindMany${model.name}Dto {
+      export class FindMany${startCase(model.name)}Dto {
         ${findManyFields}
       }
       
       @InputType()
-      export class FindUnique${model.name}Dto {
+      export class FindUnique${startCase(model.name)}Dto {
         ${findUniqueFields}
       }
       
       @InputType()
-      export class UpdateData${model.name}Dto {
+      export class UpdateData${startCase(model.name)}Dto {
         ${updateDataFields}
       }
       
       @InputType()
-      export class UpdateWhere${model.name}Dto {
+      export class UpdateWhere${startCase(model.name)}Dto {
         ${updateWhereFields}
       }
       `;
