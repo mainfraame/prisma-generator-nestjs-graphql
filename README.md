@@ -1,12 +1,27 @@
 # prisma-generator-nestjs-graphql-crud
 
-### Getting Started
+This prisma generator will create all the [@nestjs/graphql](https://docs.nestjs.com/graphql/quick-start)
+classes you'll need for basic CRUD operations; based on your prisma schema.
 
-```
+| Feature    | Available | Notes                                        |
+| ---------- | --------- | -------------------------------------------- |
+| Create     | ✅        |                                              |
+| CreateMany | ❌        |                                              |
+| Delete     | ✅        |                                              |
+| DeleteMany | ❌        |                                              |
+| Get (one)  | ✅        | by primary key                               |
+| Get (many) | ✅        | pagination included (skip/take only for now) |
+| Update     | ✅        |                                              |
+| UpdateMany | ❌        |                                              |
+
+```bash
 npm i prisma-generator-nestjs-graphql-crud
 ```
 
-Inside of your prisma schema, add the following:
+### Getting Started
+
+1. Inside your prisma schema add the following:
+
 ```
 generator nestJsGraphQlCrud {
   provider = "prisma-generator-nestjs-graphql-crud"
@@ -14,213 +29,156 @@ generator nestJsGraphQlCrud {
 ```
 
 The output will be generated to:
+
 ```
 node_modules/@generated/graphql
 ```
 
-Import the resolvers:
+2. Create a nestjs module that adds the generated providers (can be existing):
 
-```
+`/path/to/resolves.module.ts`
+
+```typescript
 import { resolvers } from '@generated/graphql';
+
+@Module({
+  providers: [...resolvers]
+})
+export class ResolversModule {}
+```
+
+3. If you don't already have one, create a PrismaModule w/ export PrismaService
+
+`/path/to/prisma.service.ts`
+
+```typescript
+import { Inject, Injectable, OnModuleInit, Optional } from '@nestjs/common';
+import { Prisma, PrismaClient } from '@prisma/client';
+
+@Injectable()
+export class PrismaService extends PrismaClient implements OnModuleInit {
+  constructor(
+    @Optional()
+    @Inject('PRISMA_SERVICE_OPTIONS')
+    private readonly prismaServiceOptions: Prisma.PrismaClientOptions = {}
+  ) {
+    super(prismaServiceOptions);
+  }
+
+  async onModuleInit() {
+    await this.$connect();
+  }
+
+  async beforeApplicationShutdown() {
+    await this.$disconnect();
+  }
+}
+```
+
+`/path/to/prisma.module.ts`
+
+```typescript
+import { DynamicModule, Module } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
+
+import { PrismaService } from './prisma.service';
+
+type PrismaModuleOptions = {
+  /**
+   * If "true", registers `PrismaModule` as a global module.
+   * See: https://docs.nestjs.com/modules#global-modules
+   */
+  isGlobal?: boolean;
+  prismaServiceOptions?: Prisma.PrismaClientOptions;
+};
+
+@Module({
+  providers: [PrismaService],
+  exports: [PrismaService]
+})
+export class PrismaModule {
+  static forRoot(options: PrismaModuleOptions = {}): DynamicModule {
+    return {
+      global: options.isGlobal,
+      module: PrismaModule,
+      providers: [
+        {
+          provide: 'PRISMA_SERVICE_OPTIONS',
+          useValue: options.prismaServiceOptions
+        }
+      ]
+    };
+  }
+}
+```
+
+4. Import the resolvers from the generated package & add them to a nestjs module (can be existing):
+
+`/path/to/resolves.module.ts`
+
+```typescript
+import { resolvers } from '@generated/graphql';
+
+@Module({
+  providers: [...resolvers]
+})
+export class ResolversModule {}
+```
+
+5. Configure your Graphql Service In NestJs
+
+The generated code relies on the `context` object for graphql to contain a
+reference to the `prisma` client. See the use of `useFactory` in the `GraphQLModule` below.
+
+_\*_ highly
+recommend [@graphql-yoga/nestjs](https://the-guild.dev/graphql/yoga-server/docs/integrations/integration-with-nestjs),
+but
+the generated code is still compatible with [@nestjs/mercurius](https://www.npmjs.com/package/@nestjs/mercurius)
+and [@nestjs/apollo](https://www.npmjs.com/package/@nestjs/apollo)
+
+```typescript
+import { YogaDriver, YogaDriverConfig } from '@graphql-yoga/nestjs';
+import { Module } from '@nestjs/common';
+import { GraphQLModule } from '@nestjs/graphql';
+
+import { PrismaModule } from './path/to/prisma.module';
+import { ResolversModule } from './path/to/resolves.module';
+
+@Module({
+  imports: [
+    GraphQLModule.forRootAsync<YogaDriverConfig>({
+      driver: YogaDriver,
+      useFactory: async (prisma: PrismaService) => ({
+        autoSchemaFile: 'schema.gql',
+        context: {
+          prisma
+        },
+        graphiql: true
+      }),
+      inject: [PrismaService]
+    }),
+    PrismaModule.forRoot({
+      isGlobal: true
+    }),
+    ResolversModule
+  ]
+})
+export class AppModule {}
 ```
 
 ---
 
 ### Example
 
-Below is the example output from [public.prisma](./public.prisma):
+See our this [doc](https://github.com/mainfraame/prisma-generator-nestjs-graphql/blob/main/docs/Example.md) for an
+example output
 
-`@generated/graphql/dto/User.dto.ts`
-```typescript
-import { Field, Float, InputType, Int } from '@nestjs/graphql';
+---
 
-import {
-  GraphQLBigInt,
-  GraphQLDateTime,
-  GraphQLJSONObject
-} from 'graphql-scalars';
+### Road Map
 
-@InputType()
-export class CreateUserDto {
-  @Field(() => GraphQLDateTime, { nullable: true })
-  createdAt?: Date;
-
-  @Field(() => String, { nullable: true })
-  email?: string;
-
-  @Field(() => String, { nullable: true })
-  password?: string;
-
-  @Field(() => GraphQLDateTime, { nullable: true })
-  updatedAt?: Date;
-
-  @Field(() => Int, { nullable: false })
-  userId: number;
-}
-
-@InputType()
-export class DeleteUserDto {
-  @Field(() => Int, { nullable: false })
-  userId: number;
-}
-
-@InputType()
-export class FindManyUserDto {
-  @Field(() => GraphQLDateTime, { nullable: true })
-  createdAt?: Date;
-
-  @Field(() => String, { nullable: true })
-  email?: string;
-
-  @Field(() => String, { nullable: true })
-  password?: string;
-
-  @Field(() => GraphQLDateTime, { nullable: true })
-  updatedAt?: Date;
-
-  @Field(() => Int, { nullable: true })
-  userId?: number;
-}
-
-@InputType()
-export class FindUniqueUserDto {
-  @Field(() => Int, { nullable: false })
-  userId: number;
-}
-
-@InputType()
-export class UpdateDataUserDto {
-  @Field(() => String, { nullable: true })
-  email?: string;
-
-  @Field(() => String, { nullable: true })
-  password?: string;
-
-  @Field(() => GraphQLDateTime, { nullable: true })
-  createdAt?: Date;
-
-  @Field(() => GraphQLDateTime, { nullable: true })
-  updatedAt?: Date;
-}
-
-@InputType()
-export class UpdateWhereUserDto {
-  @Field(() => Int, { nullable: false })
-  userId: number;
-}
-```
-
-`@generated/graphql/entities/User.entity.ts`
-```typescript
-import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
-
-import {
-  GraphQLBigInt,
-  GraphQLDateTime,
-  GraphQLJSONObject
-} from 'graphql-scalars';
-
-@ObjectType()
-export class User {
-  @Field(() => Int, { nullable: false })
-  userId: number;
-
-  @Field(() => String, { nullable: true })
-  email?: string;
-
-  @Field(() => String, { nullable: true })
-  password?: string;
-
-  @Field(() => GraphQLDateTime, { nullable: true })
-  createdAt?: Date;
-
-  @Field(() => GraphQLDateTime, { nullable: true })
-  updatedAt?: Date;
-}
-```
-
-`@generated/graphql/resolvers/User.resolver.ts`
-```typescript
-import { Args, Context, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { Prisma, PrismaClient } from '@prisma/client';
-
-import {
-  CreateUserDto,
-  DeleteUserDto,
-  FindManyUserDto,
-  FindUniqueUserDto,
-  UpdateDataUserDto,
-  UpdateWhereUserDto
-} from '../dto/User.dto';
-import { User } from '../entities/User.entity';
-
-@Resolver(() => User)
-export class UserResolver {
-  @Query(() => User)
-  async getUser(
-    @Context() context: { prisma: PrismaClient },
-    @Args('where', { type: () => FindUniqueUserDto })
-      where: Prisma.UserFindUniqueArgs['where']
-  ) {
-    return context.prisma.user.findUnique({ where });
-  }
-
-  @Query(() => [User])
-  async getAllUsers(
-    @Context() context: { prisma: PrismaClient },
-    @Args('where', { type: () => FindManyUserDto })
-      where: Prisma.UserFindManyArgs['where'],
-    @Args('skip', { type: () => Int, nullable: true }) skip: number,
-    @Args('take', { type: () => Int, nullable: true }) take: number
-  ) {
-    return context.prisma.user.findMany({
-      where,
-      skip: skip ?? 0,
-      take: take ?? 100
-    });
-  }
-
-  @Mutation(() => User)
-  async createUser(
-    @Context() context: { prisma: PrismaClient },
-    @Args('data', { type: () => CreateUserDto })
-      data: Prisma.UserCreateArgs['data']
-  ) {
-    return context.prisma.user.create({ data });
-  }
-
-  @Mutation(() => User)
-  async updateUser(
-    @Context() context: { prisma: PrismaClient },
-    @Args('where', { type: () => UpdateWhereUserDto })
-      where: Prisma.UserUpdateArgs['where'],
-    @Args('data', { type: () => UpdateDataUserDto })
-      data: Prisma.UserUpdateArgs['data']
-  ) {
-    return context.prisma.user.update({ where, data });
-  }
-
-  @Mutation(() => User)
-  async removeUser(
-    @Context() context: { prisma: PrismaClient },
-    @Args('where', { type: () => DeleteUserDto })
-      where: Prisma.UserDeleteArgs['where']
-  ) {
-    return context.prisma.user.delete({ where });
-  }
-}
-```
-
-
-`@generated/graphql/index.ts`
-```typescript
-import { UserResolver } from './resolvers/User.resolver';
-
-export * from './dto/User.dto';
-export * from './entities/User.entity';
-
-export const resolvers = [UserResolver];
-
-```
-
-
+- generate parent resolvers
+- custom scalar type support
+- create / delete / update / many support
+- cursor-based pagination
+- authentication guard integration

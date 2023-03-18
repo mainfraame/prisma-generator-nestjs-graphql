@@ -1,11 +1,8 @@
-import fs from 'fs/promises';
 import { camelCase } from 'lodash';
 
 import { writeFileSafely } from '../utils/writeFileSafely';
 
 export async function generateResolvers(dmmf, settings) {
-  await fs.mkdir(`${settings.defaultOutput}/resolvers`, { recursive: true });
-
   for (const model of dmmf.datamodel.models) {
     const content = `
     import { Context, Int, Resolver, Query, Args, Mutation } from '@nestjs/graphql';
@@ -55,6 +52,15 @@ export async function generateResolvers(dmmf, settings) {
     }CreateArgs['data']) {
           return context.prisma.${camelCase(model.name)}.create({data});
       }
+      
+      @Mutation(() => ${model.name})
+      async delete${model.name}(
+      @Context() context: { prisma: PrismaClient },
+      @Args('where', {type: () => Delete${model.name}Dto}) where: Prisma.${
+      model.name
+    }DeleteArgs['where']) {
+        return context.prisma.${camelCase(model.name)}.delete({where});
+      }
 
       @Mutation(() => ${model.name})
       async update${model.name}(
@@ -64,17 +70,9 @@ export async function generateResolvers(dmmf, settings) {
     }UpdateArgs['where'], @Args('data', {type: () => UpdateData${
       model.name
     }Dto}) data: Prisma.${model.name}UpdateArgs['data']) {
-      return context.prisma.${camelCase(model.name)}.update({where, data});
-      }
-      
-      @Mutation(() => ${model.name})
-      async remove${model.name}(
-      @Context() context: { prisma: PrismaClient },
-      @Args('where', {type: () => Delete${model.name}Dto}) where: Prisma.${
-      model.name
-    }DeleteArgs['where']) {
-        return context.prisma.${camelCase(model.name)}.delete({where});
+          return context.prisma.${camelCase(model.name)}.update({where, data});
         }
+      
       }
       `;
 

@@ -1,5 +1,3 @@
-import fs from 'fs/promises';
-
 import { writeFileSafely } from '../utils/writeFileSafely';
 import { generateCreateFields } from './generateCreateFields';
 import { generateDeleteWhereFields } from './generateDeleteWhereFields';
@@ -9,9 +7,6 @@ import { generateUpdateDataFields } from './generateUpdateDataFields';
 import { generateUpdateWhereFields } from './generateUpdateWhereFields';
 
 export async function generateDtos(dmmf, outputPath) {
-  // Ensure the output path exists
-  await fs.mkdir(`${outputPath}/dto`, { recursive: true });
-
   // Generate DTO files for each model
   for (const model of dmmf.datamodel.models) {
     const createFields = generateCreateFields(model.fields);
@@ -54,7 +49,6 @@ export async function generateDtos(dmmf, outputPath) {
       export class UpdateWhere${model.name}Dto {
         ${updateWhereFields}
       }
-
       `;
 
     await writeFileSafely(`${outputPath}/dto/${model.name}.dto.ts`, content);

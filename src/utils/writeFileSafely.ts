@@ -1,23 +1,45 @@
 import { transform } from '@swc/core';
 
 import fs from 'fs/promises';
-import { dirname } from 'path';
+import { basename, dirname } from 'path';
 
 import { formatFile } from './formatFile';
+import { log } from './log';
 
 export const writeFileSafely = async (path: string, content: any) => {
-  await fs.mkdir(dirname(path), {
-    recursive: true
-  });
+  try {
+    const isNodeModules = path.includes('node_modules');
 
-  /** write ts */
-  await fs.writeFile(path, await formatFile(content));
+    const fileName = basename(path);
 
-  /** write esm */
-  await fs.writeFile(
-    path.includes('node_modules') ? path.replace(/\.ts$/, '.js') : path,
-    path.includes('node_modules')
-      ? (
+    const outputPath =
+      dirname(path).split('@generated/graphql')[0] + '@generated/graphql';
+
+    const outputDir = dirname(path).split('@generated/graphql/')[1] ?? '';
+
+    const srcDir = `${outputPath}${
+      isNodeModules
+        ? `/src${outputDir ? `/${outputDir}` : ''}`
+        : outputDir ?? ''
+    }`;
+
+    const distDir = `${outputPath}/dist${outputDir ? `/${outputDir}` : ''}`;
+
+    await fs.mkdir(distDir, { recursive: true });
+    await fs.mkdir(srcDir, { recursive: true });
+
+    const srcFile = `${srcDir}/${fileName}`;
+    const cjsFile = `${distDir}/${fileName.replace(/\.ts$/, '.cjs')}`;
+    const jsFile = `${distDir}/${fileName.replace(/\.ts$/, '.js')}`;
+
+    /** write ts */
+    await fs.writeFile(srcFile, await formatFile(content));
+
+    if (isNodeModules) {
+      /** write esm */
+      await fs.writeFile(
+        jsFile,
+        (
           await transform(await formatFile(content), {
             jsc: {
               target: 'es2020',
@@ -38,14 +60,14 @@ export const writeFileSafely = async (path: string, content: any) => {
             sourceMaps: 'inline'
           })
         ).code
-      : await formatFile(content)
-  );
+      );
+    }
 
-  /** write cjs */
-  await fs.writeFile(
-    path.includes('node_modules') ? path.replace(/\.ts$/, '.cjs') : path,
-    path.includes('node_modules')
-      ? (
+    if (isNodeModules) {
+      /** write cjs */
+      await fs.writeFile(
+        cjsFile,
+        (
           await transform(await formatFile(content), {
             jsc: {
               target: 'es2020',
@@ -66,6 +88,15 @@ export const writeFileSafely = async (path: string, content: any) => {
             sourceMaps: 'inline'
           })
         ).code
-      : await formatFile(content)
-  );
+      );
+    }
+  } catch (e) {
+    log.error('Failed To Write File:', {
+      path,
+      message: e.message,
+      stack: e.stack
+    });
+
+    process.exit(1);
+  }
 };
