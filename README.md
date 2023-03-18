@@ -130,14 +130,12 @@ export class ResolversModule {}
 The generated code relies on the `context` object for graphql to contain a
 reference to the `prisma` client. See the use of `useFactory` in the `GraphQLModule` below.
 
-_\*_ highly
-recommend [@graphql-yoga/nestjs](https://the-guild.dev/graphql/yoga-server/docs/integrations/integration-with-nestjs),
-but
-the generated code is still compatible with [@nestjs/mercurius](https://www.npmjs.com/package/@nestjs/mercurius)
-and [@nestjs/apollo](https://www.npmjs.com/package/@nestjs/apollo)
+_\*_ generated code is compatible with [@nestjs/mercurius](https://www.npmjs.com/package/@nestjs/mercurius), [@nestjs/apollo](https://www.npmjs.com/package/@nestjs/apollo)
+and [@graphql-yoga/nestjs](https://the-guild.dev/graphql/yoga-server/docs/integrations/integration-with-nestjs)
+
 
 ```typescript
-import { YogaDriver, YogaDriverConfig } from '@graphql-yoga/nestjs';
+import { ApolloDriver } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 
@@ -146,16 +144,16 @@ import { ResolversModule } from './path/to/resolves.module';
 
 @Module({
   imports: [
-    GraphQLModule.forRootAsync<YogaDriverConfig>({
-      driver: YogaDriver,
+    GraphQLModule.forRootAsync({
+      driver: ApolloDriver,
+      inject: [PrismaService],
       useFactory: async (prisma: PrismaService) => ({
         autoSchemaFile: 'schema.gql',
         context: {
           prisma
         },
         graphiql: true
-      }),
-      inject: [PrismaService]
+      })
     }),
     PrismaModule.forRoot({
       isGlobal: true
@@ -178,6 +176,7 @@ example output
 ### Road Map
 
 - generate parent resolvers
+- support order by for findMany
 - custom scalar type support
 - create / delete / update / many support
 - cursor-based pagination
