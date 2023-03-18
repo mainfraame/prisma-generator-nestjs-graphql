@@ -3,20 +3,20 @@
 This prisma generator will create all the [@nestjs/graphql](https://docs.nestjs.com/graphql/quick-start)
 classes you'll need for basic CRUD operations; based on your prisma schema.
 
-| Feature    | Available | Notes                                        |
-| ---------- | --------- | -------------------------------------------- |
-| Create     | ✅        |                                              |
-| CreateMany | ❌        |                                              |
-| Delete     | ✅        |                                              |
-| DeleteMany | ❌        |                                              |
-| Get (one)  | ✅        | by primary key                               |
-| Get (many) | ✅        | pagination included (skip/take only for now) |
-| Update     | ✅        |                                              |
-| UpdateMany | ❌        |                                              |
-
 ```bash
 npm i prisma-generator-nestjs-graphql-crud
 ```
+
+| Feature    | Available | Notes                                        |
+|------------|-----------|----------------------------------------------|
+| Create     | ✅         |                                              |
+| CreateMany | ❌         |                                              |
+| Delete     | ✅         |                                              |
+| DeleteMany | ❌         |                                              |
+| Get (one)  | ✅         | by primary key                               |
+| Get (many) | ✅         | pagination included (skip/take only for now) |
+| Update     | ✅         |                                              |
+| UpdateMany | ❌         |                                              |
 
 ### Getting Started
 
