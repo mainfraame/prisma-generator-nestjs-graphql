@@ -1,4 +1,4 @@
-import { camelCase,startCase } from 'lodash';
+import { camelCase, startCase } from 'lodash';
 
 import { writeFileSafely } from '../utils/writeFileSafely';
 
@@ -24,18 +24,20 @@ export async function generateResolvers(dmmf, settings) {
       @Query(() => ${model.name})
       async get${startCase(model.name)}
      (@Context() context: { prisma: PrismaClient },
-     @Args('where', {type: () => FindUnique${startCase(model.name)}Dto}) where: Prisma.${
-      model.name
-    }FindUniqueArgs['where']) {
+     @Args('where', {type: () => FindUnique${startCase(
+       model.name
+     )}Dto}) where: Prisma.${model.name}FindUniqueArgs['where']) {
         return context.prisma.${camelCase(model.name)}.findUnique({where});
       }
       
       @Query(() => [${model.name}])
-      async getAll${startCase(model.name)}${model.name.endsWith('s') ? '' : 's'}(
+      async getAll${startCase(model.name)}${
+      model.name.endsWith('s') ? '' : 's'
+    }(
      @Context() context: { prisma: PrismaClient },
-     @Args('where', {type: () => FindMany${startCase(model.name)}Dto}) where: Prisma.${
-      model.name
-    }FindManyArgs['where'],
+     @Args('where', {type: () => FindMany${startCase(
+       model.name
+     )}Dto}) where: Prisma.${model.name}FindManyArgs['where'],
      @Args('skip',  { type: () => Int, nullable: true }) skip: number,
      @Args('take',  { type: () => Int, nullable: true }) take: number
      ) {
@@ -47,29 +49,31 @@ export async function generateResolvers(dmmf, settings) {
       @Mutation(() => ${model.name})
       async create${startCase(model.name)}(
       @Context() context: { prisma: PrismaClient },
-      @Args('data', {type: () => Create${startCase(model.name)}Dto}) data: Prisma.${
-      model.name
-    }CreateArgs['data']) {
+      @Args('data', {type: () => Create${startCase(
+        model.name
+      )}Dto}) data: Prisma.${model.name}CreateArgs['data']) {
           return context.prisma.${camelCase(model.name)}.create({data});
       }
       
       @Mutation(() => ${model.name})
       async delete${startCase(model.name)}(
       @Context() context: { prisma: PrismaClient },
-      @Args('where', {type: () => Delete${startCase(model.name)}Dto}) where: Prisma.${
-      model.name
-    }DeleteArgs['where']) {
+      @Args('where', {type: () => Delete${startCase(
+        model.name
+      )}Dto}) where: Prisma.${model.name}DeleteArgs['where']) {
         return context.prisma.${camelCase(model.name)}.delete({where});
       }
 
       @Mutation(() => ${model.name})
       async update${startCase(model.name)}(
       @Context() context: { prisma: PrismaClient },
-      @Args('where', {type: () => UpdateWhere${startCase(model.name)}Dto}) where: Prisma.${
+      @Args('where', {type: () => UpdateWhere${startCase(
+        model.name
+      )}Dto}) where: Prisma.${
       model.name
-    }UpdateArgs['where'], @Args('data', {type: () => UpdateData${
+    }UpdateArgs['where'], @Args('data', {type: () => UpdateData${startCase(
       model.name
-    }Dto}) data: Prisma.${model.name}UpdateArgs['data']) {
+    )}Dto}) data: Prisma.${model.name}UpdateArgs['data']) {
           return context.prisma.${camelCase(model.name)}.update({where, data});
         }
       
