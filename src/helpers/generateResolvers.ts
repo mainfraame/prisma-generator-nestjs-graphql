@@ -37,9 +37,9 @@ export async function generateResolvers(dmmf, settings) {
      @Context() context: { prisma: PrismaClient },
      @Args('where', {type: () => FindMany${startCase(
        model.name
-     )}Dto, nullable: true}) where: Prisma.${model.name}FindManyArgs['where'],
-     @Args('skip',  { type: () => Int, nullable: true }) skip: number,
-     @Args('take',  { type: () => Int, nullable: true }) take: number
+     )}Dto, nullable: true}) where?: Prisma.${model.name}FindManyArgs['where'],
+     @Args('skip',  { type: () => Int, nullable: true }) skip?: number,
+     @Args('take',  { type: () => Int, nullable: true }) take?: number
      ) {
         return context.prisma.${camelCase(
           model.name
