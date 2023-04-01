@@ -16,8 +16,8 @@ const FieldGqlTypes = {
     value: 'GraphQLBigInt'
   },
   DateTime: {
-    from: 'graphql-scalars',
-    value: 'GraphQLDateTime'
+    from: false,
+    value: 'Date'
   },
   Int: {
     from: '@nestjs/graphql',
