@@ -7,3 +7,5 @@ yarn.lock
 yarn-error.log
 .pnpm-debug.log
 dist
+.yarn
+.yarnrc.yml

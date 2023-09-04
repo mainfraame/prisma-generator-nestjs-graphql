@@ -1,29 +1,20 @@
-import { orderBy } from 'lodash';
+import type { DMMF } from '@prisma/generator-helper';
 
-import { mapPrismaTypeToGraphQLType } from './mapPrismaTypeToGraphQlType';
-import { mapPrismaTypeToTsType } from './mapPrismaTypeToTsType';
+import { getGqlType, getTsType } from '../utils';
+import { getUpdateWhereFields } from './getUpdateWhereFields';
 
-export function generateUpdateWhereFields(fields, model) {
-  const parsedFields = orderBy(
-    fields.filter((field) => !field.relationName).filter((field) => field.isId),
-    ['name']
-  );
+export function generateUpdateWhereFields(
+  model: DMMF.Model,
+  enums: Record<string, DMMF.DatamodelEnum>
+) {
+  return getUpdateWhereFields(model)
+    .map(field => {
+      const graphqlType = getGqlType(field);
+      const tsType = getTsType(field);
 
-  const finalFields = parsedFields.length
-    ? parsedFields
-    : orderBy(
-        (model.primaryKey?.fields ?? []).map((field) =>
-          fields.find(({ name }) => name === field)
-        ),
-        ['name']
-      );
-
-  return finalFields
-    .map((field) => {
-      const graphqlType = mapPrismaTypeToGraphQLType(field.type);
-      const tsType = mapPrismaTypeToTsType(field.type);
-
-      return `@Field(() => ${graphqlType}, { nullable: false })\n${field.name}: ${tsType};`;
+      return `@Field(() => ${graphqlType}, { nullable: false })\n${
+        field.name
+      }: ${enums[field.type] ? field.type : tsType};`;
     })
     .join('\n\n');
 }

@@ -21,7 +21,7 @@ module.exports = {
       files: ['**/src/graphql/**/*.*'],
       rules: {
         '@typescript-eslint/no-unused-vars': 'warn',
-        '@typescript-eslint/ban-types': 'warn',
+        '@typescript-eslint/ban-types': 'warn'
       }
     }
   ],
@@ -30,8 +30,7 @@ module.exports = {
     ecmaFeatures: {
       experimentalObjectRestSpread: true,
       experimentalDecorators: true,
-      legacyDecorators: true,
-      jsx: true
+      legacyDecorators: true
     },
     sourceType: 'module'
   },
@@ -57,9 +56,6 @@ module.exports = {
     '@typescript-eslint/no-var-requires': 'off'
   },
   settings: {
-    react: {
-      version: '16.14'
-    },
     'import/resolver': {
       typescript: {} // this loads <rootdir>/tsconfig.json to eslint
     }

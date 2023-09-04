@@ -1,19 +1,24 @@
-import { Context } from '@nestjs/graphql';
+import type { DMMF } from '@prisma/generator-helper';
 
-import { mapPrismaTypeToGraphQLType } from './mapPrismaTypeToGraphQlType';
-import { mapPrismaTypeToTsType } from './mapPrismaTypeToTsType';
+import { getGqlType, getTsType } from '../utils';
+import { getUpdateDataFields } from './getUpdateDataFields';
 
-export function generateUpdateDataFields(fields, model) {
-  return fields
-    .filter((field) => !field.relationName)
-    .filter((field) => !field.isId)
-    .map((field) => {
-      const graphqlType = mapPrismaTypeToGraphQLType(field.type);
-      const tsType = mapPrismaTypeToTsType(field.type);
+export function generateUpdateDataFields(
+  model: DMMF.Model,
+  enums: Record<string, DMMF.DatamodelEnum>
+) {
+  return getUpdateDataFields(model)
+    .map(field => {
+      const graphqlType = getGqlType(field);
+      const tsType = getTsType(field);
 
-      return `@Field(() => ${graphqlType}, {nullable: ${
+      return `
+      @Field(() => ${graphqlType}, {nullable: ${
         field.isRequired ? 'false' : 'true'
-      }})\n${field.name}${field.isRequired ? '' : '?'}: ${tsType};`;
+      }})
+      ${field.name}${field.isRequired ? '' : '?'}: ${
+        enums[field.type] ? field.type : tsType
+      }${field.isRequired ? '' : ' | null'};`;
     })
     .join('\n\n');
 }

@@ -6,3 +6,5 @@ yarn-error.log
 build
 pnpm-debug.log
 .env*
+.yarn/cache
+.yarn/install-state.gz

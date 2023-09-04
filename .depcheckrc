@@ -1,8 +1,15 @@
 ignores: [
   "dist",
-  "@trivago/prettier-plugin-sort-imports",
+  "@nestjs/core",
+  "@nestjs/graphql",
   "@nestjs/swagger",
   "@prisma/client",
+  "@trivago/prettier-plugin-sort-imports",
+  "@yarnpkg/core",
+  "@yarnpkg/plugin-essentials",
   "class-validator",
-  "class-transformer"
+  "class-transformer",
+  "graphql",
+  "graphql-scalars",
+  "semver"
 ]

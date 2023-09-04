@@ -1,88 +1,136 @@
-import { camelCase, startCase } from 'lodash';
+import type { DMMF } from '@prisma/generator-helper';
 
-import { writeFileSafely } from '../utils/writeFileSafely';
+import { uniq } from 'lodash';
 
-export async function generateResolvers(dmmf, settings) {
-  for (const model of dmmf.datamodel.models) {
+import type { Settings } from '../types';
+import { startCase, writeFile } from '../utils';
+import { generateCreateMutation } from './generateCreateMutation';
+import { generateDeleteMutation } from './generateDeleteMutation';
+import { generateDependencies } from './generateDependencies';
+import { generateFieldResolver } from './generateFieldResolver';
+import { generateFindManyQuery } from './generateFindManyQuery';
+import { generateFindUniqueQuery } from './generateFindUniqueQuery';
+import { generateUpdateMutation } from './generateUpdateMutation';
+
+export async function generateResolvers(
+  models: DMMF.Model[],
+  settings: Settings
+) {
+  const modelHash = models.reduce(
+    (acc, model) => ({
+      ...acc,
+      [model.name]: model
+    }),
+    {}
+  );
+
+  for (const model of models) {
+    const relationships = model.fields.filter(o => o.kind === 'object');
+    const primaryKey = model.fields.find(o => o.isId);
+    const uniqueKey = model.fields.find(o => o.isUnique);
+
+    const fieldResolvers = primaryKey?.name
+      ? relationships.map(field =>
+          generateFieldResolver(
+            model,
+            {
+              primaryKey,
+              uniqueKey
+            },
+            field,
+            modelHash[field.type]
+          )
+        )
+      : [];
+
+    /** when no primary key exists, we can't include this. */
+    const findUnique = generateFindUniqueQuery(model);
+    const findMany = generateFindManyQuery(model);
+    const createMutation = generateCreateMutation(model);
+    const updateMutation = generateUpdateMutation(model);
+    const deleteMutation = generateDeleteMutation(model);
+
+    /**
+     * todo:: fix update/delete types - swap out e.g. Prisma.${model.name}UpdateArgs['data'] for actual types
+     * there are a few tables missing primary keys
+     */
     const content = `
-    import { Context, Int, Resolver, Query, Args, Mutation } from '@nestjs/graphql';
-    import { Prisma, PrismaClient } from '@prisma/client';
-
-    import { 
-      Create${startCase(model.name)}Dto,
-      Delete${startCase(model.name)}Dto,
-      FindMany${startCase(model.name)}Dto, 
-      FindUnique${startCase(model.name)}Dto,
-      UpdateData${startCase(model.name)}Dto,
-      UpdateWhere${startCase(model.name)}Dto,
-    } from '../dto/${model.name}.dto';
-
-    import { ${model.name} } from '../entities/${model.name}.entity';
-    
     @Resolver(() => ${model.name})
     export class ${model.name}Resolver {
-      @Query(() => ${model.name})
-      async get${startCase(model.name)}
-     (@Context() context: { prisma: PrismaClient },
-     @Args('where', {type: () => FindUnique${startCase(
-       model.name
-     )}Dto}) where: Prisma.${model.name}FindUniqueArgs['where']) {
-        return context.prisma.${camelCase(model.name)}.findUnique({where});
-      }
-      
-      @Query(() => [${model.name}])
-      async getAll${startCase(model.name)}${
-      model.name.endsWith('s') ? '' : 's'
-    }(
-     @Context() context: { prisma: PrismaClient },
-     @Args('where', {type: () => FindMany${startCase(
-       model.name
-     )}Dto, nullable: true}) where?: Prisma.${model.name}FindManyArgs['where'],
-     @Args('skip',  { type: () => Int, nullable: true }) skip?: number,
-     @Args('take',  { type: () => Int, nullable: true }) take?: number
-     ) {
-        return context.prisma.${camelCase(
-          model.name
-        )}.findMany({...where ? {where} : {}, skip: skip ?? 0, take: take ?? 100});
-      }
-      
-      @Mutation(() => ${model.name})
-      async create${startCase(model.name)}(
-      @Context() context: { prisma: PrismaClient },
-      @Args('data', {type: () => Create${startCase(
-        model.name
-      )}Dto}) data: Prisma.${model.name}CreateArgs['data']) {
-          return context.prisma.${camelCase(model.name)}.create({data});
-      }
-      
-      @Mutation(() => ${model.name})
-      async delete${startCase(model.name)}(
-      @Context() context: { prisma: PrismaClient },
-      @Args('where', {type: () => Delete${startCase(
-        model.name
-      )}Dto}) where: Prisma.${model.name}DeleteArgs['where']) {
-        return context.prisma.${camelCase(model.name)}.delete({where});
-      }
 
-      @Mutation(() => ${model.name})
-      async update${startCase(model.name)}(
-      @Context() context: { prisma: PrismaClient },
-      @Args('where', {type: () => UpdateWhere${startCase(
-        model.name
-      )}Dto}) where: Prisma.${
-      model.name
-    }UpdateArgs['where'], @Args('data', {type: () => UpdateData${startCase(
-      model.name
-    )}Dto}) data: Prisma.${model.name}UpdateArgs['data']) {
-          return context.prisma.${camelCase(model.name)}.update({where, data});
+      ${findUnique}
+   
+      ${findMany}
+
+      ${fieldResolvers.join('\n\n')}
+
+      ${createMutation}
+
+      ${updateMutation}
+
+      ${deleteMutation}
+    }`;
+
+    const argsDeps = [
+      `Create${startCase(model.name)}Arg`,
+      `Delete${startCase(model.name)}Arg`,
+      `FindMany${startCase(model.name)}Arg`,
+      `FindUnique${startCase(model.name)}Arg`,
+      `UpdateData${startCase(model.name)}Arg`,
+      `UpdateWhere${startCase(model.name)}Arg`
+    ].filter(m => content.includes(m));
+
+    const dtoDeps = [
+      `Create${startCase(model.name)}Dto`,
+      `Delete${startCase(model.name)}Dto`,
+      `FindMany${startCase(model.name)}Dto`,
+      `FindUnique${startCase(model.name)}Dto`,
+      `UpdateData${startCase(model.name)}Dto`,
+      `UpdateWhere${startCase(model.name)}Dto`
+    ].filter(m => content.includes(m));
+
+    const scalarDeps = [`${startCase(model.name)}OrderBy`].filter(m =>
+      content.includes(m)
+    );
+
+    await writeFile(
+      `${settings.outputPath}/resolvers/${model.name}.resolver.ts`,
+      `
+        ${generateDependencies(content)}
+        ${
+          dtoDeps.length
+            ? `import { ${dtoDeps.sort().join(', ')} } from '../dto/${
+                model.name
+              }.dto';`
+            : ''
         }
-      
-      }
-      `;
-
-    await writeFileSafely(
-      `${settings.defaultOutput}/resolvers/${model.name}.resolver.ts`,
-      content
+        ${
+          argsDeps.length
+            ? `import { ${argsDeps.sort().join(', ')} } from '../arg/${
+                model.name
+              }.arg';`
+            : ''
+        }
+         ${
+           scalarDeps.length
+             ? `import { ${scalarDeps.sort().join(', ')} } from '../scalar/${
+                 model.name
+               }.scalar';`
+             : ''
+         }
+        ${uniq([
+          `import { ${model.name} } from '../entities/${model.name}.entity';`,
+          ...relationships
+            .filter(field => content.includes(startCase(field.type)))
+            .map(
+              field =>
+                `import { ${startCase(
+                  field.type
+                )} } from '../entities/${startCase(field.type)}.entity';`
+            )
+        ]).join('\n')}
+        ${content}
+      `
     );
   }
 }

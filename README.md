@@ -7,16 +7,34 @@ classes you'll need for basic CRUD operations; based on your prisma schema.
 npm i prisma-generator-nestjs-graphql-crud
 ```
 
+---
+
+#### Prisma Features
+
 | Feature    | Available | Notes                                        |
 |------------|-----------|----------------------------------------------|
-| Create     | ✅         |                                              |
-| CreateMany | ❌         |                                              |
-| Delete     | ✅         |                                              |
-| DeleteMany | ❌         |                                              |
-| Get (one)  | ✅         | by primary key                               |
-| Get (many) | ✅         | pagination included (skip/take only for now) |
-| Update     | ✅         |                                              |
-| UpdateMany | ❌         |                                              |
+| create     | ✅         |                                              |
+| createMany | ❌         |                                              |
+| delete     | ✅         |                                              |
+| deleteMany | ❌         |                                              |
+| findUnique | ✅         | by primary key or composite keys             |
+| findMany   | ✅         | pagination included (skip/take only for now) |
+| orderBy    | ✅         |                                              |
+| update     | ✅         |                                              |
+| updateMany | ❌         |                                              |
+
+---
+
+#### Graphql Features
+
+| Feature        | Available | Notes                                    |
+|----------------|-----------|------------------------------------------|
+| FieldResolvers | ✅         | both up and down relationships supported |
+| Mutations      | ✅         |                                          |
+| Query          | ✅         |                                          |
+| Resolvers      | ✅         |                                          |
+
+---
 
 ### Getting Started
 
@@ -28,126 +46,37 @@ generator nestJsGraphQlCrud {
 }
 ```
 
-The output will be generated to:
+**Options:**
 
-```
-node_modules/@generated/graphql
-```
+| Feature  | Description                                  | Default                           | Example                      |
+|----------|----------------------------------------------|-----------------------------------|------------------------------|
+| excludes | prisma model names to exclude from generator |                                   | `excludes = ["Ignore"]`      |
+| output   | cwd relative path for the output             | `node_modules/@generated/graphql` | `output   = "./example/src"` |
 
-2. Create a nestjs module that adds the generated providers (can be existing):
-
-`/path/to/resolves.module.ts`
-
-```typescript
-import { resolvers } from '@generated/graphql';
-
-@Module({
-  providers: [...resolvers]
-})
-export class ResolversModule {}
-```
-
-3. If you don't already have one, create a PrismaModule w/ export PrismaService
-
-`/path/to/prisma.service.ts`
-
-```typescript
-import { Inject, Injectable, OnModuleInit, Optional } from '@nestjs/common';
-import { Prisma, PrismaClient } from '@prisma/client';
-
-@Injectable()
-export class PrismaService extends PrismaClient implements OnModuleInit {
-  constructor(
-    @Optional()
-    @Inject('PRISMA_SERVICE_OPTIONS')
-    private readonly prismaServiceOptions: Prisma.PrismaClientOptions = {}
-  ) {
-    super(prismaServiceOptions);
-  }
-
-  async onModuleInit() {
-    await this.$connect();
-  }
-
-  async beforeApplicationShutdown() {
-    await this.$disconnect();
-  }
-}
-```
-
-`/path/to/prisma.module.ts`
-
-```typescript
-import { DynamicModule, Module } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
-
-import { PrismaService } from './prisma.service';
-
-type PrismaModuleOptions = {
-  /**
-   * If "true", registers `PrismaModule` as a global module.
-   * See: https://docs.nestjs.com/modules#global-modules
-   */
-  isGlobal?: boolean;
-  prismaServiceOptions?: Prisma.PrismaClientOptions;
-};
-
-@Module({
-  providers: [PrismaService],
-  exports: [PrismaService]
-})
-export class PrismaModule {
-  static forRoot(options: PrismaModuleOptions = {}): DynamicModule {
-    return {
-      global: options.isGlobal,
-      module: PrismaModule,
-      providers: [
-        {
-          provide: 'PRISMA_SERVICE_OPTIONS',
-          useValue: options.prismaServiceOptions
-        }
-      ]
-    };
-  }
-}
-```
-
-4. Import the resolvers from the generated package & add them to a nestjs module (can be existing):
-
-`/path/to/resolves.module.ts`
-
-```typescript
-import { resolvers } from '@generated/graphql';
-
-@Module({
-  providers: [...resolvers]
-})
-export class ResolversModule {}
-```
-
-5. Configure your Graphql Service In NestJs
+2. Configure your Graphql Service In NestJs
 
 The generated code relies on the `context` object for graphql to contain a
 reference to the `prisma` client. See the use of `useFactory` in the `GraphQLModule` below.
 
-_\*_ generated code is compatible with [@nestjs/mercurius](https://www.npmjs.com/package/@nestjs/mercurius), [@nestjs/apollo](https://www.npmjs.com/package/@nestjs/apollo)
+**PrismaModule** and **PrismaService** are generated; if you want your own custom implementation,
+use this [doc](./docs/PrismaModule.md) as a guide.
+
+_\*_ generated code is compatible
+with [@nestjs/mercurius](https://www.npmjs.com/package/@nestjs/mercurius), [@nestjs/apollo](https://www.npmjs.com/package/@nestjs/apollo)
 and [@graphql-yoga/nestjs](https://the-guild.dev/graphql/yoga-server/docs/integrations/integration-with-nestjs)
 
-
 ```typescript
+import { PrismaModule, PrismaService, providers } from '@generated/graphql';
 import { ApolloDriver } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
-
-import { PrismaModule } from './path/to/prisma.module';
-import { ResolversModule } from './path/to/resolves.module';
 
 @Module({
   imports: [
     GraphQLModule.forRootAsync({
       driver: ApolloDriver,
       inject: [PrismaService],
-      useFactory: async (prisma: PrismaService) => ({
+      useFactory: (prisma: PrismaService) => ({
         autoSchemaFile: 'schema.gql',
         context: {
           prisma
@@ -157,27 +86,33 @@ import { ResolversModule } from './path/to/resolves.module';
     }),
     PrismaModule.forRoot({
       isGlobal: true
-    }),
-    ResolversModule
-  ]
+    })
+  ],
+  providers: [...providers]
 })
-export class AppModule {}
+export class AppModule {
+}
 ```
 
 ---
 
 ### Example
 
-See our this [doc](https://github.com/mainfraame/prisma-generator-nestjs-graphql/blob/main/docs/Example.md) for an
-example output
+See a generated example [here](./example/src); note, when the output is in a node_modules directory,
+it will automatically transpile cjs and mjs versions.
 
 ---
 
 ### Road Map
 
-- generate parent resolvers
-- support order by for findMany
-- custom scalar type support
-- create / delete / update / many support
-- cursor-based pagination
 - authentication guard integration
+- createMany
+- deleteMany
+- updateMany
+- cursor-based pagination
+
+#### TODO
+
+- fix `orderBy` ArgTypes casting to `Prisma.{Model}FindManyArgs['orderBy']`
+- fix `data` ArgTypes casting to `Prisma.{Model}CreateArgs['data']`
+- fix `where` ArgTypes casting to `Prisma.{Model}FindManyArgs['where']`

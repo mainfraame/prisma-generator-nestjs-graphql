@@ -1,111 +1,129 @@
-import {
-  GeneratorConfig,
-  generatorHandler,
-  GeneratorOptions
-} from '@prisma/generator-helper';
+import { generatorHandler, GeneratorOptions } from '@prisma/generator-helper';
 
 import fs from 'fs/promises';
 import path from 'path';
 import { performance } from 'perf_hooks';
 
 import { VERSION } from './constants';
+import { generateArgs } from './helpers/generateArgs';
 import { generateDtos } from './helpers/generateDtos';
 import { generateEntities } from './helpers/generateEntities';
+import { generateEnums } from './helpers/generateEnums';
+import { generateOrderByScalar } from './helpers/generateOrderByScalar';
+import { generatePrismaModule } from './helpers/generatePrismaModule';
 import { generateResolvers } from './helpers/generateResolvers';
-import { log } from './utils/log';
-import { writeFileSafely } from './utils/writeFileSafely';
-
-const { version } = require('../package.json');
-
-type Settings = Partial<
-  GeneratorConfig & {
-    defaultOutput?: string;
-    startTime?: number;
-    version?: string;
-  }
->;
+import type { Settings } from './types';
+import { log, writeFile } from './utils';
 
 let settings: Settings = {
-  defaultOutput: ''
+  defaultOutput: '',
+  excludes: []
 };
 
 generatorHandler({
   onGenerate: async (options: GeneratorOptions) => {
     try {
-      if (await fs.stat(settings.defaultOutput).catch(() => false)) {
-        await fs.rm(settings.defaultOutput, { recursive: true });
+      if (await fs.stat(settings.outputPath).catch(() => false)) {
+        await fs.rm(settings.outputPath, { recursive: true });
       }
 
-      await fs.mkdir(settings.defaultOutput, { recursive: true });
+      const models = options.dmmf.datamodel.models.filter(
+        m => !settings.excludes.includes(m.name)
+      );
 
-      await generateEntities(options.dmmf, settings.defaultOutput);
+      const enums = options.dmmf.datamodel.enums ?? [];
 
-      await generateDtos(options.dmmf, settings.defaultOutput);
+      await fs.mkdir(settings.outputPath, { recursive: true });
 
-      await generateResolvers(options.dmmf, settings);
+      const enumsHash = enums.reduce((acc, e) => ({ ...acc, [e.name]: e }), {});
 
-      const imports = options.dmmf.datamodel.models
-        .map(
-          (model) =>
-            `import { ${model.name}Resolver } from './resolvers/${model.name}.resolver';`
-        )
-        .join('\n');
+      await generatePrismaModule(settings);
+      await generateEnums(enums, settings);
+      await generateArgs(models, enumsHash, settings);
+      await generateEntities(models, enumsHash, settings);
+      await generateDtos(models, enumsHash, settings);
+      await generateResolvers(models, settings);
+      await generateOrderByScalar(models, settings);
 
-      const allExports = options.dmmf.datamodel.models
-        .map(
-          (model) =>
-            `
-          export * from './dto/${model.name}.dto';
-          export * from './entities/${model.name}.entity';
-          `
-        )
-        .join('\n');
-
-      const exports = options.dmmf.datamodel.models
-        .map((model) => `${model.name}Resolver`)
-        .join(',\n');
-
-      await writeFileSafely(
-        `${settings.defaultOutput}/index.ts`,
+      await writeFile(
+        `${settings.outputPath}/index.ts`,
         `
-          ${imports}
+          ${models
+            .map(
+              model =>
+                `import { ${model.name}Resolver } from './resolvers/${model.name}.resolver';`
+            )
+            .join('\n')}
           
-          ${allExports}
+          ${models
+            .map(
+              model =>
+                `import { ${model.name}OrderBy } from './scalar/${model.name}OrderBy.scalar';`
+            )
+            .join('\n')}
           
-          export const resolvers = [
-            ${exports}
+          ${models
+            .map(
+              model => `
+              export * from './arg/${model.name}.arg';
+              export * from './dto/${model.name}.dto';
+              export * from './entities/${model.name}.entity';
+              export * from './scalar/${model.name}OrderBy.scalar';
+              `
+            )
+            .join('\n')}
+          
+          ${enums
+            .map(e => `export { ${e.name} } from './enum/${e.name}.enum';`)
+            .join('\n')}
+          
+          export const providers = [
+            ${models
+              .reduce(
+                (acc, model) => [
+                  ...acc,
+                  `${model.name}OrderBy`,
+                  `${model.name}Resolver`
+                ],
+                []
+              )
+              .sort()
+              .join(',\n')}
           ];
+          
+          export { PrismaModule } from './prisma/prisma.module';
+          export { PrismaService } from './prisma/prisma.service';
        `
       );
 
-      if (settings.defaultOutput.includes('node_modules')) {
+      if (settings.outputPath.includes('node_modules')) {
         await fs.writeFile(
-          `${settings.defaultOutput}/package.json`,
+          `${settings.outputPath}/package.json`,
           JSON.stringify(
             {
-              name: '@generated/graphql',
               description: 'auto generated nestjs graphql classes',
-              version: VERSION,
-              main: './dist/index.cjs',
-              module: './dist/index.js',
-              types: './src/index.ts',
               exports: {
                 '.': {
-                  types: './src/index.ts',
-                  import: './dist/index.js',
-                  default: './dist/index.cjs'
+                  default: './dist/index.cjs',
+                  import: './dist/index.mjs',
+                  types: './src/index.ts'
                 },
                 './package.json': './package.json'
               },
               files: ['dist', 'src'],
               license: 'MIT',
+              main: './dist/index.cjs',
+              module: './dist/index.mjs',
+              name: '@generated/graphql',
               peerDependencies: {
                 '@nestjs/graphql': '*',
                 '@prisma/client': '*',
                 graphql: '*',
                 'graphql-scalars': '*'
               },
-              sideEffects: false
+              sideEffects: false,
+              types: './src/index.ts',
+              version: VERSION
             },
             null,
             2
@@ -115,7 +133,7 @@ generatorHandler({
 
       log.success(
         'Generated NestJs GraphQl CRUD Classes',
-        `to ${settings.defaultOutput.replace(process.cwd(), '')} in ${(
+        `to ${settings.outputPath.replace(process.cwd(), '')} in ${(
           performance.now() - settings.startTime
         ).toFixed(0)}ms`
       );
@@ -131,12 +149,15 @@ generatorHandler({
   onManifest(config: Settings) {
     settings = {
       ...config,
-      defaultOutput: path.join(
+      outputPath: path.join(
         process.cwd(),
-        config.defaultOutput ?? 'node_modules/@generated/graphql'
+        config.output?.value ??
+          config.defaultOutput ??
+          'node_modules/@generated/graphql'
       ),
+      excludes: (config.config.excludes ?? []) as string[],
       startTime: performance.now(),
-      version
+      version: VERSION
     };
 
     return settings;

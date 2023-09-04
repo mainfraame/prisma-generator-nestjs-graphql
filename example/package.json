@@ -1,0 +1,28 @@
+{
+  "description": "auto generated nestjs graphql classes",
+  "exports": {
+    ".": {
+      "default": "./dist/index.cjs",
+      "import": "./dist/index.mjs",
+      "types": "./src/index.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "license": "MIT",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "name": "@generated/graphql",
+  "peerDependencies": {
+    "@nestjs/graphql": "*",
+    "@prisma/client": "*",
+    "graphql": "*",
+    "graphql-scalars": "*"
+  },
+  "sideEffects": false,
+  "types": "./src/index.ts",
+  "version": "2.0.34"
+}

@@ -2,18 +2,45 @@ import { transform } from '@swc/core';
 
 import fs from 'fs/promises';
 import { basename, dirname } from 'path';
+import prettier from 'prettier';
 
-import { formatFile } from './formatFile';
 import { log } from './log';
 
-export const writeFileSafely = async (path: string, content: any) => {
+export const formatFile = async (content: string): Promise<string> => {
+  const options = await prettier
+    .resolveConfig(process.cwd())
+    .catch(() => Promise.resolve(null));
+
+  if (!options) {
+    log.warn('No Prettier Config Found To Format NestJs DTOs');
+    return content;
+  }
+
+  try {
+    return prettier.format(content, {
+      ...options,
+      parser: 'typescript'
+    });
+  } catch (e) {
+    log.warn('Failed To Format NestJs DTOs', {
+      message: e.message,
+      stack: e.stack
+    });
+
+    return content;
+  }
+};
+
+// todo:: refactor this to make it easier to understand
+export const writeFile = async (path: string, content: any) => {
   try {
     const isNodeModules = path.includes('node_modules');
 
     const fileName = basename(path);
 
-    const outputPath =
-      dirname(path).split('@generated/graphql')[0] + '@generated/graphql';
+    const outputPath = isNodeModules
+      ? dirname(path).split('@generated/graphql')[0] + '@generated/graphql'
+      : path.replace(`/${fileName}`, '');
 
     const outputDir = dirname(path).split('@generated/graphql/')[1] ?? '';
 
@@ -25,12 +52,15 @@ export const writeFileSafely = async (path: string, content: any) => {
 
     const distDir = `${outputPath}/dist${outputDir ? `/${outputDir}` : ''}`;
 
-    await fs.mkdir(distDir, { recursive: true });
+    if (isNodeModules) {
+      await fs.mkdir(distDir, { recursive: true });
+    }
+
     await fs.mkdir(srcDir, { recursive: true });
 
     const srcFile = `${srcDir}/${fileName}`;
     const cjsFile = `${distDir}/${fileName.replace(/\.ts$/, '.cjs')}`;
-    const jsFile = `${distDir}/${fileName.replace(/\.ts$/, '.js')}`;
+    const jsFile = `${distDir}/${fileName.replace(/\.ts$/, '.mjs')}`;
 
     /** write ts */
     await fs.writeFile(srcFile, await formatFile(content));

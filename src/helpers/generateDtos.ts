@@ -1,57 +1,94 @@
-import { writeFileSafely } from '../utils/writeFileSafely';
+import type { DMMF } from '@prisma/generator-helper';
+
+import type { Settings } from '../types';
+import { startCase, writeFile } from '../utils';
 import { generateCreateFields } from './generateCreateFields';
 import { generateDeleteWhereFields } from './generateDeleteWhereFields';
+import { generateDependencies } from './generateDependencies';
+import { generateEnumDependencies } from './generateEnumDependencies';
 import { generateFindManyFields } from './generateFindManyFields';
 import { generateFindUniqueFields } from './generateFindUniqueFields';
 import { generateUpdateDataFields } from './generateUpdateDataFields';
 import { generateUpdateWhereFields } from './generateUpdateWhereFields';
-import { startCase } from 'lodash';
 
-export async function generateDtos(dmmf, outputPath) {
+export async function generateDtos(
+  models: DMMF.Model[],
+  enums: Record<string, DMMF.DatamodelEnum>,
+  settings: Settings
+) {
   // Generate DTO files for each model
-  for (const model of dmmf.datamodel.models) {
-    const createFields = generateCreateFields(model.fields);
-    const findManyFields = generateFindManyFields(model.fields);
-    const findUniqueFields = generateFindUniqueFields(model.fields, model);
-    const updateDataFields = generateUpdateDataFields(model.fields, model);
-    const deleteWhereFields = generateDeleteWhereFields(model.fields, model);
-    const updateWhereFields = generateUpdateWhereFields(model.fields, model);
+  for (const model of models) {
+    const createFields = generateCreateFields(model, enums);
+    const findManyFields = generateFindManyFields(model, enums);
+    const findUniqueFields = generateFindUniqueFields(model, enums);
+    const updateDataFields = generateUpdateDataFields(model, enums);
+    const deleteWhereFields = generateDeleteWhereFields(model, enums);
+    const updateWhereFields = generateUpdateWhereFields(model, enums);
 
     const content = `
-      import { InputType, Field, Int, Float } from '@nestjs/graphql';
-      import { GraphQLBigInt, GraphQLDateTime, GraphQLJSONObject } from 'graphql-scalars';
-      
-      @InputType()
-      export class Create${startCase(model.name)}Dto {
-        ${createFields}
+      ${
+        createFields.length > 0
+          ? `@InputType()
+             export class Create${startCase(model.name)}Dto {
+               ${createFields}
+             }`
+          : ''
       }
+      
 
-      @InputType()
-      export class Delete${startCase(model.name)}Dto {
-        ${deleteWhereFields}
+      ${
+        deleteWhereFields.length > 0
+          ? `@InputType()
+             export class Delete${startCase(model.name)}Dto {
+               ${deleteWhereFields}
+             }`
+          : ''
       }
       
-      @InputType()
-      export class FindMany${startCase(model.name)}Dto {
-        ${findManyFields}
+      ${
+        findManyFields.length > 0
+          ? `@InputType()
+             export class FindMany${startCase(model.name)}Dto {
+               ${findManyFields}
+             }`
+          : ''
       }
       
-      @InputType()
-      export class FindUnique${startCase(model.name)}Dto {
-        ${findUniqueFields}
+      ${
+        findUniqueFields.length > 0
+          ? `@InputType()
+             export class FindUnique${startCase(model.name)}Dto {
+               ${findUniqueFields}
+             }`
+          : ''
       }
       
-      @InputType()
-      export class UpdateData${startCase(model.name)}Dto {
-        ${updateDataFields}
+      ${
+        updateDataFields.length > 0
+          ? `@InputType()
+             export class UpdateData${startCase(model.name)}Dto {
+               ${updateDataFields}
+             }`
+          : ''
       }
       
-      @InputType()
-      export class UpdateWhere${startCase(model.name)}Dto {
-        ${updateWhereFields}
+      ${
+        updateWhereFields.length > 0
+          ? `@InputType()
+             export class UpdateWhere${startCase(model.name)}Dto {
+              ${updateWhereFields}
+            }`
+          : ''
       }
       `;
 
-    await writeFileSafely(`${outputPath}/dto/${model.name}.dto.ts`, content);
+    await writeFile(
+      `${settings.outputPath}/dto/${model.name}.dto.ts`,
+      `
+      ${generateDependencies(content)}
+      ${generateEnumDependencies(content, enums)}
+      ${content}
+    `
+    );
   }
 }

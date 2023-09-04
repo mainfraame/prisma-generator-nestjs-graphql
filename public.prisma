@@ -12,15 +12,38 @@ datasource db {
 
 generator nestJsGraphqlCrud {
   provider = "./dist/prisma-generator-nestjs-graphql-crud.js"
+  output   = "./example/src"
+  excludes = ["Ignore"]
 }
 
 model User {
-  userId               Int                    @id @default(autoincrement()) @map("user_id")
-  email                String?                @db.VarChar(512)
-  password             String?                @db.VarChar(512)
-  createdAt            DateTime?              @map("created_at") @db.Timestamptz(6)
-  updatedAt            DateTime?              @map("updated_at") @db.Timestamptz(6)
+  id       Int     @id @default(autoincrement())
+  email    String  @unique
+  password String
+  name     String?
+  todos    Todo[]
 
   @@map("user")
+  @@schema("public")
+}
+
+model Todo {
+  id        Int      @id @default(autoincrement())
+  title     String
+  completed Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@map("todo")
+  @@schema("public")
+}
+
+model Ignore {
+  id   Int    @id @default(autoincrement())
+  note String
+
+  @@map("ignore")
   @@schema("public")
 }

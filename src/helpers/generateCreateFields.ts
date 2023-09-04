@@ -1,22 +1,25 @@
-import { orderBy } from 'lodash';
+import type { DMMF } from '@prisma/generator-helper';
 
-import { mapPrismaTypeToGraphQLType } from './mapPrismaTypeToGraphQlType';
-import { mapPrismaTypeToTsType } from './mapPrismaTypeToTsType';
+import { getGqlType, getTsType } from '../utils';
+import { getNonRelationFields } from './getNonRelationFields';
 
-export function generateCreateFields(fields) {
-  return orderBy(
-    fields.filter((field) => !field.relationName),
-    ['name']
-  )
-    .map((field) => {
-      const graphqlType = mapPrismaTypeToGraphQLType(field.type);
-      const tsType = mapPrismaTypeToTsType(field.type);
+export function generateCreateFields(
+  model: DMMF.Model,
+  enums: Record<string, DMMF.DatamodelEnum>
+) {
+  return getNonRelationFields(model)
+    .map(field => {
+      const graphqlType = getGqlType(field);
+      const tsType = getTsType(field);
 
-      const optional = field.isRequired ? '' : '?';
-
-      return `@Field(() => ${graphqlType}, { nullable: ${!field.isRequired} })\n${
-        field.name
-      }${optional}: ${tsType};`;
+      return `
+        @Field(() => ${graphqlType}, { nullable: ${
+          field.isRequired ? 'false' : 'true'
+        } })
+        ${field.name}${field.isRequired ? '' : '?'}: ${
+          enums[field.type] ? field.type : tsType
+        }${field.isRequired ? '' : ' | null'};
+      `;
     })
     .join('\n\n');
 }
