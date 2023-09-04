@@ -23,8 +23,8 @@ let settings: Settings = {
 generatorHandler({
   onGenerate: async (options: GeneratorOptions) => {
     try {
-      if (await fs.stat(settings.outputPath).catch(() => false)) {
-        await fs.rm(settings.outputPath, { recursive: true });
+      if (await fs.stat(settings.defaultOutput).catch(() => false)) {
+        await fs.rm(settings.defaultOutput, { recursive: true });
       }
 
       const models = options.dmmf.datamodel.models.filter(
@@ -33,7 +33,7 @@ generatorHandler({
 
       const enums = options.dmmf.datamodel.enums ?? [];
 
-      await fs.mkdir(settings.outputPath, { recursive: true });
+      await fs.mkdir(settings.defaultOutput, { recursive: true });
 
       const enumsHash = enums.reduce((acc, e) => ({ ...acc, [e.name]: e }), {});
 
@@ -46,7 +46,7 @@ generatorHandler({
       await generateOrderByScalar(models, settings);
 
       await writeFile(
-        `${settings.outputPath}/index.ts`,
+        `${settings.defaultOutput}/index.ts`,
         `
           ${models
             .map(
@@ -96,9 +96,9 @@ generatorHandler({
        `
       );
 
-      if (settings.outputPath.includes('node_modules')) {
+      if (settings.defaultOutput.includes('node_modules')) {
         await fs.writeFile(
-          `${settings.outputPath}/package.json`,
+          `${settings.defaultOutput}/package.json`,
           JSON.stringify(
             {
               description: 'auto generated nestjs graphql classes',
@@ -133,7 +133,7 @@ generatorHandler({
 
       log.success(
         'Generated NestJs GraphQl CRUD Classes',
-        `to ${settings.outputPath.replace(process.cwd(), '')} in ${(
+        `to ${settings.defaultOutput.replace(process.cwd(), '')} in ${(
           performance.now() - settings.startTime
         ).toFixed(0)}ms`
       );
@@ -149,7 +149,7 @@ generatorHandler({
   onManifest(config: Settings) {
     settings = {
       ...config,
-      outputPath: path.join(
+      defaultOutput: path.join(
         process.cwd(),
         config.output?.value ??
           config.defaultOutput ??

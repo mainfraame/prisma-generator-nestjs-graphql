@@ -13,7 +13,7 @@ export async function generateEnums(
       .join(',\n');
 
     await writeFile(
-      `${settings.outputPath}/enum/${e.name}.enum.ts`,
+      `${settings.defaultOutput}/enum/${e.name}.enum.ts`,
       `
         export enum ${e.name} {
           ${values} 

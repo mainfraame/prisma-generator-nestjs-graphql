@@ -12,7 +12,7 @@ export async function generateOrderByScalar(
     const fields = getNonRelationFields(model);
 
     await writeFile(
-      `${settings.outputPath}/scalar/${model.name}OrderBy.scalar.ts`,
+      `${settings.defaultOutput}/scalar/${model.name}OrderBy.scalar.ts`,
       `
     import { Scalar, CustomScalar } from '@nestjs/graphql';
     import { ValueNode } from 'graphql';

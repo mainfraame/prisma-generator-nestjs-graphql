@@ -96,7 +96,7 @@ export async function generateArgs(
       `;
 
     await writeFile(
-      `${settings.outputPath}/arg/${model.name}.arg.ts`,
+      `${settings.defaultOutput}/arg/${model.name}.arg.ts`,
       `
       ${generateDependencies(content)}
       ${generateEnumDependencies(content, enums)}

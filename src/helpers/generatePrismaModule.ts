@@ -3,7 +3,7 @@ import { writeFile } from '../utils';
 
 export async function generatePrismaModule(settings: Settings) {
   await writeFile(
-    `${settings.outputPath}/prisma/prisma.service.ts`,
+    `${settings.defaultOutput}/prisma/prisma.service.ts`,
     `
     import {
       Inject,
@@ -38,7 +38,7 @@ export async function generatePrismaModule(settings: Settings) {
   );
 
   await writeFile(
-    `${settings.outputPath}/prisma/prisma.module.ts`,
+    `${settings.defaultOutput}/prisma/prisma.module.ts`,
     `
     import { DynamicModule, Module } from '@nestjs/common';
     import { Prisma } from '@prisma/client';

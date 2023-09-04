@@ -94,7 +94,7 @@ export async function generateResolvers(
     );
 
     await writeFile(
-      `${settings.outputPath}/resolvers/${model.name}.resolver.ts`,
+      `${settings.defaultOutput}/resolvers/${model.name}.resolver.ts`,
       `
         ${generateDependencies(content)}
         ${
