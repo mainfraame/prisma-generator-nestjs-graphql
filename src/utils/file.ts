@@ -60,7 +60,7 @@ export const writeFile = async (path: string, content: any) => {
 
     const srcFile = `${srcDir}/${fileName}`;
     const cjsFile = `${distDir}/${fileName.replace(/\.ts$/, '.cjs')}`;
-    const jsFile = `${distDir}/${fileName.replace(/\.ts$/, '.mjs')}`;
+    const jsFile = `${distDir}/${fileName.replace(/\.ts$/, '.js')}`;
 
     /** write ts */
     await fs.writeFile(srcFile, await formatFile(content));

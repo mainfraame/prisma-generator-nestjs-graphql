@@ -104,18 +104,20 @@ generatorHandler({
               description: 'auto generated nestjs graphql classes',
               exports: {
                 '.': {
-                  default: './dist/index.cjs',
-                  import: './dist/index.mjs',
-                  types: './src/index.ts'
+                  import: './dist/index.js',
+                  types: './src/index.ts',
+                  default: './dist/index.cjs'
                 },
                 './package.json': './package.json'
               },
               files: ['dist', 'src'],
               license: 'MIT',
               main: './dist/index.cjs',
-              module: './dist/index.mjs',
+              module: './dist/index.js',
               name: '@generated/graphql',
               peerDependencies: {
+                '@nestjs/common': '*',
+                '@nestjs/core': '*',
                 '@nestjs/graphql': '*',
                 '@prisma/client': '*',
                 graphql: '*',
