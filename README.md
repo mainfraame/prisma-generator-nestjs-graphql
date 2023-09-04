@@ -19,6 +19,7 @@ npm i prisma-generator-nestjs-graphql-crud
 | deleteMany | ❌         |                                              |
 | findUnique | ✅         | by primary key or composite keys             |
 | findMany   | ✅         | pagination included (skip/take only for now) |
+| filters    | ❌         | less/greater than                            |
 | orderBy    | ✅         |                                              |
 | update     | ✅         |                                              |
 | updateMany | ❌         |                                              |
@@ -105,10 +106,11 @@ it will automatically transpile cjs and mjs versions.
 
 ### Road Map
 
-- authentication guard integration
+- less/greater than filtering
 - createMany
 - deleteMany
 - updateMany
+- authentication guard integration
 - cursor-based pagination
 
 #### TODO
