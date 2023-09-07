@@ -1,10 +1,12 @@
 ignores: [
   "dist",
+  "@nestjs/common",
   "@nestjs/core",
   "@nestjs/graphql",
   "@nestjs/swagger",
   "@prisma/client",
   "@trivago/prettier-plugin-sort-imports",
+  "@types/jest",
   "@yarnpkg/core",
   "@yarnpkg/plugin-essentials",
   "class-validator",

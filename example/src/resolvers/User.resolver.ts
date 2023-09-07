@@ -79,7 +79,7 @@ export class UserResolver {
   @Mutation(() => User)
   async createManyUser(
     @Context() ctx: { prisma: PrismaClient },
-    @Args() data: CreateUserArg[]
+    @Args({ type: () => [CreateUserArg] }) data: CreateUserArg[]
   ) {
     return ctx.prisma.user.createMany({
       // todo:: fix the types in Create...Arg

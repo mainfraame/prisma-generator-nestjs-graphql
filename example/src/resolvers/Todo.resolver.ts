@@ -76,7 +76,7 @@ export class TodoResolver {
   @Mutation(() => Todo)
   async createManyTodo(
     @Context() ctx: { prisma: PrismaClient },
-    @Args() data: CreateTodoArg[]
+    @Args({ type: () => [CreateTodoArg] }) data: CreateTodoArg[]
   ) {
     return ctx.prisma.todo.createMany({
       // todo:: fix the types in Create...Arg
