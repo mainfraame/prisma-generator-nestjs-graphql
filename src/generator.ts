@@ -48,6 +48,7 @@ generatorHandler({
       await writeFile(
         `${settings.defaultOutput}/index.ts`,
         `
+          import { IntOrFilter } from './scalar/IntOrFilter.scalar';
           ${models
             .map(
               model =>
@@ -85,7 +86,7 @@ generatorHandler({
                   `${model.name}OrderBy`,
                   `${model.name}Resolver`
                 ],
-                []
+                ['IntOrFilter']
               )
               .sort()
               .join(',\n')}

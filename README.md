@@ -14,15 +14,15 @@ npm i prisma-generator-nestjs-graphql-crud
 | Feature    | Available | Notes                                        |
 |------------|-----------|----------------------------------------------|
 | create     | ✅         |                                              |
-| createMany | ❌         |                                              |
+| createMany | ✅         |                                              |
 | delete     | ✅         |                                              |
-| deleteMany | ❌         |                                              |
+| deleteMany | ✅         |                                              |
 | findUnique | ✅         | by primary key or composite keys             |
 | findMany   | ✅         | pagination included (skip/take only for now) |
-| filters    | ❌         | less/greater than                            |
+| filters    | ❌         | gt,gte,lt,lte,notIn,in,not, etc.             |
 | orderBy    | ✅         |                                              |
 | update     | ✅         |                                              |
-| updateMany | ❌         |                                              |
+| updateMany | ✅         |                                              |
 
 ---
 
@@ -60,7 +60,7 @@ The generated code relies on the `context` object for graphql to contain a
 reference to the `prisma` client. See the use of `useFactory` in the `GraphQLModule` below.
 
 **PrismaModule** and **PrismaService** are generated; if you want your own custom implementation,
-use this [doc](./docs/PrismaModule.md) as a guide.
+use this [doc](https://github.com/mainfraame/prisma-generator-nestjs-graphql/tree/main/example/docs/PrismaModule.md) as a guide.
 
 _\*_ generated code is compatible
 with [@nestjs/mercurius](https://www.npmjs.com/package/@nestjs/mercurius), [@nestjs/apollo](https://www.npmjs.com/package/@nestjs/apollo)
@@ -99,19 +99,16 @@ export class AppModule {
 
 ### Example
 
-See a generated example [here](./example/src); note, when the output is in a node_modules directory,
+See a generated example [here](https://github.com/mainfraame/prisma-generator-nestjs-graphql/tree/main/example/src); note, when the output is in a node_modules directory,
 it will automatically transpile cjs and mjs versions.
 
 ---
 
 ### Road Map
 
-- less/greater than filtering
-- createMany
-- deleteMany
-- updateMany
 - authentication guard integration
 - cursor-based pagination
+- gt, gte, lt, lte, notIn, in, not "where" filtering
 
 #### TODO
 

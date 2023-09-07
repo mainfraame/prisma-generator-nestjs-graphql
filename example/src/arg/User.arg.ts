@@ -1,6 +1,8 @@
 import { ArgsType, Field, Int } from '@nestjs/graphql';
 import { Prisma } from '@prisma/client';
 
+import { IntFilterInput } from '../arg/IntFilterInput.arg';
+import { IntOrFilter } from '../scalar/IntOrFilter.scalar';
 import { UserOrderBy } from '../scalar/UserOrderBy.scalar';
 
 @ArgsType()
@@ -29,8 +31,8 @@ export class FindManyUserArg {
   @Field(() => String, { nullable: true })
   email?: string;
 
-  @Field(() => Int, { nullable: true })
-  id?: number;
+  @Field(() => IntOrFilter, { nullable: true })
+  id?: number | IntFilterInput;
 
   @Field(() => String, { nullable: true })
   name?: string;
@@ -46,6 +48,21 @@ export class FindManyUserArg {
 
   @Field(() => Int, { nullable: true })
   take?: number;
+}
+
+@ArgsType()
+export class FindFirstUserArg {
+  @Field(() => String, { nullable: true })
+  email?: string;
+
+  @Field(() => IntOrFilter, { nullable: true })
+  id?: number | IntFilterInput;
+
+  @Field(() => String, { nullable: true })
+  name?: string;
+
+  @Field(() => String, { nullable: true })
+  password?: string;
 }
 
 @ArgsType()

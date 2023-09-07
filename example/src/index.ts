@@ -1,5 +1,6 @@
 import { TodoResolver } from './resolvers/Todo.resolver';
 import { UserResolver } from './resolvers/User.resolver';
+import { IntOrFilter } from './scalar/IntOrFilter.scalar';
 import { TodoOrderBy } from './scalar/TodoOrderBy.scalar';
 import { UserOrderBy } from './scalar/UserOrderBy.scalar';
 
@@ -13,7 +14,13 @@ export * from './dto/Todo.dto';
 export * from './entities/Todo.entity';
 export * from './scalar/TodoOrderBy.scalar';
 
-export const providers = [TodoOrderBy, TodoResolver, UserOrderBy, UserResolver];
+export const providers = [
+  IntOrFilter,
+  TodoOrderBy,
+  TodoResolver,
+  UserOrderBy,
+  UserResolver
+];
 
 export { PrismaModule } from './prisma/prisma.module';
 export { PrismaService } from './prisma/prisma.service';

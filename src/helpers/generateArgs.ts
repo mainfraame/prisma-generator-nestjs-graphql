@@ -19,6 +19,40 @@ export async function generateArgs(
   enums: Record<string, DMMF.DatamodelEnum>,
   settings: Settings
 ) {
+  // todo:: move this to centralized generator
+  await writeFile(
+    `${settings.defaultOutput}/arg/IntFilterInput.arg.ts`,
+    `
+      import { ArgsType, Field, Int } from '@nestjs/graphql';
+      
+      @ArgsType()
+      export class IntFilterInput {
+        @Field({ nullable: true })
+        equals?: number;
+      
+        @Field(type => [Int], { nullable: 'itemsAndList' })
+        in?: number[];
+      
+        @Field(type => [Int], { nullable: 'itemsAndList' })
+        notIn?: number[];
+      
+        @Field({ nullable: true })
+        lt?: number;
+      
+        @Field({ nullable: true })
+        lte?: number;
+      
+        @Field({ nullable: true })
+        gt?: number;
+      
+        @Field({ nullable: true })
+        gte?: number;
+      
+        @Field({ nullable: true })
+        not?: number;
+      }`
+  );
+
   for (const model of models) {
     const createFields = generateCreateFields(model, enums);
     const findManyFields = generateFindManyFields(model, enums);
@@ -67,6 +101,15 @@ export async function generateArgs(
          : ''
      }
      
+     ${
+       findManyFields.length > 0
+         ? `@ArgsType()
+             export class FindFirst${startCase(model.name)}Arg {
+               ${findManyFields}
+             }`
+         : ''
+     }
+          
      ${
        findUniqueFields.length > 0
          ? `@ArgsType()

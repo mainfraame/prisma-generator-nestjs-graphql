@@ -1,6 +1,8 @@
 import { ArgsType, Field, Int } from '@nestjs/graphql';
 import { Prisma } from '@prisma/client';
 
+import { IntFilterInput } from '../arg/IntFilterInput.arg';
+import { IntOrFilter } from '../scalar/IntOrFilter.scalar';
 import { TodoOrderBy } from '../scalar/TodoOrderBy.scalar';
 
 @ArgsType()
@@ -38,8 +40,8 @@ export class FindManyTodoArg {
   @Field(() => Date, { nullable: true })
   createdAt?: Date;
 
-  @Field(() => Int, { nullable: true })
-  id?: number;
+  @Field(() => IntOrFilter, { nullable: true })
+  id?: number | IntFilterInput;
 
   @Field(() => String, { nullable: true })
   title?: string;
@@ -47,8 +49,8 @@ export class FindManyTodoArg {
   @Field(() => Date, { nullable: true })
   updatedAt?: Date;
 
-  @Field(() => Int, { nullable: true })
-  userId?: number;
+  @Field(() => IntOrFilter, { nullable: true })
+  userId?: number | IntFilterInput;
 
   @Field(() => TodoOrderBy, { nullable: true })
   orderBy?: Prisma.TodoFindManyArgs['orderBy'];
@@ -58,6 +60,27 @@ export class FindManyTodoArg {
 
   @Field(() => Int, { nullable: true })
   take?: number;
+}
+
+@ArgsType()
+export class FindFirstTodoArg {
+  @Field(() => Boolean, { nullable: true })
+  completed?: boolean;
+
+  @Field(() => Date, { nullable: true })
+  createdAt?: Date;
+
+  @Field(() => IntOrFilter, { nullable: true })
+  id?: number | IntFilterInput;
+
+  @Field(() => String, { nullable: true })
+  title?: string;
+
+  @Field(() => Date, { nullable: true })
+  updatedAt?: Date;
+
+  @Field(() => IntOrFilter, { nullable: true })
+  userId?: number | IntFilterInput;
 }
 
 @ArgsType()

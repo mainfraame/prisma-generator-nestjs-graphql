@@ -12,6 +12,7 @@ import { Prisma, PrismaClient } from '@prisma/client';
 import {
   CreateTodoArg,
   DeleteTodoArg,
+  FindFirstTodoArg,
   FindManyTodoArg,
   FindUniqueTodoArg
 } from '../arg/Todo.arg';
@@ -21,8 +22,18 @@ import { User } from '../entities/User.entity';
 
 @Resolver(() => Todo)
 export class TodoResolver {
+  @Query(() => [Todo])
+  async findFirstTodo(
+    @Context() ctx: { prisma: PrismaClient },
+    @Args() where: FindFirstTodoArg
+  ) {
+    return ctx.prisma.todo.findFirst({
+      where: where as unknown as Prisma.TodoFindFirstArgs['where']
+    });
+  }
+
   @Query(() => Todo)
-  async findTodo(
+  async findUniqueTodo(
     @Context() ctx: { prisma: PrismaClient },
     @Args() where: FindUniqueTodoArg
   ) {
@@ -32,7 +43,7 @@ export class TodoResolver {
   }
 
   @Query(() => [Todo])
-  async findManyTodos(
+  async findManyTodo(
     @Context() ctx: { prisma: PrismaClient },
     @Args() { skip, take, orderBy, ...where }: FindManyTodoArg
   ) {
@@ -44,7 +55,7 @@ export class TodoResolver {
     });
   }
 
-  @ResolveField(() => User)
+  @ResolveField(() => User, { nullable: false })
   async user(@Context() ctx: { prisma: PrismaClient }, @Parent() parent: Todo) {
     return ctx.prisma.user.findUnique({
       where: { id: parent.userId }
@@ -63,16 +74,42 @@ export class TodoResolver {
   }
 
   @Mutation(() => Todo)
+  async createManyTodo(
+    @Context() ctx: { prisma: PrismaClient },
+    @Args() data: CreateTodoArg[]
+  ) {
+    return ctx.prisma.todo.createMany({
+      // todo:: fix the types in Create...Arg
+      data: data as unknown as Prisma.TodoCreateManyArgs['data']
+    });
+  }
+
+  @Mutation(() => Todo)
   async updateTodo(
     @Context() ctx: { prisma: PrismaClient },
     @Args('where', { type: () => UpdateWhereTodoDto })
     where: UpdateWhereTodoDto,
     @Args('data', { type: () => UpdateDataTodoDto })
-    data: Prisma.TodoCreateArgs['data']
+    data: Prisma.TodoUpdateArgs['data']
   ) {
     return ctx.prisma.todo.update({
       data,
       where
+    });
+  }
+
+  @Mutation(() => Todo)
+  async updateManyTodo(
+    @Context() ctx: { prisma: PrismaClient },
+    @Args('where', { type: () => UpdateWhereTodoDto })
+    where: UpdateWhereTodoDto,
+    @Args('data', { type: () => [UpdateDataTodoDto] })
+    data: Prisma.TodoUpdateManyArgs['data']
+  ) {
+    return ctx.prisma.todo.updateMany({
+      data,
+      // todo:: fix this typing
+      where: where as unknown as Prisma.TodoUpdateManyArgs['where']
     });
   }
 
@@ -83,6 +120,16 @@ export class TodoResolver {
   ) {
     return ctx.prisma.todo.delete({
       where
+    });
+  }
+
+  @Mutation(() => Todo)
+  async deleteManyTodo(
+    @Context() ctx: { prisma: PrismaClient },
+    @Args() { skip, take, orderBy, ...where }: FindManyTodoArg
+  ) {
+    return ctx.prisma.todo.deleteMany({
+      where: where as unknown as Prisma.TodoDeleteManyArgs['where']
     });
   }
 }

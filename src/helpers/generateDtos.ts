@@ -48,6 +48,15 @@ export async function generateDtos(
       ${
         findManyFields.length > 0
           ? `@InputType()
+             export class DeleteMany${startCase(model.name)}Dto {
+               ${findManyFields}
+             }`
+          : ''
+      }
+      
+      ${
+        findManyFields.length > 0
+          ? `@InputType()
              export class FindMany${startCase(model.name)}Dto {
                ${findManyFields}
              }`
@@ -72,6 +81,15 @@ export async function generateDtos(
           : ''
       }
       
+     ${
+       findManyFields.length > 0
+         ? `@InputType()
+             export class UpdateManyWhere${startCase(model.name)}Dto {
+               ${findManyFields}
+             }`
+         : ''
+     }
+    
       ${
         updateWhereFields.length > 0
           ? `@InputType()

@@ -7,6 +7,9 @@ export function generateDependencies(content: string) {
     .filter(i => content.includes(i))
     .join(', ');
 
+  const prismaFilterArgs = ['IntFilterInput'].filter(i => content.includes(i));
+  const prismaFilterScalars = ['IntOrFilter'].filter(i => content.includes(i));
+
   const nestjsGraphql = [
     { name: 'ArgsType', lookup: '@ArgsType' },
     { name: 'InputType', lookup: '@InputType' },
@@ -38,6 +41,12 @@ export function generateDependencies(content: string) {
     nestjsGraphql.length
       ? `import { ${nestjsGraphql} } from '@nestjs/graphql';`
       : '',
+    prismaFilterArgs
+      .map(d => `import { ${d} } from '../arg/${d}.arg';`)
+      .join('\n'),
+    prismaFilterScalars
+      .map(d => `import { ${d} } from '../scalar/${d}.scalar';`)
+      .join('\n'),
     prisma.length ? `import { ${prisma} } from '@prisma/client';` : '',
     graphqlScalars.length
       ? `import { ${graphqlScalars} } from 'graphql-scalars';`

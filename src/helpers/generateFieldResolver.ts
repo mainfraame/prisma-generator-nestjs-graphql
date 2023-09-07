@@ -43,8 +43,15 @@ export const generateFieldResolver = (
       : `{ ${toKey}: parent.${fromKey} }`;
 
   return `
-    @ResolveField(() => ${
-      field.isList ? `[${startCase(field.type)}]` : startCase(field.type)
+    @ResolveField(() => 
+    ${field.isList ? `[${startCase(field.type)}]` : startCase(field.type)},
+    {nullable: ${
+      !field.isList && field.isRequired
+        ? 'false'
+        : field.isList
+        ? "'itemsAndList', defaultValue: []"
+        : 'true'
+    }
     })
     async ${camelCase(field.name)}(
       @Context() ctx: { prisma: PrismaClient },

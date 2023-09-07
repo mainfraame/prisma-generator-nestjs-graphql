@@ -13,8 +13,16 @@ export function generateFindManyFields(
       const tsType = getTsType(field);
 
       return `
-        @Field(() => ${graphqlType}, { nullable: true })
-        ${field.name}?: ${enums[field.type] ? field.type : tsType};
+        @Field(() => ${
+          field.type === 'Int' ? `IntOrFilter` : graphqlType
+        }, { nullable: true })
+        ${field.name}?: ${
+          enums[field.type]
+            ? field.type
+            : tsType === 'number'
+            ? `number | IntFilterInput`
+            : tsType
+        };
       `;
     })
     .join('\n\n');

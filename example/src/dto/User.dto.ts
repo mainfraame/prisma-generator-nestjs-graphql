@@ -1,5 +1,8 @@
 import { Field, InputType, Int } from '@nestjs/graphql';
 
+import { IntFilterInput } from '../arg/IntFilterInput.arg';
+import { IntOrFilter } from '../scalar/IntOrFilter.scalar';
+
 @InputType()
 export class CreateUserDto {
   @Field(() => String, { nullable: false })
@@ -22,12 +25,27 @@ export class DeleteUserDto {
 }
 
 @InputType()
+export class DeleteManyUserDto {
+  @Field(() => String, { nullable: true })
+  email?: string;
+
+  @Field(() => IntOrFilter, { nullable: true })
+  id?: number | IntFilterInput;
+
+  @Field(() => String, { nullable: true })
+  name?: string;
+
+  @Field(() => String, { nullable: true })
+  password?: string;
+}
+
+@InputType()
 export class FindManyUserDto {
   @Field(() => String, { nullable: true })
   email?: string;
 
-  @Field(() => Int, { nullable: true })
-  id?: number;
+  @Field(() => IntOrFilter, { nullable: true })
+  id?: number | IntFilterInput;
 
   @Field(() => String, { nullable: true })
   name?: string;
@@ -52,6 +70,21 @@ export class UpdateDataUserDto {
 
   @Field(() => String, { nullable: true })
   name?: string | null;
+}
+
+@InputType()
+export class UpdateManyWhereUserDto {
+  @Field(() => String, { nullable: true })
+  email?: string;
+
+  @Field(() => IntOrFilter, { nullable: true })
+  id?: number | IntFilterInput;
+
+  @Field(() => String, { nullable: true })
+  name?: string;
+
+  @Field(() => String, { nullable: true })
+  password?: string;
 }
 
 @InputType()

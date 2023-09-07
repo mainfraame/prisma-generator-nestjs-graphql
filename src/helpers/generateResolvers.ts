@@ -4,12 +4,16 @@ import { uniq } from 'lodash';
 
 import type { Settings } from '../types';
 import { startCase, writeFile } from '../utils';
+import { generateCreateManyMutation } from './generateCreateManyMutation';
 import { generateCreateMutation } from './generateCreateMutation';
+import { generateDeleteManyMutation } from './generateDeleteManyMutation';
 import { generateDeleteMutation } from './generateDeleteMutation';
 import { generateDependencies } from './generateDependencies';
 import { generateFieldResolver } from './generateFieldResolver';
+import { generateFindFirstQuery } from './generateFindFirstQuery';
 import { generateFindManyQuery } from './generateFindManyQuery';
 import { generateFindUniqueQuery } from './generateFindUniqueQuery';
+import { generateUpdateManyMutation } from './generateUpdateManyMutation';
 import { generateUpdateMutation } from './generateUpdateMutation';
 
 export async function generateResolvers(
@@ -44,36 +48,45 @@ export async function generateResolvers(
       : [];
 
     /** when no primary key exists, we can't include this. */
+    const findFirstQuery = generateFindFirstQuery(model);
     const findUnique = generateFindUniqueQuery(model);
     const findMany = generateFindManyQuery(model);
     const createMutation = generateCreateMutation(model);
+    const createManyMutation = generateCreateManyMutation(model);
     const updateMutation = generateUpdateMutation(model);
+    const updateManyMutation = generateUpdateManyMutation(model);
     const deleteMutation = generateDeleteMutation(model);
+    const deleteManyMutation = generateDeleteManyMutation(model);
 
-    /**
-     * todo:: fix update/delete types - swap out e.g. Prisma.${model.name}UpdateArgs['data'] for actual types
-     * there are a few tables missing primary keys
-     */
     const content = `
     @Resolver(() => ${model.name})
     export class ${model.name}Resolver {
+
+      ${findFirstQuery}
 
       ${findUnique}
    
       ${findMany}
 
-      ${fieldResolvers.join('\n\n')}
+      ${fieldResolvers.join('\n')}
 
       ${createMutation}
+      
+      ${createManyMutation}
 
       ${updateMutation}
 
+      ${updateManyMutation}
+
       ${deleteMutation}
+      
+      ${deleteManyMutation}
     }`;
 
     const argsDeps = [
       `Create${startCase(model.name)}Arg`,
       `Delete${startCase(model.name)}Arg`,
+      `FindFirst${startCase(model.name)}Arg`,
       `FindMany${startCase(model.name)}Arg`,
       `FindUnique${startCase(model.name)}Arg`,
       `UpdateData${startCase(model.name)}Arg`,
@@ -82,10 +95,11 @@ export async function generateResolvers(
 
     const dtoDeps = [
       `Create${startCase(model.name)}Dto`,
-      `Delete${startCase(model.name)}Dto`,
+      `DeleteMany${startCase(model.name)}Dto`,
       `FindMany${startCase(model.name)}Dto`,
       `FindUnique${startCase(model.name)}Dto`,
       `UpdateData${startCase(model.name)}Dto`,
+      `UpdateManyWhere${startCase(model.name)}Dto`,
       `UpdateWhere${startCase(model.name)}Dto`
     ].filter(m => content.includes(m));
 

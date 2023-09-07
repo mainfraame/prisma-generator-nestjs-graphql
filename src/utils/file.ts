@@ -22,12 +22,13 @@ export const formatFile = async (content: string): Promise<string> => {
       parser: 'typescript'
     });
   } catch (e) {
-    log.warn('Failed To Format NestJs DTOs', {
+    log.warn('failed to apply prettier formatting', {
+      content,
       message: e.message,
       stack: e.stack
     });
 
-    return content;
+    throw e;
   }
 };
 

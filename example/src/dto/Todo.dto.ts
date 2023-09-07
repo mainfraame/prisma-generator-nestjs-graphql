@@ -1,5 +1,8 @@
 import { Field, InputType, Int } from '@nestjs/graphql';
 
+import { IntFilterInput } from '../arg/IntFilterInput.arg';
+import { IntOrFilter } from '../scalar/IntOrFilter.scalar';
+
 @InputType()
 export class CreateTodoDto {
   @Field(() => Boolean, { nullable: false })
@@ -28,15 +31,15 @@ export class DeleteTodoDto {
 }
 
 @InputType()
-export class FindManyTodoDto {
+export class DeleteManyTodoDto {
   @Field(() => Boolean, { nullable: true })
   completed?: boolean;
 
   @Field(() => Date, { nullable: true })
   createdAt?: Date;
 
-  @Field(() => Int, { nullable: true })
-  id?: number;
+  @Field(() => IntOrFilter, { nullable: true })
+  id?: number | IntFilterInput;
 
   @Field(() => String, { nullable: true })
   title?: string;
@@ -44,8 +47,29 @@ export class FindManyTodoDto {
   @Field(() => Date, { nullable: true })
   updatedAt?: Date;
 
-  @Field(() => Int, { nullable: true })
-  userId?: number;
+  @Field(() => IntOrFilter, { nullable: true })
+  userId?: number | IntFilterInput;
+}
+
+@InputType()
+export class FindManyTodoDto {
+  @Field(() => Boolean, { nullable: true })
+  completed?: boolean;
+
+  @Field(() => Date, { nullable: true })
+  createdAt?: Date;
+
+  @Field(() => IntOrFilter, { nullable: true })
+  id?: number | IntFilterInput;
+
+  @Field(() => String, { nullable: true })
+  title?: string;
+
+  @Field(() => Date, { nullable: true })
+  updatedAt?: Date;
+
+  @Field(() => IntOrFilter, { nullable: true })
+  userId?: number | IntFilterInput;
 }
 
 @InputType()
@@ -70,6 +94,27 @@ export class UpdateDataTodoDto {
 
   @Field(() => Int, { nullable: false })
   userId: number;
+}
+
+@InputType()
+export class UpdateManyWhereTodoDto {
+  @Field(() => Boolean, { nullable: true })
+  completed?: boolean;
+
+  @Field(() => Date, { nullable: true })
+  createdAt?: Date;
+
+  @Field(() => IntOrFilter, { nullable: true })
+  id?: number | IntFilterInput;
+
+  @Field(() => String, { nullable: true })
+  title?: string;
+
+  @Field(() => Date, { nullable: true })
+  updatedAt?: Date;
+
+  @Field(() => IntOrFilter, { nullable: true })
+  userId?: number | IntFilterInput;
 }
 
 @InputType()

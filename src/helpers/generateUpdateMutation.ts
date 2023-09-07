@@ -16,7 +16,7 @@ export function generateUpdateMutation(model: DMMF.Model) {
       )}Dto }) where: UpdateWhere${startCase(model.name)}Dto, 
       @Args('data', {type: () => UpdateData${startCase(
         model.name
-      )}Dto }) data: Prisma.${startCase(model.name)}CreateArgs['data']
+      )}Dto }) data: Prisma.${startCase(model.name)}UpdateArgs['data']
     ) {
         return ctx.prisma.${camelCase(model.name)}.update({
           data,

@@ -12,6 +12,7 @@ import { Prisma, PrismaClient } from '@prisma/client';
 import {
   CreateUserArg,
   DeleteUserArg,
+  FindFirstUserArg,
   FindManyUserArg,
   FindUniqueUserArg
 } from '../arg/User.arg';
@@ -21,8 +22,18 @@ import { User } from '../entities/User.entity';
 
 @Resolver(() => User)
 export class UserResolver {
+  @Query(() => [User])
+  async findFirstUser(
+    @Context() ctx: { prisma: PrismaClient },
+    @Args() where: FindFirstUserArg
+  ) {
+    return ctx.prisma.user.findFirst({
+      where: where as unknown as Prisma.UserFindFirstArgs['where']
+    });
+  }
+
   @Query(() => User)
-  async findUser(
+  async findUniqueUser(
     @Context() ctx: { prisma: PrismaClient },
     @Args() where: FindUniqueUserArg
   ) {
@@ -32,7 +43,7 @@ export class UserResolver {
   }
 
   @Query(() => [User])
-  async findManyUsers(
+  async findManyUser(
     @Context() ctx: { prisma: PrismaClient },
     @Args() { skip, take, orderBy, ...where }: FindManyUserArg
   ) {
@@ -44,7 +55,7 @@ export class UserResolver {
     });
   }
 
-  @ResolveField(() => [Todo])
+  @ResolveField(() => [Todo], { nullable: 'itemsAndList', defaultValue: [] })
   async todos(
     @Context() ctx: { prisma: PrismaClient },
     @Parent() parent: User
@@ -66,16 +77,42 @@ export class UserResolver {
   }
 
   @Mutation(() => User)
+  async createManyUser(
+    @Context() ctx: { prisma: PrismaClient },
+    @Args() data: CreateUserArg[]
+  ) {
+    return ctx.prisma.user.createMany({
+      // todo:: fix the types in Create...Arg
+      data: data as unknown as Prisma.UserCreateManyArgs['data']
+    });
+  }
+
+  @Mutation(() => User)
   async updateUser(
     @Context() ctx: { prisma: PrismaClient },
     @Args('where', { type: () => UpdateWhereUserDto })
     where: UpdateWhereUserDto,
     @Args('data', { type: () => UpdateDataUserDto })
-    data: Prisma.UserCreateArgs['data']
+    data: Prisma.UserUpdateArgs['data']
   ) {
     return ctx.prisma.user.update({
       data,
       where
+    });
+  }
+
+  @Mutation(() => User)
+  async updateManyUser(
+    @Context() ctx: { prisma: PrismaClient },
+    @Args('where', { type: () => UpdateWhereUserDto })
+    where: UpdateWhereUserDto,
+    @Args('data', { type: () => [UpdateDataUserDto] })
+    data: Prisma.UserUpdateManyArgs['data']
+  ) {
+    return ctx.prisma.user.updateMany({
+      data,
+      // todo:: fix this typing
+      where: where as unknown as Prisma.UserUpdateManyArgs['where']
     });
   }
 
@@ -86,6 +123,16 @@ export class UserResolver {
   ) {
     return ctx.prisma.user.delete({
       where
+    });
+  }
+
+  @Mutation(() => User)
+  async deleteManyUser(
+    @Context() ctx: { prisma: PrismaClient },
+    @Args() { skip, take, orderBy, ...where }: FindManyUserArg
+  ) {
+    return ctx.prisma.user.deleteMany({
+      where: where as unknown as Prisma.UserDeleteManyArgs['where']
     });
   }
 }
