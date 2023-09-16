@@ -51,17 +51,19 @@ export const writeFile = async (path: string, content: any) => {
         : outputDir ?? ''
     }`;
 
-    const distDir = `${outputPath}/dist${outputDir ? `/${outputDir}` : ''}`;
+    const cjsDistDir = `${outputPath}/dist/cjs${outputDir ? `/${outputDir}` : ''}`;
+    const esmDistDir = `${outputPath}/dist/esm${outputDir ? `/${outputDir}` : ''}`;
 
     if (isNodeModules) {
-      await fs.mkdir(distDir, { recursive: true });
+      await fs.mkdir(cjsDistDir, { recursive: true });
+      await fs.mkdir(esmDistDir, { recursive: true });
     }
 
     await fs.mkdir(srcDir, { recursive: true });
 
     const srcFile = `${srcDir}/${fileName}`;
-    const cjsFile = `${distDir}/${fileName.replace(/\.ts$/, '.cjs')}`;
-    const jsFile = `${distDir}/${fileName.replace(/\.ts$/, '.js')}`;
+    const cjsFile = `${cjsDistDir}/${fileName.replace(/\.ts$/, '.cjs')}`;
+    const jsFile = `${esmDistDir}/${fileName.replace(/\.ts$/, '.js')}`;
 
     /** write ts */
     await fs.writeFile(srcFile, await formatFile(content));
