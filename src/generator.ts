@@ -107,13 +107,13 @@ generatorHandler({
                 '.': {
                   import: './dist/esm/index.js',
                   types: './src/index.ts',
-                  default: './dist/cjs/index.cjs'
+                  default: './dist/cjs/index.js'
                 },
                 './package.json': './package.json'
               },
               files: ['dist', 'src'],
               license: 'MIT',
-              main: './dist/cjs/index.cjs',
+              main: './dist/cjs/index.js',
               module: './dist/esm/index.js',
               name: '@generated/graphql',
               peerDependencies: {

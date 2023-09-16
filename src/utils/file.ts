@@ -62,7 +62,7 @@ export const writeFile = async (path: string, content: any) => {
     await fs.mkdir(srcDir, { recursive: true });
 
     const srcFile = `${srcDir}/${fileName}`;
-    const cjsFile = `${cjsDistDir}/${fileName.replace(/\.ts$/, '.cjs')}`;
+    const cjsFile = `${cjsDistDir}/${fileName.replace(/\.ts$/, '.js')}`;
     const jsFile = `${esmDistDir}/${fileName.replace(/\.ts$/, '.js')}`;
 
     /** write ts */
