@@ -22,7 +22,7 @@ import { User } from '../entities/User.entity';
 
 @Resolver(() => Todo)
 export class TodoResolver {
-  @Query(() => [Todo])
+  @Query(() => Todo)
   async findFirstTodo(
     @Context() ctx: { prisma: PrismaClient },
     @Args() where: FindFirstTodoArg

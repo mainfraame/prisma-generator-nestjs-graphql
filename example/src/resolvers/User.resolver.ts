@@ -22,7 +22,7 @@ import { User } from '../entities/User.entity';
 
 @Resolver(() => User)
 export class UserResolver {
-  @Query(() => [User])
+  @Query(() => User)
   async findFirstUser(
     @Context() ctx: { prisma: PrismaClient },
     @Args() where: FindFirstUserArg
