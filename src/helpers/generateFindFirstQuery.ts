@@ -6,7 +6,7 @@ import { getFindManyFields } from './getFindManyFields';
 export function generateFindFirstQuery(model: DMMF.Model) {
   return getFindManyFields(model).length > 0
     ? `
-    @Query(() => ${model.name})
+    @Query(() => ${model.name}, { nullable: true })
     async findFirst${startCase(model.name)}(
       @Context() ctx: { prisma: PrismaClient },
       @Args() where: FindFirst${startCase(model.name)}Arg

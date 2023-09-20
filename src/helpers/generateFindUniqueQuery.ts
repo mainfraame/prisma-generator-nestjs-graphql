@@ -6,7 +6,7 @@ import { getUniqueFields } from './getUniqueFields';
 export function generateFindUniqueQuery(model: DMMF.Model) {
   return getUniqueFields(model)?.length > 0
     ? `
-    @Query(() => ${model.name})
+    @Query(() => ${model.name}, { nullable: true })
     async findUnique${startCase(model.name)}(
       @Context() ctx: { prisma: PrismaClient },
       @Args() where: FindUnique${startCase(model.name)}Arg

@@ -22,7 +22,7 @@ import { User } from '../entities/User.entity';
 
 @Resolver(() => User)
 export class UserResolver {
-  @Query(() => User)
+  @Query(() => User, { nullable: true })
   async findFirstUser(
     @Context() ctx: { prisma: PrismaClient },
     @Args() where: FindFirstUserArg
@@ -32,7 +32,7 @@ export class UserResolver {
     });
   }
 
-  @Query(() => User)
+  @Query(() => User, { nullable: true })
   async findUniqueUser(
     @Context() ctx: { prisma: PrismaClient },
     @Args() where: FindUniqueUserArg
