@@ -6,43 +6,44 @@ import { IntFilterInput } from '../arg/IntFilterInput.arg';
 
 @Scalar('IntOrFilter')
 export class IntOrFilter implements CustomScalar<number, IntFilterInput> {
-  description = 'Int Or Int Filter scalar type';
+  description = 'Int Filter scalar type';
+
+  parseLiteral(ast: ValueNode) {
+    if (ast.kind === Kind.INT) {
+      return parseInt(ast.value, 10);
+    }
+
+    if (ast.kind === Kind.FLOAT) {
+      return parseFloat(ast.value);
+    }
+
+    if (ast.kind === Kind.OBJECT) {
+      return ast.fields.reduce((acc, field) => {
+        return {
+          ...acc,
+          [field.name.value]: ['gt', 'gte', 'lt', 'lte', 'not'].includes(
+            field.name.value
+          )
+            ? parseFloat((field.value as any).value)
+            : ((field.value as any).values ?? []).map(({ value }) =>
+                parseFloat(value)
+              )
+        };
+      }, {});
+    }
+
+    return null;
+  }
 
   parseValue(value) {
     if (typeof value === 'number' || typeof value === 'object') {
       return value;
     }
-    throw new Error('Invalid input for NumberOrObject scalar');
+
+    throw new Error('Invalid input for IntFilterScalar');
   }
 
   serialize(value) {
-    return value; // Return as-is
-  }
-
-  parseLiteral(ast: ValueNode) {
-    if (ast.kind === Kind.INT) {
-      return parseInt(ast.value, 10);
-    } else if (ast.kind === Kind.FLOAT) {
-      return parseFloat(ast.value);
-    } else if (ast.kind === Kind.OBJECT) {
-      const value: any = {};
-      ast.fields.forEach(field => {
-        value[field.name.value] = [
-          'equals',
-          'gt',
-          'gte',
-          'lt',
-          'lte',
-          'not'
-        ].includes(field.name.value)
-          ? parseFloat((field.value as any).value)
-          : ['in', 'notIn'].includes(field.name.value)
-          ? (field.value as any).value.map(value => parseFloat(value))
-          : (field.value as any).value;
-      });
-      return value;
-    }
-
-    return null;
+    return value;
   }
 }
