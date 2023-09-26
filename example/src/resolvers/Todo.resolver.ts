@@ -57,9 +57,12 @@ export class TodoResolver {
 
   @ResolveField(() => User, { nullable: false })
   async user(@Context() ctx: { prisma: PrismaClient }, @Parent() parent: Todo) {
-    return ctx.prisma.user.findUnique({
-      where: { id: parent.userId }
-    });
+    return ctx.prisma.user
+      .findUnique({
+        where: { id: parent.userId }
+        /** ignore missing data (make nullable) for now */
+      })
+      .catch(() => null);
   }
 
   @Mutation(() => Todo)

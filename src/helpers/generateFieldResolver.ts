@@ -61,7 +61,8 @@ export const generateFieldResolver = (
         field.isList ? 'findMany' : 'findUnique'
       }({
         where: ${where}
-      });
+        /** ignore missing data (make nullable) for now */ 
+      }).catch(() => ${field.isList ? '[]' : 'null'});
     }
   `;
 };

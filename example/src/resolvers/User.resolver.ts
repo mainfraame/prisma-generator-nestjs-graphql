@@ -60,9 +60,12 @@ export class UserResolver {
     @Context() ctx: { prisma: PrismaClient },
     @Parent() parent: User
   ) {
-    return ctx.prisma.todo.findMany({
-      where: { userId: parent.id }
-    });
+    return ctx.prisma.todo
+      .findMany({
+        where: { userId: parent.id }
+        /** ignore missing data (make nullable) for now */
+      })
+      .catch(() => []);
   }
 
   @Mutation(() => User)
