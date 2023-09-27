@@ -121,9 +121,9 @@ export async function generateScalars(settings: Settings) {
              return {
                 ...acc,
                 [field.name.value]: ['in', 'notIn'].includes(field.name.value) 
-                  ? ((field.value as any).values ?? []).map(({ value }) => \`'\${value}'\`)
+                  ? ((field.value as any).values ?? [])
                   : ['not'].includes(field.name.value)
-                    ? \`'\${(field.value as any).value}'\`
+                    ? (field.value as any).value
                     : ['contains', 'endsWith', 'notContains', 'startsWith'].includes(field.name.value)
                       ? (field.value as any).value
                       : undefined
