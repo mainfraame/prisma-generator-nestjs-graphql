@@ -7,7 +7,7 @@ export function generateEnumDependencies(
   return Object.keys(enums)
     .filter(e => content.includes(enums[e].name))
     .map(
-      e => `import { ${enums[e].name} } from '../enum/${enums[e].name}.enum';`
+      e => `import { ${enums[e].name} } from '../enum/${enums[e].name}Enum';`
     )
     .join('\n');
 }

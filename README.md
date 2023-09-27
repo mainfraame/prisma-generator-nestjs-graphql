@@ -11,18 +11,18 @@ npm i prisma-generator-nestjs-graphql-crud
 
 #### Prisma Features
 
-| Feature    | Available | Notes                                        |
-|------------|-----------|----------------------------------------------|
-| create     | ✅         |                                              |
-| createMany | ✅         |                                              |
-| delete     | ✅         |                                              |
-| deleteMany | ✅         |                                              |
-| findUnique | ✅         | by primary key or composite keys             |
-| findMany   | ✅         | pagination included (skip/take only for now) |
-| filters    | ❌         | gt,gte,lt,lte,notIn,in,not, etc.             |
-| orderBy    | ✅         |                                              |
-| update     | ✅         |                                              |
-| updateMany | ✅         |                                              |
+| Feature    | Available | Notes                                                               |
+|------------|-----------|---------------------------------------------------------------------|
+| create     | ✅         |                                                                     |
+| createMany | ✅         |                                                                     |
+| delete     | ✅         |                                                                     |
+| deleteMany | ✅         |                                                                     |
+| findUnique | ✅         | by primary key or composite keys                                    |
+| findMany   | ✅         | pagination included (skip/take only for now)                        |
+| filters    | ✅         | gt,gte,lt,lte,notIn,in,not, etc.  (DateTime, Int, String supported) |
+| orderBy    | ✅         |                                                                     |
+| update     | ✅         |                                                                     |
+| updateMany | ✅         |                                                                     |
 
 ---
 
@@ -60,14 +60,15 @@ The generated code relies on the `context` object for graphql to contain a
 reference to the `prisma` client. See the use of `useFactory` in the `GraphQLModule` below.
 
 **PrismaModule** and **PrismaService** are generated; if you want your own custom implementation,
-use this [doc](https://github.com/mainfraame/prisma-generator-nestjs-graphql/tree/main/example/docs/PrismaModule.md) as a guide.
+use this [doc](https://github.com/mainfraame/prisma-generator-nestjs-graphql/tree/main/example/docs/PrismaModule.md) as
+a guide.
 
 _\*_ generated code is compatible
 with [@nestjs/mercurius](https://www.npmjs.com/package/@nestjs/mercurius), [@nestjs/apollo](https://www.npmjs.com/package/@nestjs/apollo)
 and [@graphql-yoga/nestjs](https://the-guild.dev/graphql/yoga-server/docs/integrations/integration-with-nestjs)
 
 ```typescript
-import { PrismaModule, PrismaService, providers } from '@generated/graphql';
+import { PrismaModule, PrismaService, prismaProviders } from '@generated/graphql';
 import { ApolloDriver } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
@@ -89,7 +90,7 @@ import { GraphQLModule } from '@nestjs/graphql';
       isGlobal: true
     })
   ],
-  providers: [...providers]
+  providers: [...prismaProviders]
 })
 export class AppModule {
 }
@@ -99,7 +100,8 @@ export class AppModule {
 
 ### Example
 
-See a generated example [here](https://github.com/mainfraame/prisma-generator-nestjs-graphql/tree/main/example/src); note, when the output is in a node_modules directory,
+See a generated example [here](https://github.com/mainfraame/prisma-generator-nestjs-graphql/tree/main/example/src);
+note, when the output is in a node_modules directory,
 it will automatically transpile cjs and mjs versions.
 
 ---
@@ -108,7 +110,7 @@ it will automatically transpile cjs and mjs versions.
 
 - authentication guard integration
 - cursor-based pagination
-- gt, gte, lt, lte, notIn, in, not "where" filtering
+- expand `gt`, `gte`, `lt`, `lte`, `notIn`, `in`, `not` "where" filtering to types other than DateTime, Int, and String
 
 #### TODO
 

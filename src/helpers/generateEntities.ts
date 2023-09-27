@@ -34,7 +34,7 @@ export async function generateEntities(
     }`;
 
     await writeFile(
-      `${settings.defaultOutput}/entities/${model.name}.entity.ts`,
+      `${settings.defaultOutput}/entities/${model.name}Entity.ts`,
       `
         ${generateDependencies(content)}
         ${generateEnumDependencies(content, enums)}

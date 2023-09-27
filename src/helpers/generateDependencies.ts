@@ -7,8 +7,17 @@ export function generateDependencies(content: string) {
     .filter(i => content.includes(i))
     .join(', ');
 
-  const prismaFilterArgs = ['IntFilterInput'].filter(i => content.includes(i));
-  const prismaFilterScalars = ['IntOrFilter'].filter(i => content.includes(i));
+  const prismaFilterArgs = [
+    'DateFilterArg',
+    'IntFilterArg',
+    'StringFilterArg'
+  ].filter(i => content.includes(i));
+
+  const prismaFilterScalars = [
+    'DateFilterScalar',
+    'IntFilterScalar',
+    'StringFilterScalar'
+  ].filter(i => content.includes(i));
 
   const nestjsGraphql = [
     { name: 'ArgsType', lookup: '@ArgsType' },
@@ -41,11 +50,9 @@ export function generateDependencies(content: string) {
     nestjsGraphql.length
       ? `import { ${nestjsGraphql} } from '@nestjs/graphql';`
       : '',
-    prismaFilterArgs
-      .map(d => `import { ${d} } from '../arg/${d}.arg';`)
-      .join('\n'),
+    prismaFilterArgs.map(d => `import { ${d} } from '../arg/${d}';`).join('\n'),
     prismaFilterScalars
-      .map(d => `import { ${d} } from '../scalar/${d}.scalar';`)
+      .map(d => `import { ${d} } from '../scalar/${d}';`)
       .join('\n'),
     prisma.length ? `import { ${prisma} } from '@prisma/client';` : '',
     graphqlScalars.length

@@ -12,6 +12,7 @@ import { generateEnums } from './helpers/generateEnums';
 import { generateOrderByScalar } from './helpers/generateOrderByScalar';
 import { generatePrismaModule } from './helpers/generatePrismaModule';
 import { generateResolvers } from './helpers/generateResolvers';
+import { generateScalars } from './helpers/generateScalars';
 import type { Settings } from './types';
 import { log, writeFile } from './utils';
 
@@ -37,6 +38,7 @@ generatorHandler({
 
       const enumsHash = enums.reduce((acc, e) => ({ ...acc, [e.name]: e }), {});
 
+      await generateScalars(settings);
       await generatePrismaModule(settings);
       await generateEnums(enums, settings);
       await generateArgs(models, enumsHash, settings);
@@ -48,45 +50,47 @@ generatorHandler({
       await writeFile(
         `${settings.defaultOutput}/index.ts`,
         `
-          import { IntOrFilter } from './scalar/IntOrFilter.scalar';
+          import { DateFilterScalar } from './scalar/DateFilterScalar';
+          import { IntFilterScalar } from './scalar/IntFilterScalar';
+          import { StringFilterScalar } from './scalar/StringFilterScalar';
           ${models
             .map(
               model =>
-                `import { ${model.name}Resolver } from './resolvers/${model.name}.resolver';`
+                `import { ${model.name}Resolver } from './resolvers/${model.name}Resolver';`
             )
             .join('\n')}
           
           ${models
             .map(
               model =>
-                `import { ${model.name}OrderBy } from './scalar/${model.name}OrderBy.scalar';`
+                `import { ${model.name}OrderByScalar } from './scalar/${model.name}OrderByScalar';`
             )
             .join('\n')}
           
           ${models
             .map(
               model => `
-              export * from './arg/${model.name}.arg';
-              export * from './dto/${model.name}.dto';
-              export * from './entities/${model.name}.entity';
-              export * from './scalar/${model.name}OrderBy.scalar';
+              export * from './arg/${model.name}Arg';
+              export * from './dto/${model.name}Dto';
+              export * from './entities/${model.name}Entity';
+              export * from './scalar/${model.name}OrderByScalar';
               `
             )
             .join('\n')}
           
           ${enums
-            .map(e => `export { ${e.name} } from './enum/${e.name}.enum';`)
+            .map(e => `export { ${e.name} } from './enum/${e.name}Enum';`)
             .join('\n')}
           
-          export const providers = [
+          export const prismaProviders = [
             ${models
               .reduce(
                 (acc, model) => [
                   ...acc,
-                  `${model.name}OrderBy`,
+                  `${model.name}OrderByScalar`,
                   `${model.name}Resolver`
                 ],
-                ['IntOrFilter']
+                ['DateFilterScalar', 'IntFilterScalar', 'StringFilterScalar']
               )
               .sort()
               .join(',\n')}

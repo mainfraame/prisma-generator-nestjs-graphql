@@ -1,6 +1,6 @@
 import type { DMMF } from '@prisma/generator-helper';
 
-import { getGqlType, getTsType } from '../utils';
+import { getArgTsType, getGqlArgType } from '../utils';
 import { getNonRelationFields } from './getNonRelationFields';
 
 export function generateFindManyFields(
@@ -9,20 +9,12 @@ export function generateFindManyFields(
 ) {
   return getNonRelationFields(model)
     .map(field => {
-      const graphqlType = getGqlType(field);
-      const tsType = getTsType(field);
+      const graphqlType = getGqlArgType(field);
+      const tsType = getArgTsType(field);
 
       return `
-        @Field(() => ${
-          field.type === 'Int' ? `IntOrFilter` : graphqlType
-        }, { nullable: true })
-        ${field.name}?: ${
-          enums[field.type]
-            ? field.type
-            : tsType === 'number'
-            ? `number | IntFilterInput`
-            : tsType
-        };
+        @Field(() => ${graphqlType}, { nullable: true })
+        ${field.name}?: ${enums[field.type] ? field.type : tsType};
       `;
     })
     .join('\n\n');

@@ -101,7 +101,7 @@ export async function generateDtos(
       `;
 
     await writeFile(
-      `${settings.defaultOutput}/dto/${model.name}.dto.ts`,
+      `${settings.defaultOutput}/dto/${model.name}Dto.ts`,
       `
       ${generateDependencies(content)}
       ${generateEnumDependencies(content, enums)}

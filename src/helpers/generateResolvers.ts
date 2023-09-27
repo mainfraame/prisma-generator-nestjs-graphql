@@ -33,19 +33,17 @@ export async function generateResolvers(
     const primaryKey = model.fields.find(o => o.isId);
     const uniqueKey = model.fields.find(o => o.isUnique);
 
-    const fieldResolvers = primaryKey?.name
-      ? relationships.map(field =>
-          generateFieldResolver(
-            model,
-            {
-              primaryKey,
-              uniqueKey
-            },
-            field,
-            modelHash[field.type]
-          )
-        )
-      : [];
+    const fieldResolvers = relationships.map(field =>
+      generateFieldResolver(
+        model,
+        {
+          primaryKey,
+          uniqueKey
+        },
+        field,
+        modelHash[field.type]
+      )
+    );
 
     /** when no primary key exists, we can't include this. */
     const findFirstQuery = generateFindFirstQuery(model);
@@ -103,44 +101,40 @@ export async function generateResolvers(
       `UpdateWhere${startCase(model.name)}Dto`
     ].filter(m => content.includes(m));
 
-    const scalarDeps = [`${startCase(model.name)}OrderBy`].filter(m =>
+    const scalarDeps = [`${startCase(model.name)}OrderByScalar`].filter(m =>
       content.includes(m)
     );
 
     await writeFile(
-      `${settings.defaultOutput}/resolvers/${model.name}.resolver.ts`,
+      `${settings.defaultOutput}/resolvers/${model.name}Resolver.ts`,
       `
         ${generateDependencies(content)}
         ${
           dtoDeps.length
             ? `import { ${dtoDeps.sort().join(', ')} } from '../dto/${
                 model.name
-              }.dto';`
+              }Dto';`
             : ''
         }
         ${
           argsDeps.length
             ? `import { ${argsDeps.sort().join(', ')} } from '../arg/${
                 model.name
-              }.arg';`
+              }Arg';`
             : ''
         }
-         ${
-           scalarDeps.length
-             ? `import { ${scalarDeps.sort().join(', ')} } from '../scalar/${
-                 model.name
-               }.scalar';`
-             : ''
-         }
+         ${scalarDeps
+           .map(scalar => `import { ${scalar} } from '../scalar/${scalar}';`)
+           .join('\n')}
         ${uniq([
-          `import { ${model.name} } from '../entities/${model.name}.entity';`,
+          `import { ${model.name} } from '../entities/${model.name}Entity';`,
           ...relationships
             .filter(field => content.includes(startCase(field.type)))
             .map(
               field =>
                 `import { ${startCase(
                   field.type
-                )} } from '../entities/${startCase(field.type)}.entity';`
+                )} } from '../entities/${startCase(field.type)}Entity';`
             )
         ]).join('\n')}
         ${content}

@@ -19,21 +19,47 @@ export async function generateArgs(
   enums: Record<string, DMMF.DatamodelEnum>,
   settings: Settings
 ) {
-  // todo:: move this to centralized generator
   await writeFile(
-    `${settings.defaultOutput}/arg/IntFilterInput.arg.ts`,
+    `${settings.defaultOutput}/arg/DateFilterArg.ts`,
+    `
+      import { ArgsType, Field } from '@nestjs/graphql';
+      
+      @ArgsType()
+      export class DateFilterArg {
+        @Field(() => [Date], { nullable: 'itemsAndList' })
+        in?: Date[];
+      
+        @Field({ nullable: true })
+        lt?: Date;
+      
+        @Field({ nullable: true })
+        lte?: Date;
+      
+        @Field({ nullable: true })
+        gt?: Date;
+      
+        @Field({ nullable: true })
+        gte?: Date;
+      
+        @Field({ nullable: true })
+        not?: Date;
+        
+        @Field(() => [Date], { nullable: 'itemsAndList' })
+        notIn?: Date[];
+      }`
+  );
+
+  await writeFile(
+    `${settings.defaultOutput}/arg/IntFilterArg.ts`,
     `
       import { ArgsType, Field, Int } from '@nestjs/graphql';
       
       @ArgsType()
-      export class IntFilterInput {
-        @Field({ nullable: true })
-        equals?: number;
-      
-        @Field(type => [Int], { nullable: 'itemsAndList' })
+      export class IntFilterArg {
+        @Field(() => [Int], { nullable: 'itemsAndList' })
         in?: number[];
       
-        @Field(type => [Int], { nullable: 'itemsAndList' })
+        @Field(() => [Int], { nullable: 'itemsAndList' })
         notIn?: number[];
       
         @Field({ nullable: true })
@@ -51,6 +77,33 @@ export async function generateArgs(
         @Field({ nullable: true })
         not?: number;
       }`
+  );
+
+  await writeFile(
+    `${settings.defaultOutput}/arg/StringFilterArg.ts`,
+    `
+    import { ArgsType, Field } from '@nestjs/graphql';
+
+    @ArgsType()
+    export class StringFilterArg {
+      @Field(() => String, { nullable: false })
+      contains?: string;
+      
+      @Field(() => [String], { nullable: false })
+      in?: string[];
+            
+      @Field(() => String, { nullable: false })
+      endsWith?: string;
+                              
+      @Field(() => String, { nullable: false })
+      not?: string;
+      
+      @Field(() => [String], { nullable: false })
+      notIn?: string[];
+      
+      @Field(() => String, { nullable: false })
+      startsWith?: string;
+    }`
   );
 
   for (const model of models) {
@@ -87,7 +140,7 @@ export async function generateArgs(
              export class FindMany${startCase(model.name)}Arg {
                 ${findManyFields}
                
-                @Field(() => ${model.name}OrderBy, { nullable: true }) 
+                @Field(() => ${model.name}OrderByScalar, { nullable: true }) 
                 orderBy?: Prisma.${startCase(
                   model.name
                 )}FindManyArgs['orderBy'];
@@ -139,14 +192,14 @@ export async function generateArgs(
       `;
 
     await writeFile(
-      `${settings.defaultOutput}/arg/${model.name}.arg.ts`,
+      `${settings.defaultOutput}/arg/${model.name}Arg.ts`,
       `
       ${generateDependencies(content)}
       ${generateEnumDependencies(content, enums)}
 
-      import { ${model.name}OrderBy } from '../scalar/${
+      import { ${model.name}OrderByScalar } from '../scalar/${
         model.name
-      }OrderBy.scalar';
+      }OrderByScalar';
 
       ${content}
     `
