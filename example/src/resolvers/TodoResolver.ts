@@ -55,7 +55,7 @@ export class TodoResolver {
     });
   }
 
-  @ResolveField(() => User, { nullable: true })
+  @ResolveField(() => User, { nullable: false })
   async user(@Context() ctx: { prisma: PrismaClient }, @Parent() parent: Todo) {
     return ctx.prisma.user
       .findUnique({
