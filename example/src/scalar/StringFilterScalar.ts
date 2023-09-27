@@ -20,7 +20,7 @@ export class StringFilterScalar
         return {
           ...acc,
           [field.name.value]: ['in', 'notIn'].includes(field.name.value)
-            ? (field.value as any).values ?? []
+            ? ((field.value as any).values ?? []).map(({ value }) => value)
             : ['not'].includes(field.name.value)
             ? (field.value as any).value
             : ['contains', 'endsWith', 'notContains', 'startsWith'].includes(
