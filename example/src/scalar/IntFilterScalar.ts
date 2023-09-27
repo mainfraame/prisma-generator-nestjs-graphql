@@ -2,10 +2,10 @@ import { CustomScalar, Scalar } from '@nestjs/graphql';
 
 import { Kind, ValueNode } from 'graphql';
 
-import { IntFilterInput } from '../arg/IntFilterInput.arg';
+import { IntFilterArg } from '../arg/IntFilterArg';
 
-@Scalar('IntOrFilter')
-export class IntOrFilter implements CustomScalar<number, IntFilterInput> {
+@Scalar('IntFilterScalar')
+export class IntFilterScalar implements CustomScalar<number, IntFilterArg> {
   description = 'Int Filter scalar type';
 
   parseLiteral(ast: ValueNode) {

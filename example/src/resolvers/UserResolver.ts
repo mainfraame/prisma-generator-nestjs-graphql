@@ -15,10 +15,10 @@ import {
   FindFirstUserArg,
   FindManyUserArg,
   FindUniqueUserArg
-} from '../arg/User.arg';
-import { UpdateDataUserDto, UpdateWhereUserDto } from '../dto/User.dto';
-import { Todo } from '../entities/Todo.entity';
-import { User } from '../entities/User.entity';
+} from '../arg/UserArg';
+import { UpdateDataUserDto, UpdateWhereUserDto } from '../dto/UserDto';
+import { Todo } from '../entities/TodoEntity';
+import { User } from '../entities/UserEntity';
 
 @Resolver(() => User)
 export class UserResolver {

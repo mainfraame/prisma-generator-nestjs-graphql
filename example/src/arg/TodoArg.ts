@@ -1,9 +1,10 @@
 import { ArgsType, Field, Int } from '@nestjs/graphql';
 import { Prisma } from '@prisma/client';
 
-import { IntFilterInput } from '../arg/IntFilterInput.arg';
-import { IntOrFilter } from '../scalar/IntOrFilter.scalar';
-import { TodoOrderBy } from '../scalar/TodoOrderBy.scalar';
+import { DateFilterScalar } from '../scalar/DateFilterScalar';
+import { IntFilterScalar } from '../scalar/IntFilterScalar';
+import { StringFilterScalar } from '../scalar/StringFilterScalar';
+import { TodoOrderByScalar } from '../scalar/TodoOrderByScalar';
 
 @ArgsType()
 export class CreateTodoArg {
@@ -37,22 +38,22 @@ export class FindManyTodoArg {
   @Field(() => Boolean, { nullable: true })
   completed?: boolean;
 
-  @Field(() => Date, { nullable: true })
-  createdAt?: Date;
+  @Field(() => DateFilterScalar, { nullable: true })
+  createdAt?: Date | DateFilterScalar;
 
-  @Field(() => IntOrFilter, { nullable: true })
-  id?: number | IntFilterInput;
+  @Field(() => IntFilterScalar, { nullable: true })
+  id?: number | IntFilterScalar;
 
-  @Field(() => String, { nullable: true })
-  title?: string;
+  @Field(() => StringFilterScalar, { nullable: true })
+  title?: string | StringFilterScalar;
 
-  @Field(() => Date, { nullable: true })
-  updatedAt?: Date;
+  @Field(() => DateFilterScalar, { nullable: true })
+  updatedAt?: Date | DateFilterScalar;
 
-  @Field(() => IntOrFilter, { nullable: true })
-  userId?: number | IntFilterInput;
+  @Field(() => IntFilterScalar, { nullable: true })
+  userId?: number | IntFilterScalar;
 
-  @Field(() => TodoOrderBy, { nullable: true })
+  @Field(() => TodoOrderByScalar, { nullable: true })
   orderBy?: Prisma.TodoFindManyArgs['orderBy'];
 
   @Field(() => Int, { nullable: true })
@@ -67,20 +68,20 @@ export class FindFirstTodoArg {
   @Field(() => Boolean, { nullable: true })
   completed?: boolean;
 
-  @Field(() => Date, { nullable: true })
-  createdAt?: Date;
+  @Field(() => DateFilterScalar, { nullable: true })
+  createdAt?: Date | DateFilterScalar;
 
-  @Field(() => IntOrFilter, { nullable: true })
-  id?: number | IntFilterInput;
+  @Field(() => IntFilterScalar, { nullable: true })
+  id?: number | IntFilterScalar;
 
-  @Field(() => String, { nullable: true })
-  title?: string;
+  @Field(() => StringFilterScalar, { nullable: true })
+  title?: string | StringFilterScalar;
 
-  @Field(() => Date, { nullable: true })
-  updatedAt?: Date;
+  @Field(() => DateFilterScalar, { nullable: true })
+  updatedAt?: Date | DateFilterScalar;
 
-  @Field(() => IntOrFilter, { nullable: true })
-  userId?: number | IntFilterInput;
+  @Field(() => IntFilterScalar, { nullable: true })
+  userId?: number | IntFilterScalar;
 }
 
 @ArgsType()

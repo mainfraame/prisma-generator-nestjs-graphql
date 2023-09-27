@@ -1,24 +1,28 @@
-import { TodoResolver } from './resolvers/Todo.resolver';
-import { UserResolver } from './resolvers/User.resolver';
-import { IntOrFilter } from './scalar/IntOrFilter.scalar';
-import { TodoOrderBy } from './scalar/TodoOrderBy.scalar';
-import { UserOrderBy } from './scalar/UserOrderBy.scalar';
+import { TodoResolver } from './resolvers/TodoResolver';
+import { UserResolver } from './resolvers/UserResolver';
+import { DateFilterScalar } from './scalar/DateFilterScalar';
+import { IntFilterScalar } from './scalar/IntFilterScalar';
+import { StringFilterScalar } from './scalar/StringFilterScalar';
+import { TodoOrderByScalar } from './scalar/TodoOrderByScalar';
+import { UserOrderByScalar } from './scalar/UserOrderByScalar';
 
-export * from './arg/User.arg';
-export * from './dto/User.dto';
-export * from './entities/User.entity';
-export * from './scalar/UserOrderBy.scalar';
+export * from './arg/UserArg';
+export * from './dto/UserDto';
+export * from './entities/UserEntity';
+export * from './scalar/UserOrderByScalar';
 
-export * from './arg/Todo.arg';
-export * from './dto/Todo.dto';
-export * from './entities/Todo.entity';
-export * from './scalar/TodoOrderBy.scalar';
+export * from './arg/TodoArg';
+export * from './dto/TodoDto';
+export * from './entities/TodoEntity';
+export * from './scalar/TodoOrderByScalar';
 
-export const providers = [
-  IntOrFilter,
-  TodoOrderBy,
+export const prismaProviders = [
+  DateFilterScalar,
+  IntFilterScalar,
+  StringFilterScalar,
+  TodoOrderByScalar,
   TodoResolver,
-  UserOrderBy,
+  UserOrderByScalar,
   UserResolver
 ];
 

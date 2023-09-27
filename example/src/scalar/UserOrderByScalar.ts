@@ -2,8 +2,8 @@ import { CustomScalar, Scalar } from '@nestjs/graphql';
 
 import { ValueNode } from 'graphql';
 
-@Scalar('TodoOrderBy')
-export class TodoOrderBy
+@Scalar('UserOrderByScalar')
+export class UserOrderByScalar
   implements
     CustomScalar<
       Record<string, 'asc' | 'desc'>,
@@ -47,14 +47,7 @@ export class TodoOrderBy
   }
 
   private validate(value) {
-    const validKeys = [
-      'completed',
-      'createdAt',
-      'id',
-      'title',
-      'updatedAt',
-      'userId'
-    ];
+    const validKeys = ['email', 'id', 'name', 'password'];
     for (const key of Object.keys(value)) {
       if (!validKeys.includes(key)) {
         throw new Error('Invalid key for sort order: ' + key);

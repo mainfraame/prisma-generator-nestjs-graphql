@@ -1,14 +1,11 @@
 import { ArgsType, Field, Int } from '@nestjs/graphql';
 
 @ArgsType()
-export class IntFilterInput {
-  @Field({ nullable: true })
-  equals?: number;
-
-  @Field(type => [Int], { nullable: 'itemsAndList' })
+export class IntFilterArg {
+  @Field(() => [Int], { nullable: 'itemsAndList' })
   in?: number[];
 
-  @Field(type => [Int], { nullable: 'itemsAndList' })
+  @Field(() => [Int], { nullable: 'itemsAndList' })
   notIn?: number[];
 
   @Field({ nullable: true })

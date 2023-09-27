@@ -15,10 +15,10 @@ import {
   FindFirstTodoArg,
   FindManyTodoArg,
   FindUniqueTodoArg
-} from '../arg/Todo.arg';
-import { UpdateDataTodoDto, UpdateWhereTodoDto } from '../dto/Todo.dto';
-import { Todo } from '../entities/Todo.entity';
-import { User } from '../entities/User.entity';
+} from '../arg/TodoArg';
+import { UpdateDataTodoDto, UpdateWhereTodoDto } from '../dto/TodoDto';
+import { Todo } from '../entities/TodoEntity';
+import { User } from '../entities/UserEntity';
 
 @Resolver(() => Todo)
 export class TodoResolver {

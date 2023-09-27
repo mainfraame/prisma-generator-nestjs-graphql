@@ -1,9 +1,9 @@
 import { ArgsType, Field, Int } from '@nestjs/graphql';
 import { Prisma } from '@prisma/client';
 
-import { IntFilterInput } from '../arg/IntFilterInput.arg';
-import { IntOrFilter } from '../scalar/IntOrFilter.scalar';
-import { UserOrderBy } from '../scalar/UserOrderBy.scalar';
+import { IntFilterScalar } from '../scalar/IntFilterScalar';
+import { StringFilterScalar } from '../scalar/StringFilterScalar';
+import { UserOrderByScalar } from '../scalar/UserOrderByScalar';
 
 @ArgsType()
 export class CreateUserArg {
@@ -28,19 +28,19 @@ export class DeleteUserArg {
 
 @ArgsType()
 export class FindManyUserArg {
-  @Field(() => String, { nullable: true })
-  email?: string;
+  @Field(() => StringFilterScalar, { nullable: true })
+  email?: string | StringFilterScalar;
 
-  @Field(() => IntOrFilter, { nullable: true })
-  id?: number | IntFilterInput;
+  @Field(() => IntFilterScalar, { nullable: true })
+  id?: number | IntFilterScalar;
 
-  @Field(() => String, { nullable: true })
-  name?: string;
+  @Field(() => StringFilterScalar, { nullable: true })
+  name?: string | StringFilterScalar;
 
-  @Field(() => String, { nullable: true })
-  password?: string;
+  @Field(() => StringFilterScalar, { nullable: true })
+  password?: string | StringFilterScalar;
 
-  @Field(() => UserOrderBy, { nullable: true })
+  @Field(() => UserOrderByScalar, { nullable: true })
   orderBy?: Prisma.UserFindManyArgs['orderBy'];
 
   @Field(() => Int, { nullable: true })
@@ -52,17 +52,17 @@ export class FindManyUserArg {
 
 @ArgsType()
 export class FindFirstUserArg {
-  @Field(() => String, { nullable: true })
-  email?: string;
+  @Field(() => StringFilterScalar, { nullable: true })
+  email?: string | StringFilterScalar;
 
-  @Field(() => IntOrFilter, { nullable: true })
-  id?: number | IntFilterInput;
+  @Field(() => IntFilterScalar, { nullable: true })
+  id?: number | IntFilterScalar;
 
-  @Field(() => String, { nullable: true })
-  name?: string;
+  @Field(() => StringFilterScalar, { nullable: true })
+  name?: string | StringFilterScalar;
 
-  @Field(() => String, { nullable: true })
-  password?: string;
+  @Field(() => StringFilterScalar, { nullable: true })
+  password?: string | StringFilterScalar;
 }
 
 @ArgsType()
