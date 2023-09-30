@@ -34,6 +34,27 @@ export class DeleteTodoArg {
 }
 
 @ArgsType()
+export class DeleteManyTodoArg {
+  @Field(() => Boolean, { nullable: true })
+  completed?: boolean;
+
+  @Field(() => DateFilterScalar, { nullable: true })
+  createdAt?: Date | DateFilterScalar;
+
+  @Field(() => IntFilterScalar, { nullable: true })
+  id?: number | IntFilterScalar;
+
+  @Field(() => StringFilterScalar, { nullable: true })
+  title?: string | StringFilterScalar;
+
+  @Field(() => DateFilterScalar, { nullable: true })
+  updatedAt?: Date | DateFilterScalar;
+
+  @Field(() => IntFilterScalar, { nullable: true })
+  userId?: number | IntFilterScalar;
+}
+
+@ArgsType()
 export class FindManyTodoArg {
   @Field(() => Boolean, { nullable: true })
   completed?: boolean;

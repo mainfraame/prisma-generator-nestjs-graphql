@@ -1,7 +1,7 @@
 {
   "name": "prisma-generator-nestjs-graphql-crud",
   "description": "generates basic graphql crud classes for @nestjs/graphql",
-  "version": "2.2.2",
+  "version": "2.3.0",
   "bin": "./dist/prisma-generator-nestjs-graphql-crud.js",
   "license": "MIT",
   "author": "dayne.mentier@gmail.com",

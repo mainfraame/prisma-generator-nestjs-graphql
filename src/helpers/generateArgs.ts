@@ -137,6 +137,16 @@ export async function generateArgs(
        findManyFields.length > 0
          ? ` 
              @ArgsType()
+             export class DeleteMany${startCase(model.name)}Arg {
+                ${findManyFields}
+             }`
+         : ''
+     }
+     
+    ${
+       findManyFields.length > 0
+         ? ` 
+             @ArgsType()
              export class FindMany${startCase(model.name)}Arg {
                 ${findManyFields}
                

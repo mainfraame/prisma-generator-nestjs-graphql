@@ -11,6 +11,7 @@ import { Prisma, PrismaClient } from '@prisma/client';
 
 import {
   CreateTodoArg,
+  DeleteManyTodoArg,
   DeleteTodoArg,
   FindFirstTodoArg,
   FindManyTodoArg,
@@ -129,7 +130,7 @@ export class TodoResolver {
   @Mutation(() => Todo)
   async deleteManyTodo(
     @Context() ctx: { prisma: PrismaClient },
-    @Args() { skip, take, orderBy, ...where }: FindManyTodoArg
+    @Args() where: DeleteManyTodoArg
   ) {
     return ctx.prisma.todo.deleteMany({
       where: where as unknown as Prisma.TodoDeleteManyArgs['where']

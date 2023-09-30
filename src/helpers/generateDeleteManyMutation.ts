@@ -10,7 +10,7 @@ export function generateDeleteManyMutation(model: DMMF.Model) {
     @Mutation(() => ${model.name})
     async deleteMany${startCase(model.name)}(
       @Context() ctx: { prisma: PrismaClient },
-      @Args() {skip, take, orderBy, ...where}: FindMany${startCase(
+      @Args() where: DeleteMany${startCase(
         model.name
       )}Arg,
     ) {

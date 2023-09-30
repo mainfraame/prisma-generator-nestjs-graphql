@@ -84,6 +84,7 @@ export async function generateResolvers(
     const argsDeps = [
       `Create${startCase(model.name)}Arg`,
       `Delete${startCase(model.name)}Arg`,
+      `DeleteMany${startCase(model.name)}Arg`,
       `FindFirst${startCase(model.name)}Arg`,
       `FindMany${startCase(model.name)}Arg`,
       `FindUnique${startCase(model.name)}Arg`,

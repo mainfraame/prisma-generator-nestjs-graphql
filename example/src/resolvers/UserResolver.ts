@@ -11,6 +11,7 @@ import { Prisma, PrismaClient } from '@prisma/client';
 
 import {
   CreateUserArg,
+  DeleteManyUserArg,
   DeleteUserArg,
   FindFirstUserArg,
   FindManyUserArg,
@@ -132,7 +133,7 @@ export class UserResolver {
   @Mutation(() => User)
   async deleteManyUser(
     @Context() ctx: { prisma: PrismaClient },
-    @Args() { skip, take, orderBy, ...where }: FindManyUserArg
+    @Args() where: DeleteManyUserArg
   ) {
     return ctx.prisma.user.deleteMany({
       where: where as unknown as Prisma.UserDeleteManyArgs['where']

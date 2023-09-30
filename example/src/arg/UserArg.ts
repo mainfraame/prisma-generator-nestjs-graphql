@@ -27,6 +27,21 @@ export class DeleteUserArg {
 }
 
 @ArgsType()
+export class DeleteManyUserArg {
+  @Field(() => StringFilterScalar, { nullable: true })
+  email?: string | StringFilterScalar;
+
+  @Field(() => IntFilterScalar, { nullable: true })
+  id?: number | IntFilterScalar;
+
+  @Field(() => StringFilterScalar, { nullable: true })
+  name?: string | StringFilterScalar;
+
+  @Field(() => StringFilterScalar, { nullable: true })
+  password?: string | StringFilterScalar;
+}
+
+@ArgsType()
 export class FindManyUserArg {
   @Field(() => StringFilterScalar, { nullable: true })
   email?: string | StringFilterScalar;
