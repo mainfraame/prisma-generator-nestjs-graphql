@@ -3,6 +3,7 @@ import { Prisma } from '@prisma/client';
 
 import { IntFilterScalar } from '../scalar/IntFilterScalar';
 import { StringFilterScalar } from '../scalar/StringFilterScalar';
+import { UserGroupByScalar } from '../scalar/UserGroupByScalar';
 import { UserOrderByScalar } from '../scalar/UserOrderByScalar';
 
 @ArgsType()
@@ -54,6 +55,9 @@ export class FindManyUserArg {
 
   @Field(() => StringFilterScalar, { nullable: true })
   password?: string | StringFilterScalar;
+
+  @Field(() => UserGroupByScalar, { nullable: true })
+  by?: Prisma.UserFindManyArgs['groupBy'];
 
   @Field(() => UserOrderByScalar, { nullable: true })
   orderBy?: Prisma.UserFindManyArgs['orderBy'];

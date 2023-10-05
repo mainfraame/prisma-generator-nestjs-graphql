@@ -9,6 +9,7 @@ import { generateArgs } from './helpers/generateArgs';
 import { generateDtos } from './helpers/generateDtos';
 import { generateEntities } from './helpers/generateEntities';
 import { generateEnums } from './helpers/generateEnums';
+import { generateGroupByScalar } from './helpers/generateGroupByScalar';
 import { generateOrderByScalar } from './helpers/generateOrderByScalar';
 import { generatePrismaModule } from './helpers/generatePrismaModule';
 import { generateResolvers } from './helpers/generateResolvers';
@@ -45,6 +46,7 @@ generatorHandler({
       await generateEntities(models, enumsHash, settings);
       await generateDtos(models, enumsHash, settings);
       await generateResolvers(models, settings);
+      await generateGroupByScalar(models, settings);
       await generateOrderByScalar(models, settings);
 
       await writeFile(
@@ -63,9 +65,16 @@ generatorHandler({
           ${models
             .map(
               model =>
-                `import { ${model.name}OrderByScalar } from './scalar/${model.name}OrderByScalar';`
+                `import { ${model.name}GroupByScalar } from './scalar/${model.name}GroupByScalar';`
             )
             .join('\n')}
+        
+            ${models
+              .map(
+                model =>
+                  `import { ${model.name}OrderByScalar } from './scalar/${model.name}OrderByScalar';`
+              )
+              .join('\n')}
           
           ${models
             .map(
@@ -73,6 +82,7 @@ generatorHandler({
               export * from './arg/${model.name}Arg';
               export * from './dto/${model.name}Dto';
               export * from './entities/${model.name}Entity';
+              export * from './scalar/${model.name}GroupByScalar';
               export * from './scalar/${model.name}OrderByScalar';
               `
             )
@@ -87,6 +97,7 @@ generatorHandler({
               .reduce(
                 (acc, model) => [
                   ...acc,
+                  `${model.name}GroupByScalar`,
                   `${model.name}OrderByScalar`,
                   `${model.name}Resolver`
                 ],

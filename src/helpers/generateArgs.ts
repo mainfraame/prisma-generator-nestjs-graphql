@@ -144,11 +144,14 @@ export async function generateArgs(
      }
      
     ${
-       findManyFields.length > 0
-         ? ` 
+      findManyFields.length > 0
+        ? ` 
              @ArgsType()
              export class FindMany${startCase(model.name)}Arg {
                 ${findManyFields}
+               
+                @Field(() => ${model.name}GroupByScalar, { nullable: true }) 
+                by?: Prisma.${startCase(model.name)}FindManyArgs['groupBy'];
                
                 @Field(() => ${model.name}OrderByScalar, { nullable: true }) 
                 orderBy?: Prisma.${startCase(
@@ -161,8 +164,8 @@ export async function generateArgs(
                 @Field(() => Int, { nullable: true })
                 take?: number;
              }`
-         : ''
-     }
+        : ''
+    }
      
      ${
        findManyFields.length > 0
@@ -207,6 +210,9 @@ export async function generateArgs(
       ${generateDependencies(content)}
       ${generateEnumDependencies(content, enums)}
 
+      import { ${model.name}GroupByScalar } from '../scalar/${
+        model.name
+      }GroupByScalar';
       import { ${model.name}OrderByScalar } from '../scalar/${
         model.name
       }OrderByScalar';

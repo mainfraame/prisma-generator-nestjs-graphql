@@ -46,9 +46,10 @@ export class TodoResolver {
   @Query(() => [Todo])
   async findManyTodo(
     @Context() ctx: { prisma: PrismaClient },
-    @Args() { skip, take, orderBy, ...where }: FindManyTodoArg
+    @Args() { by, orderBy, skip, take, ...where }: FindManyTodoArg
   ) {
     return ctx.prisma.todo.findMany({
+      by: groupBy as unknown as Prisma.TodoFindManyArgs['groupBy'],
       orderBy: orderBy as unknown as Prisma.TodoFindManyArgs['orderBy'],
       skip: skip ?? 0,
       take: take ?? 100,

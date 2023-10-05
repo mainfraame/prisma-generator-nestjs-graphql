@@ -102,9 +102,10 @@ export async function generateResolvers(
       `UpdateWhere${startCase(model.name)}Dto`
     ].filter(m => content.includes(m));
 
-    const scalarDeps = [`${startCase(model.name)}OrderByScalar`].filter(m =>
-      content.includes(m)
-    );
+    const scalarDeps = [
+      `${startCase(model.name)}GroupByScalar`,
+      `${startCase(model.name)}OrderByScalar`
+    ].filter(m => content.includes(m));
 
     await writeFile(
       `${settings.defaultOutput}/resolvers/${model.name}Resolver.ts`,

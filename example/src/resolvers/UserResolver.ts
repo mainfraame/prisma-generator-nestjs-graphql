@@ -46,9 +46,10 @@ export class UserResolver {
   @Query(() => [User])
   async findManyUser(
     @Context() ctx: { prisma: PrismaClient },
-    @Args() { skip, take, orderBy, ...where }: FindManyUserArg
+    @Args() { by, orderBy, skip, take, ...where }: FindManyUserArg
   ) {
     return ctx.prisma.user.findMany({
+      by: groupBy as unknown as Prisma.UserFindManyArgs['groupBy'],
       orderBy: orderBy as unknown as Prisma.UserFindManyArgs['orderBy'],
       skip: skip ?? 0,
       take: take ?? 100,

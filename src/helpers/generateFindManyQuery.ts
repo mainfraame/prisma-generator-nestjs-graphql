@@ -9,11 +9,14 @@ export function generateFindManyQuery(model: DMMF.Model) {
     @Query(() => [${model.name}])
     async findMany${startCase(model.name)}(
       @Context() ctx: { prisma: PrismaClient },
-      @Args() {skip, take, orderBy, ...where}: FindMany${startCase(
+      @Args() {by, orderBy, skip, take, ...where}: FindMany${startCase(
         model.name
       )}Arg
     ) {
         return ctx.prisma.${camelCase(model.name)}.findMany({
+          by: groupBy as unknown as Prisma.${startCase(
+            model.name
+          )}FindManyArgs['groupBy'],
           orderBy: orderBy as unknown as Prisma.${startCase(
             model.name
           )}FindManyArgs['orderBy'],

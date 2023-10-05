@@ -4,6 +4,7 @@ import { Prisma } from '@prisma/client';
 import { DateFilterScalar } from '../scalar/DateFilterScalar';
 import { IntFilterScalar } from '../scalar/IntFilterScalar';
 import { StringFilterScalar } from '../scalar/StringFilterScalar';
+import { TodoGroupByScalar } from '../scalar/TodoGroupByScalar';
 import { TodoOrderByScalar } from '../scalar/TodoOrderByScalar';
 
 @ArgsType()
@@ -73,6 +74,9 @@ export class FindManyTodoArg {
 
   @Field(() => IntFilterScalar, { nullable: true })
   userId?: number | IntFilterScalar;
+
+  @Field(() => TodoGroupByScalar, { nullable: true })
+  by?: Prisma.TodoFindManyArgs['groupBy'];
 
   @Field(() => TodoOrderByScalar, { nullable: true })
   orderBy?: Prisma.TodoFindManyArgs['orderBy'];
