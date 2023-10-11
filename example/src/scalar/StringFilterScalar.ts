@@ -4,7 +4,7 @@ import { Kind, ValueNode } from 'graphql';
 
 import { StringFilterArg } from '../arg/StringFilterArg';
 
-@Scalar('StringFilterScalar')
+@Scalar('StringFilter')
 export class StringFilterScalar
   implements CustomScalar<string, StringFilterArg>
 {
@@ -40,7 +40,7 @@ export class StringFilterScalar
       return value;
     }
 
-    throw new Error('Invalid input for StringFilterScalar');
+    throw new Error('Invalid input for StringFilter');
   }
 
   serialize(value) {

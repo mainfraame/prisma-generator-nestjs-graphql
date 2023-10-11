@@ -18,7 +18,8 @@ import { log, writeFile } from './utils';
 
 let settings: Settings = {
   defaultOutput: '',
-  excludes: []
+  excludes: [],
+  excludeMutations: false
 };
 
 generatorHandler({
@@ -162,6 +163,7 @@ generatorHandler({
           config.defaultOutput ??
           'node_modules/@generated/graphql'
       ),
+      excludeMutations: config?.config?.excludeMutations === 'true',
       excludes: (config.config.excludes ?? []) as string[],
       startTime: performance.now(),
       version: VERSION

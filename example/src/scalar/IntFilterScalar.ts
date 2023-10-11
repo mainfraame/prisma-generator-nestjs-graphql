@@ -4,7 +4,7 @@ import { Kind, ValueNode } from 'graphql';
 
 import { IntFilterArg } from '../arg/IntFilterArg';
 
-@Scalar('IntFilterScalar')
+@Scalar('IntFilter')
 export class IntFilterScalar implements CustomScalar<number, IntFilterArg> {
   description = 'Int Filter scalar type';
 
@@ -40,7 +40,7 @@ export class IntFilterScalar implements CustomScalar<number, IntFilterArg> {
       return value;
     }
 
-    throw new Error('Invalid input for IntFilterScalar');
+    throw new Error('Invalid input for IntFilter');
   }
 
   serialize(value) {

@@ -20,10 +20,11 @@ generator nestJsGraphQlCrud {
 
 **Options:**
 
-| Feature  | Description                                  | Default                           | Example                      |
-|----------|----------------------------------------------|-----------------------------------|------------------------------|
-| excludes | prisma model names to exclude from generator |                                   | `excludes = ["Ignore"]`      |
-| output   | cwd relative path for the output             | `node_modules/@generated/graphql` | `output   = "./example/src"` |
+| Feature          | Description                                                 | Default                           | Example                      |
+|------------------|-------------------------------------------------------------|-----------------------------------|------------------------------|
+| excludes         | prisma model names to exclude from generator                |                                   | `excludes = ["Ignore"]`      |
+| excludeMutations | prevents generator from creating mutations in the resolvers |                                   | `excludes = ["Ignore"]`      |
+| output           | cwd relative path for the output                            | `node_modules/@generated/graphql` | `output   = "./example/src"` |
 
 2. Configure your Graphql Service In NestJs
 
@@ -429,15 +430,16 @@ This would return the following:
 
 The following filters are available are:
 
-- [Date](#date)
+- [DateFilter](#datefilter)
+- [NumberFilter](#numberfilter)
 - [OrderBy](#orderby)
 - [Skip](#skip-offset)
-- [String](#string)
+- [StringFilter](#stringfilter)
 - [Take](#take-limit)
 
 ---
 
-### Date
+### DateFilter
 
 | Type       | Supported |
 |------------|-----------|
@@ -468,7 +470,7 @@ query {
 
 ---
 
-### Number
+### NumberFilter
 
 | Type       | Supported |
 |------------|-----------|
@@ -521,7 +523,7 @@ query {
 
 ---
 
-### String
+### StringFilter
 
 | Type       | Supported |
 |------------|-----------|

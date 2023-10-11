@@ -1,7 +1,6 @@
 import {
   Args,
   Context,
-  Mutation,
   Parent,
   Query,
   ResolveField,
@@ -10,14 +9,10 @@ import {
 import { Prisma, PrismaClient } from '@prisma/client';
 
 import {
-  CreateTodoArg,
-  DeleteManyTodoArg,
-  DeleteTodoArg,
   FindFirstTodoArg,
   FindManyTodoArg,
   FindUniqueTodoArg
 } from '../arg/TodoArg';
-import { UpdateDataTodoDto, UpdateWhereTodoDto } from '../dto/TodoDto';
 import { Todo } from '../entities/TodoEntity';
 import { User } from '../entities/UserEntity';
 
@@ -64,76 +59,5 @@ export class TodoResolver {
         /** ignore missing data (make nullable) for now */
       })
       .catch(() => null);
-  }
-
-  @Mutation(() => Todo)
-  async createTodo(
-    @Context() ctx: { prisma: PrismaClient },
-    @Args() data: CreateTodoArg
-  ) {
-    return ctx.prisma.todo.create({
-      // todo:: fix the types in Create...Arg
-      data: data as unknown as Prisma.TodoCreateArgs['data']
-    });
-  }
-
-  @Mutation(() => Todo)
-  async createManyTodo(
-    @Context() ctx: { prisma: PrismaClient },
-    @Args({ type: () => [CreateTodoArg] }) data: CreateTodoArg[]
-  ) {
-    return ctx.prisma.todo.createMany({
-      // todo:: fix the types in Create...Arg
-      data: data as unknown as Prisma.TodoCreateManyArgs['data']
-    });
-  }
-
-  @Mutation(() => Todo)
-  async updateTodo(
-    @Context() ctx: { prisma: PrismaClient },
-    @Args('where', { type: () => UpdateWhereTodoDto })
-    where: UpdateWhereTodoDto,
-    @Args('data', { type: () => UpdateDataTodoDto })
-    data: Prisma.TodoUpdateArgs['data']
-  ) {
-    return ctx.prisma.todo.update({
-      data,
-      where
-    });
-  }
-
-  @Mutation(() => Todo)
-  async updateManyTodo(
-    @Context() ctx: { prisma: PrismaClient },
-    @Args('where', { type: () => UpdateWhereTodoDto })
-    where: UpdateWhereTodoDto,
-    @Args('data', { type: () => [UpdateDataTodoDto] })
-    data: Prisma.TodoUpdateManyArgs['data']
-  ) {
-    return ctx.prisma.todo.updateMany({
-      data,
-      // todo:: fix this typing
-      where: where as unknown as Prisma.TodoUpdateManyArgs['where']
-    });
-  }
-
-  @Mutation(() => Todo)
-  async deleteTodo(
-    @Context() ctx: { prisma: PrismaClient },
-    @Args() where: DeleteTodoArg
-  ) {
-    return ctx.prisma.todo.delete({
-      where
-    });
-  }
-
-  @Mutation(() => Todo)
-  async deleteManyTodo(
-    @Context() ctx: { prisma: PrismaClient },
-    @Args() where: DeleteManyTodoArg
-  ) {
-    return ctx.prisma.todo.deleteMany({
-      where: where as unknown as Prisma.TodoDeleteManyArgs['where']
-    });
   }
 }

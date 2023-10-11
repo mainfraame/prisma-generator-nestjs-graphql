@@ -10,7 +10,7 @@ export async function generateScalars(settings: Settings) {
 
       import { DateFilterArg } from '../arg/DateFilterArg';
 
-      @Scalar('DateFilterScalar')
+      @Scalar('DateFilter')
       export class DateFilterScalar implements CustomScalar<Date, DateFilterArg> {
         description = 'Date Filter scalar type';
 
@@ -57,7 +57,7 @@ export async function generateScalars(settings: Settings) {
 
       import { IntFilterArg } from '../arg/IntFilterArg';
 
-      @Scalar('IntFilterScalar')
+      @Scalar('IntFilter')
       export class IntFilterScalar implements CustomScalar<number, IntFilterArg> {
         description = 'Int Filter scalar type';
 
@@ -89,7 +89,7 @@ export async function generateScalars(settings: Settings) {
             return value;
           }
     
-          throw new Error('Invalid input for IntFilterScalar');
+          throw new Error('Invalid input for IntFilter');
         }
          
         serialize(value) {
@@ -107,7 +107,7 @@ export async function generateScalars(settings: Settings) {
     
     import { StringFilterArg } from '../arg/StringFilterArg';
 
-    @Scalar('StringFilterScalar')
+    @Scalar('StringFilter')
     export class StringFilterScalar implements CustomScalar<string, StringFilterArg> {
       description = 'String Filter scalar type';
 
@@ -139,7 +139,7 @@ export async function generateScalars(settings: Settings) {
           return value;
         }
   
-        throw new Error('Invalid input for StringFilterScalar');
+        throw new Error('Invalid input for StringFilter');
       }
        
       serialize(value) {

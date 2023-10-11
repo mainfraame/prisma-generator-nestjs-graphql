@@ -4,7 +4,7 @@ import { Kind, ValueNode } from 'graphql';
 
 import { DateFilterArg } from '../arg/DateFilterArg';
 
-@Scalar('DateFilterScalar')
+@Scalar('DateFilter')
 export class DateFilterScalar implements CustomScalar<Date, DateFilterArg> {
   description = 'Date Filter scalar type';
 

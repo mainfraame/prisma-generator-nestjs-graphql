@@ -11,9 +11,10 @@ datasource db {
 }
 
 generator nestJsGraphqlCrud {
-  provider = "./dist/prisma-generator-nestjs-graphql-crud.js"
-  output   = "./example/src"
-  excludes = ["Ignore"]
+  excludes         = ["Ignore"]
+  excludeMutations = false
+  provider         = "./dist/prisma-generator-nestjs-graphql-crud.js"
+  output           = "./example/src"
 }
 
 model User {

@@ -49,12 +49,25 @@ export async function generateResolvers(
     const findFirstQuery = generateFindFirstQuery(model);
     const findUnique = generateFindUniqueQuery(model);
     const findMany = generateFindManyQuery(model);
-    const createMutation = generateCreateMutation(model);
-    const createManyMutation = generateCreateManyMutation(model);
-    const updateMutation = generateUpdateMutation(model);
-    const updateManyMutation = generateUpdateManyMutation(model);
-    const deleteMutation = generateDeleteMutation(model);
-    const deleteManyMutation = generateDeleteManyMutation(model);
+
+    const createMutation = settings.excludeMutations
+      ? ''
+      : generateCreateMutation(model);
+    const createManyMutation = settings.excludeMutations
+      ? ''
+      : generateCreateManyMutation(model);
+    const updateMutation = settings.excludeMutations
+      ? ''
+      : generateUpdateMutation(model);
+    const updateManyMutation = settings.excludeMutations
+      ? ''
+      : generateUpdateManyMutation(model);
+    const deleteMutation = settings.excludeMutations
+      ? ''
+      : generateDeleteMutation(model);
+    const deleteManyMutation = settings.excludeMutations
+      ? ''
+      : generateDeleteManyMutation(model);
 
     const content = `
     @Resolver(() => ${model.name})
