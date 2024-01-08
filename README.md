@@ -6,6 +6,7 @@ classes you'll need for basic CRUD operations; based on your prisma schema.
 ```bash
 npm i prisma-generator-nestjs-graphql-crud
 ```
+
 ---
 
 ## Getting Started
@@ -20,11 +21,11 @@ generator nestJsGraphQlCrud {
 
 **Options:**
 
-| Feature          | Description                                                 | Default                           | Example                      |
-|------------------|-------------------------------------------------------------|-----------------------------------|------------------------------|
-| excludes         | prisma model names to exclude from generator                |                                   | `excludes = ["Ignore"]`      |
-| excludeMutations | prevents generator from creating mutations in the resolvers |                                   | `excludes = ["Ignore"]`      |
-| output           | cwd relative path for the output                            | `node_modules/@generated/graphql` | `output   = "./example/src"` |
+| Feature          | Description                                  | Default                           | Example                      |
+|------------------|----------------------------------------------|-----------------------------------|------------------------------|
+| excludes         | prisma model names to exclude from generator |                                   | `excludes = ["Ignore"]`      |
+| includeMutations | include mutation resolvers                   |                                   | `includeMutations = "true"`  |
+| output           | cwd relative path for the output             | `node_modules/@generated/graphql` | `output   = "./example/src"` |
 
 2. Configure your Graphql Service In NestJs
 
@@ -84,7 +85,6 @@ export class AppModule {
 | orderBy    | ✅         |                                                                     |
 | update     | ✅         |                                                                     |
 | updateMany | ✅         |                                                                     |
-
 
 The following are the various filters and generated resolvers. Note the table name is **Upper-CamelCased**;
 e.g. `user_session` would become `UserSession`.
@@ -379,9 +379,9 @@ This would return the following:
 {
   "data": {
     "updateTodo": {
-        "id": 1,
-        "title": "First Todo",
-        "userId": 2
+      "id": 1,
+      "title": "First Todo",
+      "userId": 2
     }
   }
 }
@@ -609,7 +609,6 @@ ___
 | Resolvers      | ✅         |                                          |
 
 ---
-
 
 ## Example
 
