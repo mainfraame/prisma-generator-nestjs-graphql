@@ -1,14 +1,15 @@
 import { DMMF } from '@prisma/generator-helper';
 
+import { Settings } from '../types';
 import { camelCase, startCase } from '../utils';
 import { getUniqueFields } from './getUniqueFields';
 
-export function generateFindUniqueQuery(model: DMMF.Model) {
+export function generateFindUniqueQuery(settings: Settings, model: DMMF.Model) {
   return getUniqueFields(model)?.length > 0
     ? `
     @Query(() => ${model.name}, { nullable: true })
     async findUnique${startCase(model.name)}(
-      @Context() ctx: { prisma: PrismaClient },
+      @Context() ctx: GraphQlContext,
       @Args() where: FindUnique${startCase(model.name)}Arg
     ) {
         return ctx.prisma.${camelCase(model.name)}.findUnique({

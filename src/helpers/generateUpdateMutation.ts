@@ -1,16 +1,17 @@
 import type { DMMF } from '@prisma/generator-helper';
 
+import { Settings } from '../types';
 import { camelCase, startCase } from '../utils';
 import { getUpdateDataFields } from './getUpdateDataFields';
 import { getUpdateWhereFields } from './getUpdateWhereFields';
 
-export function generateUpdateMutation(model: DMMF.Model) {
+export function generateUpdateMutation(settings: Settings, model: DMMF.Model) {
   return getUpdateDataFields(model).length > 0 &&
     getUpdateWhereFields(model).length > 0
     ? `
     @Mutation(() => ${model.name})
     async update${startCase(model.name)}(
-      @Context() ctx: { prisma: PrismaClient },
+      @Context() ctx: GraphQlContext,
       @Args('where', {type: () => UpdateWhere${startCase(
         model.name
       )}Dto }) where: UpdateWhere${startCase(model.name)}Dto, 

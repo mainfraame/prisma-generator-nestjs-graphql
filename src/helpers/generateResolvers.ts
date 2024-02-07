@@ -6,6 +6,7 @@ import type { Settings } from '../types';
 import { startCase, writeFile } from '../utils';
 import { generateCreateManyMutation } from './generateCreateManyMutation';
 import { generateCreateMutation } from './generateCreateMutation';
+import { generateDataLoader, generateDataLoaders } from './generateDataLoaders';
 import { generateDeleteManyMutation } from './generateDeleteManyMutation';
 import { generateDeleteMutation } from './generateDeleteMutation';
 import { generateDependencies } from './generateDependencies';
@@ -13,6 +14,7 @@ import { generateFieldResolver } from './generateFieldResolver';
 import { generateFindFirstQuery } from './generateFindFirstQuery';
 import { generateFindManyQuery } from './generateFindManyQuery';
 import { generateFindUniqueQuery } from './generateFindUniqueQuery';
+import { generateTypes } from './generateTypes';
 import { generateUpdateManyMutation } from './generateUpdateManyMutation';
 import { generateUpdateMutation } from './generateUpdateMutation';
 
@@ -27,6 +29,38 @@ export async function generateResolvers(
     }),
     {}
   );
+  /** construct dataloaders  */
+
+  const fieldResolvers = models.filter(model =>
+    model.fields.some(o => o.kind === 'object')
+  );
+
+  let loaders = [];
+
+  for (const fieldResolver of fieldResolvers) {
+    const primaryKey = fieldResolver.fields.find(o => o.isId);
+    const uniqueKey = fieldResolver.fields.find(o => o.isUnique);
+
+    const dataLoaders = fieldResolver.fields
+      .filter(o => o.kind === 'object')
+      .map(field =>
+        generateDataLoader(
+          fieldResolver,
+          {
+            primaryKey,
+            uniqueKey
+          },
+          field,
+          modelHash[field.type]
+        )
+      )
+      .filter(Boolean);
+
+    loaders = [...loaders, ...dataLoaders];
+  }
+
+  await generateDataLoaders(settings, loaders);
+  await generateTypes(settings, loaders);
 
   for (const model of models) {
     const relationships = model.fields.filter(o => o.kind === 'object');
@@ -46,27 +80,27 @@ export async function generateResolvers(
     );
 
     /** when no primary key exists, we can't include this. */
-    const findFirstQuery = generateFindFirstQuery(model);
-    const findUnique = generateFindUniqueQuery(model);
-    const findMany = generateFindManyQuery(model);
+    const findFirstQuery = generateFindFirstQuery(settings, model);
+    const findUnique = generateFindUniqueQuery(settings, model);
+    const findMany = generateFindManyQuery(settings, model);
 
     const createMutation = settings.includeMutations
-      ? generateCreateMutation(model)
+      ? generateCreateMutation(settings, model)
       : '';
     const createManyMutation = settings.includeMutations
-      ? generateCreateManyMutation(model)
+      ? generateCreateManyMutation(settings, model)
       : '';
     const updateMutation = settings.includeMutations
-      ? generateUpdateMutation(model)
+      ? generateUpdateMutation(settings, model)
       : '';
     const updateManyMutation = settings.includeMutations
-      ? generateUpdateManyMutation(model)
+      ? generateUpdateManyMutation(settings, model)
       : '';
     const deleteMutation = settings.includeMutations
-      ? generateDeleteMutation(model)
+      ? generateDeleteMutation(settings, model)
       : '';
     const deleteManyMutation = settings.includeMutations
-      ? generateDeleteManyMutation(model)
+      ? generateDeleteManyMutation(settings, model)
       : '';
 
     const content = `

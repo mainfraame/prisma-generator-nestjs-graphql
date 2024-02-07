@@ -22,12 +22,12 @@ export class StringFilterScalar
           [field.name.value]: ['in', 'notIn'].includes(field.name.value)
             ? ((field.value as any).values ?? []).map(({ value }) => value)
             : ['not'].includes(field.name.value)
-            ? (field.value as any).value
-            : ['contains', 'endsWith', 'notContains', 'startsWith'].includes(
-                field.name.value
-              )
-            ? (field.value as any).value
-            : undefined
+              ? (field.value as any).value
+              : ['contains', 'endsWith', 'notContains', 'startsWith'].includes(
+                    field.name.value
+                  )
+                ? (field.value as any).value
+                : undefined
         };
       }, {});
     }

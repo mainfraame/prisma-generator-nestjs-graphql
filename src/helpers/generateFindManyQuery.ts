@@ -1,14 +1,15 @@
 import { DMMF } from '@prisma/generator-helper';
 
+import { Settings } from '../types';
 import { camelCase, startCase } from '../utils';
 import { getFindManyFields } from './getFindManyFields';
 
-export function generateFindManyQuery(model: DMMF.Model) {
+export function generateFindManyQuery(settings: Settings, model: DMMF.Model) {
   return getFindManyFields(model).length > 0
     ? `
     @Query(() => [${model.name}])
     async findMany${startCase(model.name)}(
-      @Context() ctx: { prisma: PrismaClient },
+      @Context() ctx: GraphQlContext,
       @Args() {skip, take, orderBy, ...where}: FindMany${startCase(
         model.name
       )}Arg

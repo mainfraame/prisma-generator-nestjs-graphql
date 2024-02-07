@@ -50,6 +50,15 @@ export function generateDependencies(content: string) {
     nestjsGraphql.length
       ? `import { ${nestjsGraphql} } from '@nestjs/graphql';`
       : '',
+    content.includes('DataLoader')
+      ? `import DataLoader from 'dataloader';`
+      : '',
+    content.includes('GraphQlContext')
+      ? `import { GraphQlContext } from '../types';`
+      : '',
+    content.includes('UnauthorizedException')
+      ? "import { UnauthorizedException } from '@nestjs/common';"
+      : '',
     prismaFilterArgs.map(d => `import { ${d} } from '../arg/${d}';`).join('\n'),
     prismaFilterScalars
       .map(d => `import { ${d} } from '../scalar/${d}';`)

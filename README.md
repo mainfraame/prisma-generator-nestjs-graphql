@@ -2,6 +2,8 @@
 
 This prisma generator will create all the [@nestjs/graphql](https://docs.nestjs.com/graphql/quick-start)
 classes you'll need for basic CRUD operations; based on your prisma schema.
+It includes [dataloader](https://www.npmjs.com/package/dataloader) to prevent
+the infamous **n+1** problem in graphql.
 
 ```bash
 npm i prisma-generator-nestjs-graphql-crud

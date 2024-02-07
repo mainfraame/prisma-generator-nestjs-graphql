@@ -1,6 +1,7 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
+import { DataLoaderService } from './dataLoader.service';
 import { PrismaService } from './prisma.service';
 
 type PrismaModuleOptions = {
@@ -13,8 +14,8 @@ type PrismaModuleOptions = {
 };
 
 @Module({
-  providers: [PrismaService],
-  exports: [PrismaService]
+  providers: [DataLoaderService, PrismaService],
+  exports: [DataLoaderService, PrismaService]
 })
 export class PrismaModule {
   static forRoot(options: PrismaModuleOptions = {}): DynamicModule {

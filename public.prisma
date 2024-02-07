@@ -17,14 +17,26 @@ generator nestJsGraphqlCrud {
   output           = "./example/src"
 }
 
-model User {
-  id       Int     @id @default(autoincrement())
-  email    String  @unique
-  password String
-  name     String?
-  todos    Todo[]
+model Employee {
+  id       Int    @id @default(autoincrement())
+  name     String
+  position String
 
-  @@map("user")
+  Timesheets Timesheet[]
+
+  @@map("employee")
+  @@schema("public")
+}
+
+model Timesheet {
+  date       DateTime
+  hours      Int
+  employeeId Int
+
+  employee Employee @relation(fields: [employeeId], references: [id])
+
+  @@id([date, employeeId])
+  @@map("timesheet")
   @@schema("public")
 }
 
@@ -38,6 +50,17 @@ model Todo {
   user      User     @relation(fields: [userId], references: [id])
 
   @@map("todo")
+  @@schema("public")
+}
+
+model User {
+  id       Int     @id @default(autoincrement())
+  email    String  @unique
+  password String
+  name     String?
+  todos    Todo[]
+
+  @@map("user")
   @@schema("public")
 }
 

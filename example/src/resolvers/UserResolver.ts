@@ -6,7 +6,7 @@ import {
   ResolveField,
   Resolver
 } from '@nestjs/graphql';
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 
 import {
   FindFirstUserArg,
@@ -15,12 +15,13 @@ import {
 } from '../arg/UserArg';
 import { Todo } from '../entities/TodoEntity';
 import { User } from '../entities/UserEntity';
+import { GraphQlContext } from '../types';
 
 @Resolver(() => User)
 export class UserResolver {
   @Query(() => User, { nullable: true })
   async findFirstUser(
-    @Context() ctx: { prisma: PrismaClient },
+    @Context() ctx: GraphQlContext,
     @Args() where: FindFirstUserArg
   ) {
     return ctx.prisma.user.findFirst({
@@ -30,7 +31,7 @@ export class UserResolver {
 
   @Query(() => User, { nullable: true })
   async findUniqueUser(
-    @Context() ctx: { prisma: PrismaClient },
+    @Context() ctx: GraphQlContext,
     @Args() where: FindUniqueUserArg
   ) {
     return ctx.prisma.user.findUnique({
@@ -40,7 +41,7 @@ export class UserResolver {
 
   @Query(() => [User])
   async findManyUser(
-    @Context() ctx: { prisma: PrismaClient },
+    @Context() ctx: GraphQlContext,
     @Args() { skip, take, orderBy, ...where }: FindManyUserArg
   ) {
     return ctx.prisma.user.findMany({
@@ -52,15 +53,7 @@ export class UserResolver {
   }
 
   @ResolveField(() => [Todo], { nullable: 'itemsAndList', defaultValue: [] })
-  async todos(
-    @Context() ctx: { prisma: PrismaClient },
-    @Parent() parent: User
-  ) {
-    return ctx.prisma.todo
-      .findMany({
-        where: { userId: parent.id }
-        /** ignore missing data (make nullable) for now */
-      })
-      .catch(() => []);
+  async todos(@Context() ctx: GraphQlContext, @Parent() parent: User) {
+    return ctx.loaders.userTodos.load(parent.id);
   }
 }

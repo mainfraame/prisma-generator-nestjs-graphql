@@ -7,12 +7,16 @@ import prettier from 'prettier';
 import { log } from './log';
 
 export const formatFile = async (content: string): Promise<string> => {
-  const options = await prettier
-    .resolveConfig(process.cwd())
+  const config = await prettier
+    .resolveConfigFile()
     .catch(() => Promise.resolve(null));
 
+  const options = config
+    ? await prettier.resolveConfig(config).catch(() => Promise.resolve(null))
+    : null;
+
   if (!options) {
-    log.warn('No Prettier Config Found To Format NestJs DTOs');
+    log.warn('no prettier config found; skipping formatting');
     return content;
   }
 
@@ -28,43 +32,41 @@ export const formatFile = async (content: string): Promise<string> => {
       stack: e.stack
     });
 
-    throw e;
+    return content;
   }
 };
 
 // todo:: refactor this to make it easier to understand
-export const writeFile = async (path: string, content: any) => {
+export const writeFile = async (path: string, content: string) => {
+  const isNodeModules = path.includes('node_modules');
+
+  const fileName = basename(path);
+
+  const outputPath = isNodeModules
+    ? dirname(path).split('@generated/graphql')[0] + '@generated/graphql'
+    : path.replace(`/${fileName}`, '');
+
+  const outputDir = dirname(path).split('@generated/graphql/')[1] ?? '';
+
+  const srcDir = `${outputPath}${
+    isNodeModules ? `/src${outputDir ? `/${outputDir}` : ''}` : outputDir ?? ''
+  }`;
+
+  const cjsDistDir = `${outputPath}/dist/cjs${outputDir ? `/${outputDir}` : ''}`;
+  const esmDistDir = `${outputPath}/dist/esm${outputDir ? `/${outputDir}` : ''}`;
+
+  if (isNodeModules) {
+    await fs.mkdir(cjsDistDir, { recursive: true });
+    await fs.mkdir(esmDistDir, { recursive: true });
+  }
+
+  await fs.mkdir(srcDir, { recursive: true });
+
+  const srcFile = `${srcDir}/${fileName}`;
+  const cjsFile = `${cjsDistDir}/${fileName.replace(/\.ts$/, '.js')}`;
+  const jsFile = `${esmDistDir}/${fileName.replace(/\.ts$/, '.js')}`;
+
   try {
-    const isNodeModules = path.includes('node_modules');
-
-    const fileName = basename(path);
-
-    const outputPath = isNodeModules
-      ? dirname(path).split('@generated/graphql')[0] + '@generated/graphql'
-      : path.replace(`/${fileName}`, '');
-
-    const outputDir = dirname(path).split('@generated/graphql/')[1] ?? '';
-
-    const srcDir = `${outputPath}${
-      isNodeModules
-        ? `/src${outputDir ? `/${outputDir}` : ''}`
-        : outputDir ?? ''
-    }`;
-
-    const cjsDistDir = `${outputPath}/dist/cjs${outputDir ? `/${outputDir}` : ''}`;
-    const esmDistDir = `${outputPath}/dist/esm${outputDir ? `/${outputDir}` : ''}`;
-
-    if (isNodeModules) {
-      await fs.mkdir(cjsDistDir, { recursive: true });
-      await fs.mkdir(esmDistDir, { recursive: true });
-    }
-
-    await fs.mkdir(srcDir, { recursive: true });
-
-    const srcFile = `${srcDir}/${fileName}`;
-    const cjsFile = `${cjsDistDir}/${fileName.replace(/\.ts$/, '.js')}`;
-    const jsFile = `${esmDistDir}/${fileName.replace(/\.ts$/, '.js')}`;
-
     /** write ts */
     await fs.writeFile(srcFile, await formatFile(content));
 
@@ -126,9 +128,12 @@ export const writeFile = async (path: string, content: any) => {
   } catch (e) {
     log.error('Failed To Write File:', {
       path,
+      content,
       message: e.message,
       stack: e.stack
     });
+
+    await fs.writeFile(srcFile, content);
 
     process.exit(1);
   }

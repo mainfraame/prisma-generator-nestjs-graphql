@@ -43,6 +43,7 @@ export async function generatePrismaModule(settings: Settings) {
     import { DynamicModule, Module } from '@nestjs/common';
     import { Prisma } from '@prisma/client';
     
+    import { DataLoaderService } from './dataLoader.service';
     import { PrismaService } from './prisma.service';
     
     type PrismaModuleOptions = {
@@ -55,8 +56,8 @@ export async function generatePrismaModule(settings: Settings) {
     };
     
     @Module({
-      providers: [PrismaService],
-      exports: [PrismaService]
+      providers: [DataLoaderService, PrismaService],
+      exports: [DataLoaderService, PrismaService]
     })
     export class PrismaModule {
       static forRoot(options: PrismaModuleOptions = {}): DynamicModule {

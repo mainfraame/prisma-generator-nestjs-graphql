@@ -35,33 +35,32 @@ export const generateFieldResolver = (
 
   const isCompositeAndFindUnique =
     hasCompositeKey &&
-    parent.fields.every(
-      field => target.primaryKey?.fields.find(f => f === field.name)
+    parent.fields.every(field =>
+      target.primaryKey?.fields?.find(f => f === field.name)
     );
 
   const isCompositeAndFindFirst =
     hasCompositeKey &&
-    !parent.fields.every(
-      field => target.primaryKey?.fields.find(f => f === field.name)
+    !parent.fields.every(field =>
+      target.primaryKey?.fields?.find(f => f === field.name)
     );
 
   const findFirstField = isCompositeAndFindFirst
-    ? parent.fields.filter(
-        field => target.primaryKey?.fields.find(f => f === field.name)
+    ? parent.fields.filter(field =>
+        target.primaryKey?.fields?.find(f => f === field.name)
       )?.[0]?.name
     : undefined;
 
   /**
-   * calculate relationship fields; findUnique may have composite fields
+   * calculate relationship fields
    */
-  const where =
-    !field.isList && isCompositeAndFindUnique
-      ? `{ ${target.primaryKey?.fields.join('_')}: {${target.primaryKey.fields
-          .map(field => `${field}: parent.${field}`)
-          .join(',')}} }`
-      : isCompositeAndFindFirst
-      ? `{ ${findFirstField ?? toKey}: parent.${findFirstField ?? fromKey} }`
-      : `{ ${toKey}: parent.${fromKey} }`;
+  const id = isCompositeAndFindUnique
+    ? `{${target.primaryKey.fields
+        .map(field => `${field}: parent.${field}`)
+        .join(',')}}`
+    : isCompositeAndFindFirst
+      ? `parent.${findFirstField ?? fromKey}`
+      : `parent.${fromKey}`;
 
   return `
     @ResolveField(() => 
@@ -70,24 +69,15 @@ export const generateFieldResolver = (
       !field.isList && field.isRequired
         ? 'false'
         : field.isList
-        ? "'itemsAndList', defaultValue: []"
-        : 'true'
+          ? "'itemsAndList', defaultValue: []"
+          : 'true'
     }
     })
     async ${camelCase(field.name)}(
-      @Context() ctx: { prisma: PrismaClient },
+      @Context() ctx: GraphQlContext,
       @Parent() parent: ${startCase(parent.name)}
     ) {
-      return ctx.prisma.${camelCase(field.type)}.${
-        field.isList
-          ? 'findMany'
-          : isCompositeAndFindFirst
-          ? 'findFirst'
-          : 'findUnique'
-      }({
-        where: ${where}
-        /** ignore missing data (make nullable) for now */ 
-      }).catch(() => ${field.isList ? '[]' : 'null'});
+      return ctx.loaders.${camelCase(parent.name)}${startCase(field.name)}.load(${id});
     }
   `;
 };

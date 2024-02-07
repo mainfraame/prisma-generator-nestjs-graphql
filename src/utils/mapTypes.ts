@@ -78,7 +78,7 @@ export function getGqlArgType(field: DMMF.Field) {
   return ArgFieldGqlTypes[field.type]?.value ?? 'String';
 }
 
-const FieldTsTypes = {
+export const fieldTsTypes = {
   BigInt: 'number',
   Boolean: 'boolean',
   DateTime: 'Date',
@@ -89,7 +89,7 @@ const FieldTsTypes = {
   Float: 'number'
 };
 
-const ArgFieldTsTypes = {
+const argfieldTsTypes = {
   BigInt: 'number',
   Boolean: 'boolean',
   DateTime: 'Date | DateFilterScalar',
@@ -102,12 +102,12 @@ const ArgFieldTsTypes = {
 
 export const getTsType = (field: DMMF.Field) => {
   return field.type === 'JSON' && !field.isRequired
-    ? `Prisma.JsonNull | ${FieldTsTypes[field.type]}`
-    : FieldTsTypes[field.type];
+    ? `Prisma.JsonNull | ${fieldTsTypes[field.type]}`
+    : fieldTsTypes[field.type];
 };
 
 export const getArgTsType = (field: DMMF.Field) => {
   return field.type === 'JSON' && !field.isRequired
-    ? `Prisma.JsonNull | ${ArgFieldTsTypes[field.type]}`
-    : ArgFieldTsTypes[field.type];
+    ? `Prisma.JsonNull | ${argfieldTsTypes[field.type]}`
+    : argfieldTsTypes[field.type];
 };

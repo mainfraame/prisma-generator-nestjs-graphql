@@ -19,7 +19,8 @@ import { log, writeFile } from './utils';
 let settings: Settings = {
   defaultOutput: '',
   excludes: [],
-  includeMutations: false
+  includeMutations: false,
+  usePassport: false
 };
 
 generatorHandler({
@@ -97,8 +98,10 @@ generatorHandler({
               .join(',\n')}
           ];
           
+          export { DataLoaderService } from './prisma/dataLoader.service';
           export { PrismaModule } from './prisma/prisma.module';
           export { PrismaService } from './prisma/prisma.service';
+          export type { GraphQlAuthParams, GraphQlContext } from './types';
        `
       );
 
@@ -163,9 +166,10 @@ generatorHandler({
           config.defaultOutput ??
           'node_modules/@generated/graphql'
       ),
-      includeMutations: config?.config?.includeMutations === 'true',
       excludes: (config.config.excludes ?? []) as string[],
+      includeMutations: config?.config?.includeMutations === 'true',
       startTime: performance.now(),
+      usePassport: config?.config?.usePassport === 'true',
       version: VERSION
     };
 

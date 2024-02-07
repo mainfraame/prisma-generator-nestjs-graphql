@@ -22,8 +22,8 @@ export class DateFilterScalar implements CustomScalar<Date, DateFilterArg> {
                 ({ value }) => new Date(value)
               )
             : ['gt', 'gte', 'lt', 'lte', 'not'].includes(field.name.value)
-            ? new Date((field.value as any).value)
-            : undefined
+              ? new Date((field.value as any).value)
+              : undefined
         };
       }, {});
     }
