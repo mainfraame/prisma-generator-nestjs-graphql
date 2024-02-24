@@ -43,20 +43,30 @@ with [@nestjs/mercurius](https://www.npmjs.com/package/@nestjs/mercurius), [@nes
 and [@graphql-yoga/nestjs](https://the-guild.dev/graphql/yoga-server/docs/integrations/integration-with-nestjs)
 
 ```typescript
-import { PrismaModule, PrismaService, prismaProviders } from '@generated/graphql';
-import { ApolloDriver } from '@nestjs/apollo';
+import {
+  DataLoaderService,
+  PrismaModule,
+  prismaProviders,
+  PrismaService
+} from '@generated/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 
 @Module({
   imports: [
-    GraphQLModule.forRootAsync({
+    GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
-      inject: [PrismaService],
-      useFactory: (prisma: PrismaService) => ({
+      inject: [DataLoaderService, PrismaService],
+      useFactory: (loaders: DataLoaderService, prisma: PrismaService) => ({
         autoSchemaFile: 'schema.gql',
-        context: {
-          prisma
+        context: (req: FastifyRequest, res: FastifyReply) => {
+          return {
+            loaders: loaders.getLoaders(),
+            prisma,
+            req,
+            res
+          };
         },
         graphiql: true
       })
