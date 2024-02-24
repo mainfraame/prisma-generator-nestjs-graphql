@@ -62,7 +62,7 @@ import { GraphQLModule } from '@nestjs/graphql';
         autoSchemaFile: 'schema.gql',
         context: (req: FastifyRequest, res: FastifyReply) => {
           return {
-            loaders: loaders.getLoaders(),
+            loaders: loaders.create(),
             prisma,
             req,
             res
