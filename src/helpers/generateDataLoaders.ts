@@ -1,5 +1,7 @@
 import type { DMMF } from '@prisma/generator-helper';
 
+import { uniq } from 'lodash';
+
 import { Settings } from '../types';
 import { camelCase, fieldTsTypes, startCase, writeFile } from '../utils';
 
@@ -11,7 +13,7 @@ export async function generateDataLoaders(
     `${settings.defaultOutput}/prisma/dataLoader.service.ts`,
     `
     import { Injectable } from '@nestjs/common';
-    import { ${loaders.map(loader => loader[2][1].replace('[]', '')).join(', ')} } from '@prisma/client';
+    import { ${uniq(loaders.map(loader => loader[2][1].replace('[]', ''))).join(', ')} } from '@prisma/client';
     import DataLoader from 'dataloader';
 
     import { PrismaService } from './prisma.service';

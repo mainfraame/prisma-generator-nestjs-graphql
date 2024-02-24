@@ -1,10 +1,7 @@
-import {
-  camelCase as lodashCamelCase,
-  startCase as lodashStartCase
-} from 'lodash';
+import { startCase as lodashStartCase } from 'lodash';
 
 export const camelCase = (value: string) => {
-  return lodashCamelCase(value).replace(/ /g, '');
+  return value.charAt(0).toLowerCase() + value.slice(1);
 };
 
 export const startCase = (value: string) => {

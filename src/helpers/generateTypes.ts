@@ -1,3 +1,5 @@
+import { uniq } from 'lodash';
+
 import { Settings } from '../types';
 import { writeFile } from '../utils';
 
@@ -8,7 +10,7 @@ export async function generateTypes(
   await writeFile(
     `${settings.defaultOutput}/types.ts`,
     `
-      import { PrismaClient, ${loaders.map(loader => loader[2][1].replace('[]', '')).join(', ')} } from '@prisma/client';
+      import { PrismaClient, ${uniq(loaders.map(loader => loader[2][1].replace('[]', ''))).join(', ')} } from '@prisma/client';
       import DataLoader from 'dataloader';
             
       export interface GraphQlAuthParams<Req = any, Res = any> {
@@ -23,7 +25,7 @@ export async function generateTypes(
       export interface GraphQlContext<Req = any, Res = any>{
         authenticate?: (context: GraphQlAuthParams<Req, Res>) => Promise<boolean> | boolean;
         loaders: {
-          ${loaders.map(loader => `${loader[0]}: DataLoader<${loader[2].join(', ')}>`).join(',')}
+          ${uniq(loaders.map(loader => `${loader[0]}: DataLoader<${loader[2].join(', ')}>`)).join(',')}
         };
         prisma: PrismaClient;
         req: Req;
